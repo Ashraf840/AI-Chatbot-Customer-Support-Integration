@@ -1,0 +1,13 @@
+Hi {{ username }}.
+Your account is created at the Customer Support Portal for DRMC.
+Your login credentials are given below:
+Email: {{ email }}
+Password: {{ password }}
+
+NB: You should change the password while logging into the system for the first time.
+
+Click the link below to redirect to the login page:
+{{ login_page_url }}
+
+Sincerely,
+Dhaka Residential Model College

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static %}
+
+<!-- Title -->
+{% block title %} {{ title }} | Dhaka Residential Model College {% endblock %}
+
+<!-- Custom CSS -->
+{% block css %}
+<!-- Fontawesome CDN -->
+<script src="https://kit.fontawesome.com/272e010829.js" crossorigin="anonymous"></script>
+{% endblock %}
+
+<!-- Content Body -->
+{% block content %}
+<h1>Customer Support Page - (Real-time Chat)</h1>
+<p>Room Slug: {{ room_slug }}</p>
+{% if request.user.username != '' %}
+<h4>CSO Username: {{ request.user.username }} </h4>
+{% if request.user.is_cso %}
+<p>
+    <a class="btn btn-primary btn-xl text-uppercase" href="{% url 'staffApplication:CsoWorkload:CsoDashboard' %}">CSO
+        Dashboard</a>
+</p>
+{% else %}
+<p>
+    <a class="btn btn-primary btn-xl text-uppercase" href="{% url 'homeApplication:LangingPage' %}">Quit</a>
+</p>
+{% endif %}
+{% else %}
+<h4> Anonymous User </h4>
+<p>
+    <a class="btn btn-primary btn-xl text-uppercase" href="{% url 'homeApplication:LangingPage' %}">Quit</a>
+</p>
+{% endif %}
+
+
+<div class="row h-80">
+    <div class="col"></div>
+    <!-- Template copied from:  https://mdbootstrap.com/docs/standard/extended/chat/ -->
+    <div class="col-8">
+        {% include 'home/customerSupportComponents/chatBody.html' %}
+    </div>
+    <div class="col"></div>
+</div>
+
+
+{% endblock %}
+
+
+
+<!-- Custom JS -->
+{% block js %}
+<!-- Miscellaneaous JS -->
+<script>
+    // Scroll down the chatbody div after window loads
+    var divElement = document.getElementById("chatbody-scroller");
+    divElement.scroll({
+        top: divElement.scrollHeight,//scroll to the bottom of the element
+        behavior: 'smooth' //auto, smooth, initial, inherit
+    });
+</script>
+
+<!-- WebSocket Script -->
+<script>
+    // VARIABLES
+    const roomSlug = `{{ room_slug }}`;
+    const ChatSupportURL = `ws://${window.location.host}/ws/cso-visitor/chat-support/${roomSlug}/`;    // [PRODUCTION - working]construct the websocket url
+    console.log(ChatSupportURL);
+    const chat_send_btn = document.querySelector('#chat-message-send-btn');
+    const chat_msg_input_field = document.querySelector("#chat-message-input");
+
+    // WEBSOCKET OBJECT
+    const ChatSupportSocket = new WebSocket(ChatSupportURL);
+    // console.log(ChatSupportSocket);
+
+    // WEBSOCKET Open function
+    ChatSupportSocket.onopen = function (e) {
+        console.log('Frontend Websocket: Connection Established!');
+    }
+
+    // WEBSOCKET Data Receiving (from backend consumer) function
+    ChatSupportSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        console.log(data);
+
+        if (data.message) {
+            console.log(
+                (data.user_identity === 'cso')? 'message from cso': 'message from visitor'
+            );
+
+            if (data.user_identity === 'cso') {
+                var chatHTML = `<div class="d-flex flex-row justify-content-start mb-4">
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
+                                alt="avatar 1" style="width: 45px; height: 100%;">
+                            <div>
+                                <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">${data.message}</p>
+                                <p class="small ms-3 mb-3 rounded-3 text-muted">00:07</p>
+                            </div>
+                        </div>`;
+            } else {
+                var chatHTML = `<div class="d-flex flex-row justify-content-end mb-4">
+                            <div>
+                                <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">${data.message}</p>
+                                <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">00:09</p>
+                            </div>
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava4-bg.webp"
+                                alt="avatar 1" style="width: 45px; height: 100%;">
+                        </div>`;
+            }
+            document.querySelector('.chat-messages-box').innerHTML += chatHTML;
+            // After adding the chat-message div, scroll down automatically at the bottom
+            divElement.scroll({
+                top: divElement.scrollHeight,//scroll to the bottom of the element
+                behavior: 'smooth' //auto, smooth, initial, inherit
+            });
+        }
+    }
+
+    // WEBSOCKET Close function
+    ChatSupportSocket.onclose = function (e) {
+        console.log('Frontend Websocket: Connection Closed!');
+    }
+
+    // Chat Msg send btn click event
+    chat_send_btn.onclick = function (e) {
+        // console.log('send btn is clicked!');
+        const input_field_message = chat_msg_input_field.value;
+        // console.log(input_field_message);
+        const user_role = `{{ request.user.is_cso }}`;
+        const user_identity = (user_role === '')? 'anonymous': 'cso';
+        // console.log('user identity:', user_identity)
+
+        // check if the input field is not empty
+        if (input_field_message) {
+            ChatSupportSocket.send(JSON.stringify({
+                'message': input_field_message,
+                'user_identity': user_identity,
+                'roomslug': roomSlug
+            }));
+            chat_msg_input_field.value = '';
+        }
+    }
+
+    chat_msg_input_field.addEventListener("keypress", function (e) {
+        // If the user presses the "Enter" key on the keyboard
+        if (e.key === "Enter") {
+            // Cancel the default action, if needed
+            e.preventDefault();
+            // Trigger the chat-send-button element with a click
+            chat_send_btn.click();
+        }
+    });
+</script>
+{% endblock %}

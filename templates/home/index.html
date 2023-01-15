@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static %}
+
+<!-- Title -->
+{% block title %} Home | {{ title }} {% endblock %}
+
+<!-- Custom CSS -->
+{% block css %} 
+<link rel="stylesheet" href="{% static 'css/home/chatbot/style.css' %}">
+{% endblock %}
+
+<!-- Content Body -->
+{% block content %}
+<h1>Dhaka Residential Model College</h1>
+
+
+<!-- Chatbot window -->
+<div class="chatbox">
+    <div class="chatbox__support">
+        <div class="chatbox__header">
+            <div class="chatbox__image--header">
+                <img src="https://img.icons8.com/color/48/000000/circled-user-female-skin-type-5--v1.png" alt="image">
+            </div>
+            <div class="chatbox__content--header">
+                <h4 class="chatbox__heading--header">Chat support</h4>
+                <p class="chatbox__description--header">Hi. My name is Bot. How can I help you?</p>
+            </div>
+        </div>
+        <div class="chatbox__messages">
+            <div></div>
+        </div>
+        <div class="chatbox__footer">
+            <input type="text" placeholder="Write a message...">
+            <button class="chatbox__send--footer send__button">Send</button>
+        </div>
+    </div>
+    <div class="chatbox__button">
+        <button><img src="{% static 'images/home/chatbot/chatbox-icon.svg' %}" alt="chat-btn-img"/></button>
+    </div>
+</div>
+{% endblock %}
+
+<!-- Custom JS -->
+{% block js %}
+<script>
+    const csrf_token =  `{{ csrf_token }}`;
+    // console.log(csrf_token);
+</script>
+<script src="{% static 'js/chatbot/app.js' %}"></script>
+{% endblock %}

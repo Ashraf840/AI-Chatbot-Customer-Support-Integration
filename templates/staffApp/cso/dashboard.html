@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static %}
+
+<!-- Title -->
+{% block title %} {{ title }} | Dhaka Residential Model College {% endblock %}
+
+<!-- Content Body -->
+{% block content %}
+<div class="row d-flex justify-content-center">
+    <div class="col"><h1>Customer Support Request | DRMC</h1></div>
+</div>
+
+<div class="row d-flex justify-content-center">
+    <div class="col"><h4>CSO Username: {{ request.user.username }} </h4></div>
+    <div class="col">
+        <p>
+            <a class="btn btn-primary btn-xl text-uppercase"
+                href="{% url 'authenticationApplication:CsoAuth:CSOLogoutView' %}">Logout</a>
+        </p>
+    </div>
+</div>
+
+
+<!-- Chat Support Request List -->
+<div class="table-responsive" style="margin-top: 5rem;">
+    <table class="table table-hover">
+        <h4 class="text-center pb-4">Current Request(s): <span id="support_req_nums">{{ support_req_nums }}</span></h4>
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Client IP</th>
+                <th scope="col">Room Slug</th>
+                <th scope="col">Enter Chat</th>
+            </tr>
+        </thead>
+        <tbody id="tbody">
+            {% for csr in customer_support_requests %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ csr.client_ip }}</td>
+                <td>{{ csr.room_slug }}</td>
+                <td>
+                    <a href="{% url 'homeApplication:CustomerSupportRoom' csr.room_slug %}"
+                        class="btn btn-primary btn-xl px-4" target="_blank">
+                        Emter
+                    </a>
+                </td>
+            </tr>
+            <!-- using "empty" block solution: https://stackoverflow.com/a/902786 -->
+            {% empty %}
+                <tr>
+                    <td scope="row" colspan="4" class="text-center"><b>No Support Request :)</b></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+
+<!-- Custom JS -->
+{% block js %}
+<!-- WebSocket Script -->
+<script>
+    // VARIABLES
+    const url = `ws://${window.location.host}/ws/cso-workload/dashboard/`;    // [PRODUCTION - working]construct the websocket url
+    // console.log(url);
+    const cso_request_numsDOM = document.querySelector('#support_req_nums');
+
+    // WEBSOCKET OBJECT
+    const socket = new WebSocket(url);
+    // console.log(socket);
+
+    // Open the websocket connection for the frontend
+    socket.onopen = function (e) {
+        console.log('Frontend Websocket: Connection Established!');
+    }
+
+    // socket receiver: Backend --> Frontend
+    socket.onmessage = function (e) {
+        // console.log(e.data);
+        // console.log(JSON.parse(e.data));    // gets the json-resp-data sent from the backend-consumer-websocket
+        const data = JSON.parse(e.data);
+
+        // New Cust-Support Request
+        if (data.new_supprt_reqst) {
+            console.log(`New customer support raised!`);
+            updated_reqs = data.new_supprt_reqst.reverse()
+            console.log(`New customer support request:`, updated_reqs);
+            cso_request_numsDOM.innerHTML = updated_reqs.length;
+            // Get all the table-body-rows & delete each rows
+            let tbodytr = document.querySelectorAll("tbody#tbody > tr");
+            tbodytr.forEach((Item) => {
+                Item.remove();
+            });
+            let tbody = document.querySelector("#tbody");
+            let newtr = '';
+            let counter = 0;
+            let url = 'http://127.0.0.1:8080/customer-support';
+            updated_reqs.forEach((req) => {
+                // console.log(req);
+                // newtr += `${req.client_ip} ----- ${req.room_slug}`;
+                newtr += `<tr>
+                    <th scope="row">${counter += 1}</th>
+                    <td>${req.client_ip}</td>
+                    <td>${req.room_slug}</td>
+                    <td>
+                        <a href="${url}/${req.room_slug}/"
+                            class="btn btn-primary btn-xl px-4" 
+                            target="_blank">
+                            Emter
+                        </a>
+                    </td>
+                </tr>`;
+            });
+            tbody.innerHTML = newtr;
+        }
+    }
+
+    socket.onclose = function (e) {
+        console.log('Frontend Websocket: Connection Closed!');
+    }
+</script>
+{% endblock %}
