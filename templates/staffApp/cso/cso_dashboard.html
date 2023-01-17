@@ -1,5 +1,5 @@
 <!DOCTYPE html>
 <h1>CSO Panel Default Dashboard</h1>
 <p>CSO will be redirected to this page after login!</p>
-<a href="{% url 'staffApplication:CsoWorkload:SupportDashboard' %}" target="_blank">CSO Support Dashboard</a> <br>
+<a href="{% url 'staffApplication:CsoWorkload:SupportDashboard' request.user.email %}" target="_blank">CSO Support Dashboard</a> <br>
 <a href="{% url 'authenticationApplication:CsoAuth:CSOLogoutView' %}">Logout</a>
