@@ -35,8 +35,6 @@ class CSOLoginPageView(View):
                         'authenticationApplication:PasswordResetView', 
                         kwargs={"email": user.email}
                     ))
-                    # user.is_first_login = False   # change into "post" method
-                    # user.save()
                 login(request, user)
                 return redirect('staffApplication:CsoWorkload:CsoDashboard')
         self.context['message'] = 'Login failed!'
