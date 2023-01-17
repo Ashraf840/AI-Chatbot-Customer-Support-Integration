@@ -6,18 +6,18 @@ from channels.layers import get_channel_layer
 
 
 # Customer Support Dashboard Consumer
-class CSODashboardConsumer(WebsocketConsumer):
+class SupportDashboardConsumer(WebsocketConsumer):
     # TODO: MAKE THE CONSUMER CONNECTIVITY FOR ALL THE Customer Support Officers. (follow "teachatty" app)
 
     def __init__(self, *args, **kwargs):
-        super(CSODashboardConsumer, self).__init__(*args, **kwargs)
+        super(SupportDashboardConsumer, self).__init__(*args, **kwargs)
         self.room_name = None
         self.room_group_name = None
     
     # [Default method] Create an asynchronous connection-function
     def connect(self):
         print("#"*50)
-        print("[connect() method] Connected to backend consumer class: CSODashboardConsumer")
+        print("[connect() method] Connected to backend consumer class: SupportDashboardConsumer")
         self.room_name = 'dashboard'
         self.room_group_name = 'chat_%s' % self.room_name
         print(f"room-group name: {self.room_group_name}")
@@ -50,7 +50,7 @@ class CSODashboardConsumer(WebsocketConsumer):
     # Receive the msg from frontend & broadcast it to the entire channel
     def receive(self, text_data=None, bytes_data=None):
         print("#"*50)
-        print("[recieve() method] Recieved data to backend consumer class: CSODashboardConsumer")
+        print("[recieve() method] Recieved data to backend consumer class: SupportDashboardConsumer")
         print("#"*50)
     
     # Custom method: send all new support-req from the db-signal's (home.signals.customer_support_request_signal) channel-group-send method.
@@ -67,5 +67,5 @@ class CSODashboardConsumer(WebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
-        print("[disconnect() method] Disconnected from backend consumer class: CSODashboardConsumer")
+        print("[disconnect() method] Disconnected from backend consumer class: SupportDashboardConsumer")
         print("#"*50)
