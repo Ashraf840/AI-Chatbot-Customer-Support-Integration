@@ -1,7 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from home.models import CustomerSupportRequest
+from authenticationApp.models import User
+
 
 # TODO: [Done] Create cso dashboard class
 class CsoDashboard(LoginRequiredMixin, View):
@@ -20,9 +22,10 @@ class SupportDashboard(LoginRequiredMixin, View):
         'title': 'Support Dashboard',
     }
 
-    def get(self, request):
+    def get(self, request, email):
         # Get all the customer-support-req data from "CustomerSupportRequest" model
         # --------------------------------------------------------------------------------
+        user = get_object_or_404(User, email=email)
         customer_support_requests = CustomerSupportRequest.objects.all().order_by('-id')
         print(f"'SupportDashboard' class queryset: {customer_support_requests}")
         print(f"total support requests: {len(customer_support_requests)}")

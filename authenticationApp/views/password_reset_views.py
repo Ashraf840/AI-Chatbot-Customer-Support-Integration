@@ -1,7 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import View
 from ..models import User
-from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from ..forms import UserPasswordResetForm
 from django.contrib.auth.hashers import make_password
