@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% extends 'base.html' %}
+{% extends 'base/staffApp_base.html' %}
 {% load static %}
 
 <!-- Title -->
@@ -14,10 +14,20 @@
 <div class="row d-flex justify-content-center">
     <div class="col"><h4>CSO Username: {{ request.user.username }} </h4></div>
     <div class="col">
-        <p>
-            <a class="btn btn-primary btn-xl text-uppercase"
-                href="{% url 'authenticationApplication:CsoAuth:CSOLogoutView' %}">Logout</a>
-        </p>
+        <div class="row">
+            <div class="col">
+                <p>
+                    <a class="btn btn-primary btn-xl text-uppercase"
+                        href="{% url 'staffApplication:CsoWorkload:CsoDashboard' %}">Main Dashboard</a>
+                </p>
+            </div>
+            <div class="col">
+                <p>
+                    <a class="btn btn-primary btn-xl text-uppercase"
+                        href="{% url 'authenticationApplication:CsoAuth:CSOLogoutView' %}">Logout</a>
+                </p>
+            </div>
+        </div>
     </div>
 </div>
 

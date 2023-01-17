@@ -5,11 +5,11 @@ from django.urls.base import reverse
 from ..models import CustomerSupportRequest, CSOVisitorMessage
 
 
-def homePage(request):
-    context = {
-        'title': 'Dhaka Residential Model College',
-    }
-    return render(request, 'home/index.html' , context)
+# def homePage(request):
+#     context = {
+#         'title': 'Dhaka Residential Model College',
+#     }
+#     return render(request, 'home/index.html' , context)
 
 
 # Landing Page View

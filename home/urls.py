@@ -7,7 +7,7 @@ from .views import (
 app_name = "homeApp"
 
 urlpatterns = [
-    path("test-page", hmvs.homePage, name="homePage"),
+    # path("test-page", hmvs.homePage, name="homePage"),
     path("", hmvs.LangingPage.as_view(), name="LangingPage"),
     path("bot-resp/", chbtrspvs.bot_resp, name="bot_resp"),
     path("customer-support-request/", hmvs.CustomerSupportReq.as_view(), name="CustomerSupportRequest"),
