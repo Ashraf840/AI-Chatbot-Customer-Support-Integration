@@ -2,16 +2,7 @@ from django.http import HttpResponse, JsonResponse
 import json
 from chat import get_response
 from ..models import ChatbotVisitorMessage
-
-
-# TODO: Put this func into path: "home\utils"
-def get_client_ip(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip
+from ..utils.get_ip import get_client_ip
 
 
 def bot_resp(request):
@@ -48,7 +39,7 @@ def bot_resp(request):
                 # return JsonResponse(data)
         visitor_ip = get_client_ip(request)
         # now = datetime.now()
-        # print(f"visitor ip: {visitor_ip}")
+        print(f"visitor ip: {visitor_ip}")
         # print(f"visitor msg: {msg}")
         # print(f"response: {response}")
         # print(f"msg time: {now}")
