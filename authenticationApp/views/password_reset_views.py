@@ -16,7 +16,7 @@ class PasswordResetView(View):
     # TODO: make sure the user is authenticated firstly, otherwise redirect to landing page
     # TODO: make user.is_first_login=True in the post method's successful code-block
     # login_url = 'authenticationApplication:CsoAuth:CSOLoginPageView'
-    template_name = 'authenticationApp/password_reset_2.html'
+    template_name = 'authenticationApp/password_reset.html'
     form_class = UserPasswordResetForm
     context={
         'title': 'Password Reset', 
