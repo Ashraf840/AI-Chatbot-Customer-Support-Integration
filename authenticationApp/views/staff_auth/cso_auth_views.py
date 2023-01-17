@@ -7,7 +7,7 @@ from django.urls.base import reverse
 
 # Concept Ref: https://openclassrooms.com/en/courses/7107341-intermediate-django/7263527-create-a-login-page-with-class-based-views
 class CSOLoginPageView(View):
-    template_name = 'authenticationApp/cso_login_2.html'
+    template_name = 'authenticationApp/cso_login.html'
     form_class = UserLoginForm
     context={
         'title': 'CSO Login', 
