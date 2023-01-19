@@ -7,44 +7,33 @@
 
 <!-- Content Body -->
 {% block content %}
-<div class="row d-flex justify-content-center">
-    <div class="col"><h1>Customer Support Request | DRMC</h1></div>
-</div>
+<div class="container-fluid">
+    <div class="row d-flex justify-content-center">
+        <div class="col"><h1>Customer Support Request | DRMC</h1></div>
+    </div>
 
-<div class="row d-flex justify-content-center">
-    <div class="col"><h4>CSO Username: {{ request.user.username }} </h4></div>
-    <div class="col">
-        <div class="row">
-            <div class="col">
-                <p>
-                    <a class="btn btn-primary btn-xl text-uppercase"
-                        href="{% url 'staffApplication:CsoWorkload:CsoDashboard' %}">Main Dashboard</a>
-                </p>
-            </div>
-            <div class="col">
-                <p>
-                    <a class="btn btn-primary btn-xl text-uppercase"
-                        href="{% url 'authenticationApplication:CsoAuth:CSOLogoutView' %}">Logout</a>
-                </p>
+    <div class="row d-flex justify-content-center">
+        <div class="col"><h4>CSO Username: {{ request.user.username }} </h4></div>
+        <div class="col">
+            <div class="row">
+                <h4 class="text-center pb-4">Current Request(s): <span id="support_req_nums">{{ support_req_nums }}</span></h4>
             </div>
         </div>
     </div>
-</div>
 
 
-<!-- Chat Support Request List -->
-<div class="table-responsive" style="margin-top: 5rem;">
-    <table class="table table-hover">
-        <h4 class="text-center pb-4">Current Request(s): <span id="support_req_nums">{{ support_req_nums }}</span></h4>
-        <thead class="table-dark">
+    <!-- Chat Support Request List -->
+    <div class="table-responsive" style="margin-top: 2rem;">
+        <table class="table table-hover">
+            <thead class="table-dark">
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Client IP</th>
                 <th scope="col">Room Slug</th>
                 <th scope="col">Enter Chat</th>
             </tr>
-        </thead>
-        <tbody id="tbody">
+            </thead>
+            <tbody id="tbody">
             {% for csr in customer_support_requests %}
             <tr>
                 <th scope="row">{{ forloop.counter }}</th>
@@ -52,19 +41,20 @@
                 <td>{{ csr.room_slug }}</td>
                 <td>
                     <a href="{% url 'homeApplication:CustomerSupportRoom' csr.room_slug %}"
-                        class="btn btn-primary btn-xl px-4" target="_blank">
+                       class="btn btn-primary btn-xl px-4" target="_blank">
                         Emter
                     </a>
                 </td>
             </tr>
             <!-- using "empty" block solution: https://stackoverflow.com/a/902786 -->
             {% empty %}
-                <tr>
-                    <td scope="row" colspan="4" class="text-center"><b>No Support Request :)</b></td>
-                </tr>
+            <tr>
+                <td scope="row" colspan="4" class="text-center"><b>No Support Request :)</b></td>
+            </tr>
             {% endfor %}
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 {% endblock %}
