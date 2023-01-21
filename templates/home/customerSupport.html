@@ -16,22 +16,32 @@
 <h1>Customer Support Page - (Real-time Chat)</h1>
 <p>Room Slug: {{ room_slug }}</p>
 {% if request.user.username != '' %}
-<h4>CSO Username: {{ request.user.username }} </h4>
-{% if request.user.is_cso %}
-<p>
-    <a class="btn btn-primary btn-xl text-uppercase" href="{% url 'staffApplication:CsoWorkload:CsoDashboard' %}">CSO
-        Dashboard</a>
-</p>
+    <h4>CSO Username: {{ request.user.username }} </h4>
+    {% if request.user.is_cso %}
+        <div class="row">
+            <div class="col">
+                <p>
+                    <a class="btn btn-primary btn-xl text-uppercase" href="{% url 'staffApplication:CsoWorkload:CsoDashboard' %}">CSO
+                        Dashboard</a>
+                </p>
+            </div>
+            <div class="col text-end">
+                <form action="{% url 'homeApplication:CustomerSupportRoom' room_slug %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success btn-xl text-uppercase">Is resolved</button>
+                </form>
+            </div>
+        </div>
+    {% else %}
+        <p>
+            <a class="btn btn-primary btn-xl text-uppercase" href="{% url 'homeApplication:LangingPage' %}">Quit</a>
+        </p>
+    {% endif %}
 {% else %}
-<p>
-    <a class="btn btn-primary btn-xl text-uppercase" href="{% url 'homeApplication:LangingPage' %}">Quit</a>
-</p>
-{% endif %}
-{% else %}
-<h4> Anonymous User </h4>
-<p>
-    <a class="btn btn-primary btn-xl text-uppercase" href="{% url 'homeApplication:LangingPage' %}">Quit</a>
-</p>
+    <h4> Anonymous User </h4>
+    <p>
+        <a class="btn btn-primary btn-xl text-uppercase" href="{% url 'homeApplication:LangingPage' %}">Quit</a>
+    </p>
 {% endif %}
 
 
@@ -82,8 +92,8 @@
     // WEBSOCKET Data Receiving (from backend consumer) function
     ChatSupportSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
-        console.log(data);
-
+        console.log(data);  // comment it later
+        // Chat message
         if (data.message) {
             console.log(
                 (data.user_identity === 'cso')? 'message from cso': 'message from visitor'
@@ -114,6 +124,17 @@
                 top: divElement.scrollHeight,//scroll to the bottom of the element
                 behavior: 'smooth' //auto, smooth, initial, inherit
             });
+        }
+        
+        // Intruder redirection
+        if (data.intruder_redirection) {
+            if (data.intruder_redirection === "Redirect the intruder to homepage!") {
+                console.log(`Redirect the intruder to homepage!`);
+                // Redirect the user to the homepage using the "ChatSupportSocket.onclose" func
+                // [Ref]: https://www.w3schools.com/howto/howto_js_redirect_webpage.asp
+                window.location.href = `{% url 'homeApp:LangingPage' %}`;   // works like render of dj (maybe)
+                // window.location.replace(`{% url 'homeApp:LangingPage' %}`);  // works like render-redirect of dj (maybe)
+            }
         }
     }
 

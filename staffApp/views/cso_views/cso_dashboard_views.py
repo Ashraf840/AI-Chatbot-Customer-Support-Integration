@@ -18,6 +18,7 @@ class CsoDashboard(LoginRequiredMixin, View):
 
 
 class SupportDashboard(LoginRequiredMixin, View):
+    login_url = 'authenticationApplication:CsoAuth:CSOLoginPageView'
     context = {
         'title': 'Support Dashboard',
     }

@@ -409,6 +409,9 @@
                         {% csrf_token %}
                         <input type="text" name="clientIP" id="clientIP" readonly="readonly">
                         <input type="text" name="roomSlug" id="roomSlug" readonly="readonly">
+                        {% if visitor_session_uuid %}
+                        <input type="text" name="visitorSessionUUID" id="visitorSessionUUID" value="{{ visitor_session_uuid }}" readonly="readonly">
+                        {% endif %}
                         <button type="submit">Submit</button>
                     </form>
                 </div>
@@ -594,7 +597,7 @@
                                         </li>
                                         <li>
                                             <strong>Category:</strong>
-                                            Website Design
+                                            Website Design 
                                         </li>
                                     </ul>
                                     <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
