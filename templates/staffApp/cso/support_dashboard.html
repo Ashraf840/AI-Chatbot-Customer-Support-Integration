@@ -29,6 +29,7 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Client IP</th>
+                <th scope="col">Visitor Session UUID</th>
                 <th scope="col">Room Slug</th>
                 <th scope="col">Enter Chat</th>
             </tr>
@@ -38,11 +39,12 @@
             <tr>
                 <th scope="row">{{ forloop.counter }}</th>
                 <td>{{ csr.client_ip }}</td>
+                <td>{{ csr.visitor_session_uuid }}</td>
                 <td>{{ csr.room_slug }}</td>
                 <td>
                     <a href="{% url 'homeApplication:CustomerSupportRoom' csr.room_slug %}"
                        class="btn btn-primary btn-xl px-4" target="_blank">
-                        Emter
+                        Enter
                     </a>
                 </td>
             </tr>
