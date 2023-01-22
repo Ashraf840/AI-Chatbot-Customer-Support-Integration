@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import ChatbotVisitorMessage, CustomerSupportRequest, CSOVisitorMessage, CSOVisitorConvoInfo
-from .user_connectivity_models import ChatSupportUserOnline
+from .user_connectivity_models import ChatSupportUserOnline, ChatSupportUserConnectedChannels
 
 
 class ChatbotVisitorMessageAdmin(admin.ModelAdmin):
@@ -55,6 +55,15 @@ class ChatSupportUserOnlineAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
 
+class ChatSupportUserConnectedChannelsAdmin(admin.ModelAdmin):
+    list_display = ['id', 'cso_email', 'visitor_session_uuid', 'room_slug', 'channel_value',]
+    list_display_links = ['id']
+    search_fields = list_display
+    readonly_fields = ['room_slug', 'channel_value',]
+    list_per_page = 15
+    ordering = ['-id']
+
+
 admin.site.register(ChatbotVisitorMessage, ChatbotVisitorMessageAdmin)
 admin.site.register(CustomerSupportRequest, CustomerSupportRequestAdmin)
 admin.site.register(CSOVisitorMessage, CSOVisitorMessageAdmin)
@@ -62,3 +71,4 @@ admin.site.register(CSOVisitorConvoInfo, CSOVisitorConvoInfoAdmin)
 
 # User online connectivity models
 admin.site.register(ChatSupportUserOnline, ChatSupportUserOnlineAdmin)
+admin.site.register(ChatSupportUserConnectedChannels, ChatSupportUserConnectedChannelsAdmin)

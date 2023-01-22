@@ -2,7 +2,61 @@ from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 import json
 from ..models import CSOVisitorMessage, CustomerSupportRequest
-from ..user_connectivity_models import ChatSupportUserOnline
+from ..user_connectivity_models import ChatSupportUserOnline, ChatSupportUserConnectedChannels
+
+
+def create_channel_conn(room_slug, channel_name, cso_email=None, visitor_session_uuid=None):
+    print('*'*10, "create_channel_conn() func is called")
+    print("room slug:", room_slug)
+    channel_name = channel_name.replace('specific.', '')  # remove the prefix from each channel-name before storing into the db
+    print("channel name:", channel_name)
+    if cso_email is not None:
+        print("cso email:", cso_email)
+        print('create channel-record of cso-user using email in the "ChatSupportUserConnectedChannels" model.')
+        ChatSupportUserConnectedChannels.objects.create(
+            cso_email=cso_email,
+            room_slug=room_slug,
+            channel_value=channel_name
+        )
+    
+    if visitor_session_uuid is not None:
+        print("visitor session uuid:", visitor_session_uuid)
+        print('create channel-record of visitor using visitor_session_uuid in the "ChatSupportUserConnectedChannels" model.')
+        ChatSupportUserConnectedChannels.objects.create(
+            visitor_session_uuid=visitor_session_uuid,
+            room_slug=room_slug,
+            channel_value=channel_name
+        )
+
+def remove_channel_conn(room_slug, channel_name, cso_email=None, visitor_session_uuid=None):
+    print('*'*10, "remove_channel_conn() func is called")
+    print("room slug:", room_slug)
+    channel_name = channel_name.replace('specific.', '')  # remove the prefix from each channel-name before storing into the db
+    print("channel name:", channel_name)
+    if cso_email is not None:
+        print("cso email:", cso_email)
+        print('[first check if exist] remove channel-record of cso-user from the "ChatSupportUserConnectedChannels" model.')
+        try:
+            ChatSupportUserConnectedChannels.objects.get(
+                cso_email=cso_email,
+                room_slug=room_slug,
+                channel_value=channel_name
+            ).delete()
+        except ChatSupportUserConnectedChannels.DoesNotExist:
+            print('No such active channel exists!')
+    
+    if visitor_session_uuid is not None:
+        print("visitor session uuid:", visitor_session_uuid)
+        print('[first check if exist] remove channel-record of visitor from the "ChatSupportUserConnectedChannels" model.')
+        try:
+            ChatSupportUserConnectedChannels.objects.get(
+                visitor_session_uuid=visitor_session_uuid,
+                room_slug=room_slug,
+                channel_value=channel_name
+            ).delete()
+        except ChatSupportUserConnectedChannels.DoesNotExist:
+            print('No such active channel exists!')
+    
 
 
 def make_user_online(user):
@@ -18,11 +72,11 @@ def make_user_offline(user):
         user.save()
 
 
-def active_user_online(room_slug, cso_email=None, visitor_session_uuid=None):
+def active_user_online(room_slug, channel_name, cso_email=None, visitor_session_uuid=None):
     """
     This func is responsible for creating new record in the "ChatSupportUserOnline" model if no record found of the user based on certain condition.
     """
-    print("active_user_online() func is called")
+    print('*'*10, "active_user_online() func is called")
     print("room slug:", room_slug)
     if cso_email is not None:
         print("cso email:", cso_email)
@@ -32,9 +86,13 @@ def active_user_online(room_slug, cso_email=None, visitor_session_uuid=None):
             print('Found active cso user record!', user_online_obj)
             # Make the user online if it's not online by passing the "user_online_obj" entirely, so that the follwing func doesn't require to query the "ChatSupportUserOnline" model before making the user online
             make_user_online(user_online_obj)
+            # Create multiple channels of the same user to track that users -online-status regardless of creating duplicate multiple tabs.
+            create_channel_conn(room_slug=room_slug, channel_name=channel_name, cso_email=cso_email)
         except ChatSupportUserOnline.DoesNotExist:
+            # Create user online record
             user_online_obj = ChatSupportUserOnline.objects.create(cso_email=cso_email, room_slug=room_slug)
             print('Created a active cso user record!', user_online_obj)
+            create_channel_conn(room_slug=room_slug, channel_name=channel_name, cso_email=cso_email)
     
     if visitor_session_uuid is not None:
         print("visitor session uuid:", visitor_session_uuid)
@@ -44,16 +102,36 @@ def active_user_online(room_slug, cso_email=None, visitor_session_uuid=None):
             print('Found active visitor user record!', user_online_obj)
             # Make the user online if it's not online by passing the "user_online_obj" entirely, so that the follwing func doesn't require to query the "ChatSupportUserOnline" model before making the user online
             make_user_online(user_online_obj)
+            # Create multiple channels of the same user to track that users -online-status regardless of creating duplicate multiple tabs.
+            create_channel_conn(room_slug=room_slug, channel_name=channel_name, visitor_session_uuid=visitor_session_uuid)
         except ChatSupportUserOnline.DoesNotExist:
+            # Create user online record
             user_online_obj = ChatSupportUserOnline.objects.create(visitor_session_uuid=visitor_session_uuid, room_slug=room_slug)
             print('Created a active visitor user record!', user_online_obj)
+            create_channel_conn(room_slug=room_slug, channel_name=channel_name, visitor_session_uuid=visitor_session_uuid)
 
 
-def deactive_user_online(room_slug, cso_email=None, visitor_session_uuid=None):
+def count_active_channel(room_slug, cso_email=None, visitor_session_uuid=None):
+    # filter-search using both (cso-email/visitor-session-uuid) and room-slug
+    print('*'*10, "count_active_channel() func is called")
+    if cso_email is not None:
+        return ChatSupportUserConnectedChannels.objects.filter(
+            cso_email=cso_email,
+            room_slug=room_slug
+        )
+    
+    if visitor_session_uuid is not None:
+        return ChatSupportUserConnectedChannels.objects.filter(
+            visitor_session_uuid=visitor_session_uuid,
+            room_slug=room_slug
+        )
+
+
+def deactive_user_online(room_slug, channel_name, cso_email=None, visitor_session_uuid=None):
     """
-    This func is responsible for deactive old user in the "ChatSupportUserOnline" model based on certain condition.
+    This func is responsible for deactivating the old user in the "ChatSupportUserOnline" model based on certain condition.
     """
-    print("deactive_user_online() func is called")
+    print('*'*10, "deactive_user_online() func is called")
     print("room slug:", room_slug)
     if cso_email is not None:
         print("cso email:", cso_email)
@@ -61,8 +139,14 @@ def deactive_user_online(room_slug, cso_email=None, visitor_session_uuid=None):
         try:
             user_online_obj = ChatSupportUserOnline.objects.get(cso_email=cso_email, room_slug=room_slug)
             print('Intially make the user (cso) offline!', user_online_obj)
-            # Make the user offline if it's online by passing the "user_online_obj" entirely, so that the follwing func doesn't require to query the "ChatSupportUserOnline" model before making the user offline.
-            make_user_offline(user_online_obj)
+            # Remove the exisiting active channel(s) of the same user(CSO) for each "Screen-refresh"/"Duplicate-tab-creation"
+            remove_channel_conn(room_slug=room_slug, channel_name=channel_name, cso_email=cso_email)
+            total_active_channel = count_active_channel(room_slug=room_slug, cso_email=cso_email)
+            print('total_active_channel (cso):', total_active_channel)
+            # [INITIAL-STEP, later firstly check if the total opened channel of that individual user is 0 before making the user's status offline] 
+            if len(total_active_channel) == 0:
+                # Make the user offline if it's online by passing the "user_online_obj" entirely, so that the follwing func doesn't require to query the "ChatSupportUserOnline" model before making the user offline.
+                make_user_offline(user_online_obj)
         except ChatSupportUserOnline.DoesNotExist:
             print('User doesn\'t exist to make the user offline!')
     
@@ -72,8 +156,14 @@ def deactive_user_online(room_slug, cso_email=None, visitor_session_uuid=None):
         try:
             user_online_obj = ChatSupportUserOnline.objects.get(visitor_session_uuid=visitor_session_uuid, room_slug=room_slug)
             print('Intially make the user (visitor) offline!', user_online_obj)
-            # Make the user offline if it's online by passing the "user_online_obj" entirely, so that the follwing func doesn't require to query the "ChatSupportUserOnline" model before making the user offline.
-            make_user_offline(user_online_obj)
+            # Remove the exisiting active channel(s) of the same user(Visitor) for each "Screen-refresh"/"Duplicate-tab-creation"
+            remove_channel_conn(room_slug=room_slug, channel_name=channel_name, visitor_session_uuid=visitor_session_uuid)
+            total_active_channel = count_active_channel(room_slug=room_slug, visitor_session_uuid=visitor_session_uuid)
+            print('total_active_channel (visitor):', total_active_channel)
+            # [INITIAL-STEP, later firstly check if the total opened channel of that individual user is 0 before making the user's status offline]
+            if len(total_active_channel) == 0:
+                # Make the user offline if it's online by passing the "user_online_obj" entirely, so that the follwing func doesn't require to query the "ChatSupportUserOnline" model before making the user offline.
+                make_user_offline(user_online_obj)
         except ChatSupportUserOnline.DoesNotExist:
             print('User (visitor) doesn\'t exist to make the user offline!')
 
@@ -112,7 +202,7 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
         if self.user_obj.id is not None:
             print('Check if the cso-user exists in the "ChatSupportUserOnline" table; if not found, then create a record in that table & later create channel record of the cso-user! (both "ChatSupportUserOnline" & "ChatSupportUserConnectedChannels" tables use cso-email)')
             # call the "active_user_online()" func here for storing CSO's email in the user-online-active model
-            async_to_sync(active_user_online(cso_email=self.user_obj.email, room_slug=self.room_name))
+            async_to_sync(active_user_online(cso_email=self.user_obj.email, room_slug=self.room_name, channel_name=self.channel_name))
         else:
             # Get the [VISITOR'S SESSION UUID] from the "CustomerSupportRequest" model using the room_slug.
             # Try-catch block to mitigate intruders trying to create chat-room (using manual input in the browser's URL) without requesting for customerSupport through the chatbot.
@@ -122,11 +212,12 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
             # print(visitor_support_req)
             # Check if the queryset is empty
             if visitor_support_req:
+                # [Edge-case]: if a new visitor with the same room-slug enters into the room, s/he will get the access of the room.
                 self.visitor_session_uuid = visitor_support_req[0].visitor_session_uuid
                 print('visitor session uuid:', self.visitor_session_uuid)
                 print('check if there is any record with the "visitor_session_uuid", if not found any then create a record in "ChatSupportUserOnline" table & later create channel of the visitor-user! (both "ChatSupportUserOnline" & "ChatSupportUserConnectedChannels" tables use visitor-session-uuid)')
                 # call the "active_user_online()" func here for storing visitor's session in the user-online-active model
-                async_to_sync(active_user_online(visitor_session_uuid=self.visitor_session_uuid, room_slug=self.room_name))
+                async_to_sync(active_user_online(visitor_session_uuid=self.visitor_session_uuid, room_slug=self.room_name, channel_name=self.channel_name))
             else:
                 # [explaination]: mitigate filling up the 'chat-msg' db by spam-intruders in the cs-chat-page (those wo manually create a cs-chat-page to pupolate the db without asking for support to a CSO though chatbot).
                 self.is_visitor_intruder = True
@@ -204,13 +295,25 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
         if self.user_obj.id is not None:
             print('(CSO is about to disconnect!) Make query in the "ChatSupportUserOnline" model using cso-email, if found make the user offline!')
             # call the deactive_user_online() func
-            async_to_sync(deactive_user_online(cso_email=self.user_obj.email, room_slug=self.room_name))
+            async_to_sync(deactive_user_online(cso_email=self.user_obj.email, room_slug=self.room_name, channel_name=self.channel_name))
+            
+            # [NB]: This block is meant to sent signal-msg to the frontend-websocket (mainly to other users' that the user is offline now)
+            # total_active_channel = count_active_channel(room_slug=self.room_name, cso_email=self.user_obj.email)
+            # if len(total_active_channel) != 0:
+            #     print(f"user has still active channels: {total_active_channel}, cannot make the user offline")
         
         if self.visitor_session_uuid is not None:
             print('(Visitor is about to disconnect!) Make query in the "ChatSupportUserOnline" model using visitor_session_uuid, if found make the user offline!')
             # call the deactive_user_online() func
-            async_to_sync(deactive_user_online(visitor_session_uuid=self.visitor_session_uuid, room_slug=self.room_name))
+            async_to_sync(deactive_user_online(visitor_session_uuid=self.visitor_session_uuid, room_slug=self.room_name, channel_name=self.channel_name))
+            
+            # [NB]: This block is meant to sent signal-msg to the frontend-websocket (mainly to other users' that the user is offline now)
+            # total_active_channel = count_active_channel(room_slug=self.room_name, cso_email=self.user_obj.email)
+            # if len(total_active_channel) != 0:
+            #     print(f"user has still active channels: {total_active_channel}, cannot make the user offline")
 
+        # TODO: Firstly, check if the total channel-connection of that individual user == 0 before discarding user-channel from the channel-group,
+        #  so other users will also not be informed if that individual user "refreshes his/her screen" or "open duplicate tabs of the same chat-page"
         async_to_sync (self.channel_layer.group_discard)(
             self.room_group_name,
             self.channel_name
