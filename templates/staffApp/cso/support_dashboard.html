@@ -109,6 +109,7 @@
                 newtr += `<tr>
                     <th scope="row">${counter += 1}</th>
                     <td>${req.client_ip}</td>
+                    <td>${req.visitor_session_uuid}</td>
                     <td>${req.room_slug}</td>
                     <td>
                         <a href="${url}/${req.room_slug}/"
