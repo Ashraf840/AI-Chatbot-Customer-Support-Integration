@@ -275,7 +275,7 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
             # Disconnect the intruder's channel conn without saving his msg to db
             self.disconnect(self)
     
-    # This method will be called in the receive-method while sending msg to channel-group.
+    # [Custom Method] This method will be called in the receive-method while sending msg to channel-group.
     # "event" param contains other keys (except 'type' key) from inside the dictionary passed as param in "channel_layer.group_send"
     def chat_message(self, event):
         message = event['message']
@@ -288,6 +288,19 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
             'user_identity': user_identity,
             'roomslug': roomslug,
         }))
+
+
+    # [Custom Method] To get the signal of the support is resolved from the "views\home_views.py" file's post-method of "CustomerSupportRoom" class-view
+    def support_resolved(self, event):
+        print('\n', '-'*50)
+        print('The support is resolved')
+        print('\n', '-'*50)
+        cso_email = event['cso_email']
+        self.send(text_data=json.dumps({
+            'support_is_resolved': 'The support is resolved!',
+            'cso_email': cso_email,
+        }))
+
 
     # Default method of "WebsocketConsumer" class
     def disconnect(self, *args, **kwargs):

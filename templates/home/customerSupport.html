@@ -136,6 +136,10 @@
                 // window.location.replace(`{% url 'homeApp:LangingPage' %}`);  // works like render-redirect of dj (maybe)
             }
         }
+
+        if (data.support_is_resolved) {
+            console.log(`The support is resolved! Redirect the cso to it's dashboard & the visitor to the homepage!`)
+        }
     }
 
     // WEBSOCKET Close function

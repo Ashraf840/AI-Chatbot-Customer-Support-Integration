@@ -7,6 +7,8 @@ from authenticationApp.models import User
 from datetime import date
 import datetime
 import uuid
+from channels.layers import get_channel_layer
+# from asgiref.sync import async_to_sync
 
 
 
@@ -126,6 +128,15 @@ class CustomerSupportRoom(View):
                 cso_visitor_convo_info.is_resolved, cso_visitor_convo_info.is_connected = True, False
                 cso_visitor_convo_info.save()
                 # print('Change the record\'s field: "is_resolved=True" & "is_connected=False"')
+                # # TODO: Send a signal to that socket-consumer about the chat-support is resolved.
+                # channel_layer = get_channel_layer()
+                # async_to_sync(channel_layer.group_send)(
+                #     f'chat_{room_slug}',
+                #     {
+                #         'type': 'support_resolved',
+                #         'cso_email': request.user.email
+                #     }
+                # )
         # TODO: Redirect the cso to his/her dashboard accordingly, then redirect the visitor to the homepage thorugh channel-connection automatic-btn-click with js from the visitor perspective in the "customerSupport.html" file.
         return redirect(reverse('staffApplication:CsoWorkload:SupportDashboard', kwargs={'email': request.user.email}))
         # return HttpResponse(f' \
