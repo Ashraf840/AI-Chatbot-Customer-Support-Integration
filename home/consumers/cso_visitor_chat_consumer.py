@@ -1,7 +1,7 @@
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 import json
-from ..models import CSOVisitorMessage, CustomerSupportRequest
+from ..models import CSOVisitorMessage, CustomerSupportRequest, CSOVisitorConvoInfo
 from ..user_connectivity_models import ChatSupportUserOnline, ChatSupportUserConnectedChannels
 
 
@@ -239,33 +239,55 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
         if not self.is_visitor_intruder:
             print("#"*50)
             data = json.loads(text_data)  # decode json-stringified data into python-dict
-            # print(data)
-            message = data['message']
-            user_identity = data['user_identity']
-            roomslug = data['roomslug']
-            # print(message)
-            # print(user_identity)
-            # print(roomslug)
 
-            # before sending the msg to the channel-group, store the msg into db
-            msg = async_to_sync(save_message(
-                message=message,
-                user_identity=user_identity,
-                room_slug=roomslug
-            ))
-            print(f"Saved msg: {msg.awaitable.created_at}")
+            # For CSO & registered visitors messaging-block
+            if 'message' in data:
+                # print(data)
+                message = data['message']
+                user_identity = data['user_identity']
+                roomslug = data['roomslug']
+                # print(message)
+                # print(user_identity)
+                # print(roomslug)
 
-            # Send the data to all the channels in the group
-            async_to_sync(self.channel_layer.group_send)(
-                self.room_group_name,
-                # pass a dictionary with custom key-value pairs
-                {
-                    'type': 'chat_message',  # will be used to call as a method
-                    'message': message,
-                    'user_identity': user_identity,
-                    'roomslug': roomslug,
-                }
-            )
+                # before sending the msg to the channel-group, store the msg into db
+                msg = async_to_sync(save_message(
+                    message=message,
+                    user_identity=user_identity,
+                    room_slug=roomslug
+                ))
+                print(f"Saved msg: {msg.awaitable.created_at}")
+
+                # Send the data to all the channels in the group
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    # pass a dictionary with custom key-value pairs
+                    {
+                        'type': 'chat_message',  # will be used to call as a method
+                        'message': message,
+                        'user_identity': user_identity,
+                        'roomslug': roomslug,
+                    }
+                )
+
+            if 'support_is_resolved' in data:
+                # TODO: Make the "CSOVisitorConvoInfo" record as resolved.
+                cso_email = data['cso_email']
+                room_slug = data['roomslug']
+                cso_visitor_convo_info = CSOVisitorConvoInfo.objects.get(room_slug=room_slug, cso_email=cso_email)
+                if (not cso_visitor_convo_info.is_resolved) and cso_visitor_convo_info.is_connected:
+                    cso_visitor_convo_info.is_resolved, cso_visitor_convo_info.is_connected = True, False
+                    cso_visitor_convo_info.save()
+                    async_to_sync(self.channel_layer.group_send)(
+                        self.room_group_name,
+                        # pass a dictionary with custom key-value pairs
+                        {
+                            'type': 'support_resolved',  # will be used to call as a method
+                            'cso_email': cso_email,
+                        }
+                    )
+                print('The conversation is marked as resolved!')
+
             print("[recieve() method] Recieved data to backend consumer class: CSOVisitorChatSuppportConsumer")
             print("#"*50)
         else:

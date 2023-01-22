@@ -26,10 +26,13 @@
                 </p>
             </div>
             <div class="col text-end">
-                <form action="{% url 'homeApplication:CustomerSupportRoom' room_slug %}" method="POST">
+                <button class="btn btn-success btn-xl text-uppercase" id="is-resolved">Is resolved</button>
+                <!-- Fill up the input field with the cso dashboard-url -->
+                <input type="text" id="cso-dashboard-url" value='{% url "staffApplication:CsoWorkload:SupportDashboard" request.user.email  %}' readonly disabled hidden>
+                <!-- <form action="{% url 'homeApplication:CustomerSupportRoom' room_slug %}" method="POST">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-success btn-xl text-uppercase">Is resolved</button>
-                </form>
+                </form> -->
             </div>
         </div>
     {% else %}
@@ -79,6 +82,7 @@
     console.log(ChatSupportURL);
     const chat_send_btn = document.querySelector('#chat-message-send-btn');
     const chat_msg_input_field = document.querySelector("#chat-message-input");
+    const is_resolved = document.querySelector("#is-resolved");
 
     // WEBSOCKET OBJECT
     const ChatSupportSocket = new WebSocket(ChatSupportURL);
@@ -137,8 +141,19 @@
             }
         }
 
+        // Redirect the CSO & visitor accordingly to his/her CSO-dashboard & homepage, since the corresponding CSO marked the current convo as resolved.
         if (data.support_is_resolved) {
-            console.log(`The support is resolved! Redirect the cso to it's dashboard & the visitor to the homepage!`)
+            console.log(`The support is resolved! Redirect the cso to it's dashboard & the visitor to the homepage!`);
+            cso_email = `{{request.user.email}}`;
+            if (cso_email !== '') {
+                console.log(`CSO email:`, cso_email);
+                const cso_dashboard_url = document.querySelector("#cso-dashboard-url");
+                console.log(`CSO dashboard url:`, cso_dashboard_url.value);
+                window.location.href = cso_dashboard_url.value;
+            } else {
+                // console.log(`Visitor will be sent to the homepage!`);
+                window.location.href = `{% url 'homeApp:LangingPage' %}`;
+            }
         }
     }
 
@@ -176,5 +191,17 @@
             chat_send_btn.click();
         }
     });
+
+
+    // Mark the conversation as resolved by the CSO
+    is_resolved.onclick = function (e) {
+        cso_email = `{{request.user.email}}`;
+        console.log(`is_resolved button is clicked by the CSO; email: ${cso_email}`);
+        ChatSupportSocket.send(JSON.stringify({
+            'support_is_resolved': 'The support is resolved!',
+            'cso_email': cso_email,
+            'roomslug': roomSlug
+        }));
+    }
 </script>
 {% endblock %}
