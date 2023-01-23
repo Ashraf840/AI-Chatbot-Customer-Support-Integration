@@ -18,8 +18,11 @@ class SupportDashboardConsumer(WebsocketConsumer):
     def connect(self):
         print("#"*50)
         print("[connect() method] Connected to backend consumer class: SupportDashboardConsumer")
-        self.room_name = 'dashboard'
-        self.room_group_name = 'chat_%s' % self.room_name
+        # self.room_name = 'dashboard'
+        # self.room_group_name = 'chat_%s' % self.room_name
+        self.room_name = self.scope['url_route']['kwargs']['cso_mail']
+        room_name_normalized="".join(ch for ch in self.room_name if ch.isalnum())   # keeps only alphanumeric-chars in the room-name. [Ref]: https://www.scaler.com/topics/remove-special-characters-from-string-python/
+        self.room_group_name = 'chat_dashboard_%s' % room_name_normalized    # THIS pattern is required to sent any asynchrobous msg to this consumer-channel
         print(f"room-group name: {self.room_group_name}")
         # self.user_obj = self.scope['user']
         # print(f"Newly Connected (username): {self.user_obj.username}")
