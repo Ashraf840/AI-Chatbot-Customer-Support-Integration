@@ -1,0 +1,7 @@
+div.scroll {
+    display: flex;
+    background-color: #08c708;
+    flex-wrap: no-wrap;
+    overflow-x: auto;
+    margin: 20px;
+}
