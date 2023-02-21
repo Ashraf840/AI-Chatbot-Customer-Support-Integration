@@ -35,3 +35,21 @@ class SupportDashboard(LoginRequiredMixin, View):
         self.context['cso_email'] = request.user.email
         # --------------------------------------------------------------------------------
         return render(request, 'staffApp/cso/support_dashboard.html', self.context)
+
+
+class SupportDashboardNew(LoginRequiredMixin, View):
+    login_url = 'authenticationApplication:CsoAuth:CSOLoginPageView'
+    context = {
+        'title': 'Support Dashboard',
+    }
+
+    def get(self, request, email):
+        user = get_object_or_404(User, email=email)
+        customer_support_requests = CustomerSupportRequest.objects.all().order_by('-id')
+        print(f"'SupportDashboard' class queryset: {customer_support_requests}")
+        print(f"total support requests: {len(customer_support_requests)}")
+        self.context['support_req_nums'] = len(customer_support_requests)
+        self.context['customer_support_requests'] = customer_support_requests
+        self.context['cso_email'] = request.user.email
+        # --------------------------------------------------------------------------------
+        return render(request, 'staffApp/cso/support_dashboard_newUI.html', self.context)

@@ -180,6 +180,7 @@ def save_message(message, user_identity, room_slug):
 
 # Customer Support Visitor Chat Consumer
 class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
+    
     def __init__(self, *args, **kwargs):
         super(CSOVisitorChatSuppportConsumer, self).__init__(*args, **kwargs)
         self.room_name = None

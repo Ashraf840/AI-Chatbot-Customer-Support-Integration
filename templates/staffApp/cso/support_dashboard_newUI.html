@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+{% extends 'base/staffApp_base.html' %}
+{% load static %}
+
+<!-- Title -->
+{% block title %} {{ title }} | Dhaka Residential Model College {% endblock %}
+
+<!-- Custom CSS -->
+{% block css %} 
+<link rel="stylesheet" href="{% static 'css/staffApp/support_dashboard_newUI/horizontal_scrollable_mini_chat_tab.css' %}">
+{% endblock %}
+
+<!-- Content Body -->
+{% block content %}
+<div class="container-fluid">
+    <div class="row d-flex justify-content-center">
+        <div class="col"><h1>Customer Support Dashboard | DRMC - New UI/UX</h1></div>
+    </div>
+
+    <!-- Test div generate button -->
+    <div class="row">
+        <div class="col">
+            <p>
+                <a class="btn btn-primary btn-xl text-uppercase" href="#">Test Button</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Area: to generate mini-chat-tabs horizontally -->
+    <div class="row row-class">
+        <div class="container-fluid mh-100 scroll">
+            <!-- Horizontal scrolling ref: https://stackoverflow.com/a/65289157 -->
+            
+            {% include 'staffApp/cso/customerSupportComponents/chatBody.html' %}
+            {% include 'staffApp/cso/customerSupportComponents/chatBody.html' %}
+            {% include 'staffApp/cso/customerSupportComponents/chatBody.html' %}
+            {% include 'staffApp/cso/customerSupportComponents/chatBody.html' %}
+            {% include 'staffApp/cso/customerSupportComponents/chatBody.html' %}
+            {% include 'staffApp/cso/customerSupportComponents/chatBody.html' %}
+            {% include 'staffApp/cso/customerSupportComponents/chatBody.html' %}
+            {% include 'staffApp/cso/customerSupportComponents/chatBody.html' %}
+
+
+            <!-- <div class="row h-100 scroll"> -->
+            <!-- <div class="row h-80 horizontal-scrollable"> -->
+                <!-- Template copied from:  https://mdbootstrap.com/docs/standard/extended/chat/ -->
+                <!-- <div class="col-4">
+                </div>
+
+                <div class="col-4">
+                </div>
+
+                <div class="col-4">
+                </div>
+
+                <div class="col-4">
+                </div> -->
+            <!-- </div> -->
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+<!-- Custom JS -->
+{% block js %}
+<script>
+    // Scroll down the chatbody div after window loads
+    // document.addEventListener("DOMContentLoaded", function(){
+    //     // Handler when the DOM is fully loaded
+    //     var divElement = document.querySelector(".chatbody-scroller");
+    //     divElement.scroll({
+    //         top: divElement.scrollHeight,//scroll to the bottom of the element
+    //         behavior: 'smooth' //auto, smooth, initial, inherit
+    //     });
+    // });
+</script>
+{% endblock %}

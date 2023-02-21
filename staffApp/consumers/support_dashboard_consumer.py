@@ -7,7 +7,6 @@ from channels.layers import get_channel_layer
 
 # Customer Support Dashboard Consumer
 class SupportDashboardConsumer(WebsocketConsumer):
-    # TODO: MAKE THE CONSUMER CONNECTIVITY FOR ALL THE Customer Support Officers. (follow "teachatty" app)
 
     def __init__(self, *args, **kwargs):
         super(SupportDashboardConsumer, self).__init__(*args, **kwargs)

@@ -8,6 +8,8 @@
 * Licensed under MIT (https://www.creative-tim.com/license)
 * Coded by Creative Tim
 
+Bootstrap 5.2.3
+
 =========================================================
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
@@ -31,9 +33,11 @@
   <script src="https://kit.fontawesome.com/272e010829.js" crossorigin="anonymous"></script>
   <!-- CSS Files -->
   <link id="pagestyle" href="{% static 'css/staffApp/base_dashboard/soft-ui-dashboard.css' %}" rel="stylesheet" />
+  <!-- Custom CSS -->
+  {% block css %} {% endblock %}
 </head>
 
-<body class="g-sidenav-show  bg-gray-100">
+<body class="g-sidenav-show bg-gray-100">
   <!-- Side Panel -->
   {% include 'base/components/staffApp_base/side_panel.html' %}
   <!-- End Side Panel -->
@@ -116,7 +120,7 @@
 <!--  <script src="../assets/js/core/popper.min.js"></script>-->
   <script src="{% static 'js/staffApp/base_dashboard/core/popper.min.js' %}"></script>
   <!--  <script src="../assets/js/core/bootstrap.min.js"></script>-->
-  <script src="{% static 'js/staffApp/base_dashboard/core/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/staffApp/base_dashboard/core/bootstrap.min.js' %}"></script>   <!-- Bootstrap 5.2.3 -->
   <!--  <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>-->
   <script src="{% static 'js/staffApp/base_dashboard/plugins/perfect-scrollbar.min.js' %}"></script>
   <!--  <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>-->
