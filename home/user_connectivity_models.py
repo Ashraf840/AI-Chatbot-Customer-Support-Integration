@@ -12,7 +12,7 @@ class ChatSupportUserOnline(models.Model):
     last_update = models.DateTimeField(verbose_name="Last activity", auto_now=True)
 
     class Meta:
-        verbose_name_plural = "Customer Support (Chat) CSO-Visitor Online"
+        verbose_name_plural = "Customer Support (Chat) CSO-Visitor Chat Online"
 
 
 class ChatSupportUserConnectedChannels(models.Model):
