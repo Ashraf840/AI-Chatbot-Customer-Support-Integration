@@ -67,9 +67,9 @@
 <!-- WebSocket Script -->
 <script>
     // VARIABLES
-    const cso_email = `{{ cso_email }}`;
-    console.log(`CSO Email:`, cso_email);
-    const url = `ws://${window.location.host}/ws/cso-workload/support-dashboard/`;    // [PRODUCTION - working]construct the websocket url
+    let  cso_email = `{{ cso_email }}`;
+    console.log(`CSO Email (backend channel-group will normalize the email-string):`, cso_email);
+    const url = `ws://${window.location.host}/ws/cso-workload/support-dashboard/${cso_email}/`;    // [PRODUCTION - working]construct the websocket url
     // console.log(url);
     const cso_request_numsDOM = document.querySelector('#support_req_nums');
 

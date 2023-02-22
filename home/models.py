@@ -28,7 +28,7 @@ class CustomerSupportRequest(models.Model):
         This method is used in the signals.py file's "customer_support_request_signal" func, so that whenever a record is created, the signal can use this func to get all the records (updated) from the table
         """
         # instances = CustomerSupportRequest.objects.all()
-        instances = list(CustomerSupportRequest.objects.values('client_ip', 'room_slug'))   # Solution: https://stackoverflow.com/a/7811582
+        instances = list(CustomerSupportRequest.objects.values('client_ip', 'room_slug', 'visitor_session_uuid'))   # Solution: https://stackoverflow.com/a/7811582
         # data = [i for i in instances]
         # data = instances
         return instances

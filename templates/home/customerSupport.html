@@ -82,7 +82,8 @@
     console.log(ChatSupportURL);
     const chat_send_btn = document.querySelector('#chat-message-send-btn');
     const chat_msg_input_field = document.querySelector("#chat-message-input");
-    const is_resolved = document.querySelector("#is-resolved");
+    var cso_email = `{{request.user.email}}`;
+
 
     // WEBSOCKET OBJECT
     const ChatSupportSocket = new WebSocket(ChatSupportURL);
@@ -144,7 +145,6 @@
         // Redirect the CSO & visitor accordingly to his/her CSO-dashboard & homepage, since the corresponding CSO marked the current convo as resolved.
         if (data.support_is_resolved) {
             console.log(`The support is resolved! Redirect the cso to it's dashboard & the visitor to the homepage!`);
-            cso_email = `{{request.user.email}}`;
             if (cso_email !== '') {
                 console.log(`CSO email:`, cso_email);
                 const cso_dashboard_url = document.querySelector("#cso-dashboard-url");
@@ -193,15 +193,18 @@
     });
 
 
-    // Mark the conversation as resolved by the CSO
-    is_resolved.onclick = function (e) {
-        cso_email = `{{request.user.email}}`;
-        console.log(`is_resolved button is clicked by the CSO; email: ${cso_email}`);
-        ChatSupportSocket.send(JSON.stringify({
-            'support_is_resolved': 'The support is resolved!',
-            'cso_email': cso_email,
-            'roomslug': roomSlug
-        }));
+    // Mark the conversation as resolved by the CSO (this js-code-block will be avaiable to the CSO-frontend)
+    if (cso_email !== '') {
+        const is_resolved = document.querySelector("#is-resolved");
+        is_resolved.onclick = function (e) {
+            var cso_email = `{{request.user.email}}`;
+            console.log(`is_resolved button is clicked by the CSO; email: ${cso_email}`);
+            ChatSupportSocket.send(JSON.stringify({
+                'support_is_resolved': 'The support is resolved!',
+                'cso_email': cso_email,
+                'roomslug': roomSlug
+            }));
+        }
     }
 </script>
 {% endblock %}

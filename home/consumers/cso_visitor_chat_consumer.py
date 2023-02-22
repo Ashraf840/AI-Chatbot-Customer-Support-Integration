@@ -58,7 +58,7 @@ def remove_channel_conn(room_slug, channel_name, cso_email=None, visitor_session
             print('No such active channel exists!')
     
 
-
+# Can make a common function (used in "staffApp/consumers/support_dashboard_consumer.py")
 def make_user_online(user):
     # Check if the user's active; otherwise change it to True
     if not user.is_active:
@@ -84,7 +84,7 @@ def active_user_online(room_slug, channel_name, cso_email=None, visitor_session_
         try:
             user_online_obj = ChatSupportUserOnline.objects.get(cso_email=cso_email, room_slug=room_slug)
             print('Found active cso user record!', user_online_obj)
-            # Make the user online if it's not online by passing the "user_online_obj" entirely, so that the follwing func doesn't require to query the "ChatSupportUserOnline" model before making the user online
+            # Make the user online if it's not online by passing the "user_online_obj" entirely, so that the following func doesn't require to query the "ChatSupportUserOnline" model before making the user online
             make_user_online(user_online_obj)
             # Create multiple channels of the same user to track that users -online-status regardless of creating duplicate multiple tabs.
             create_channel_conn(room_slug=room_slug, channel_name=channel_name, cso_email=cso_email)
@@ -180,6 +180,7 @@ def save_message(message, user_identity, room_slug):
 
 # Customer Support Visitor Chat Consumer
 class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
+    
     def __init__(self, *args, **kwargs):
         super(CSOVisitorChatSuppportConsumer, self).__init__(*args, **kwargs)
         self.room_name = None
