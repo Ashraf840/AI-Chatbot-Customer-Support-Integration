@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+{% extends 'base/staffApp_base.html' %}
+{% load static %}
+
+<!-- Title -->
+{% block title %} {{ title }} | Dhaka Residential Model College {% endblock %}
+
+<!-- Content Body -->
+{% block content %}
+<div class="container-fluid">
+    <div class="row d-flex justify-content-center">
+        <div class="col"><h1>CSO Online Connectivity Dashbaord | DRMC</h1></div>
+    </div>
+
+    <div class="row d-flex justify-content-center">
+        <div class="col"><h4>CSO Username: {{ request.user.username }} </h4></div>
+        <div class="col">
+            <div class="row">
+                <h4 class="text-center pb-4">Current CSO Online(s): <span id="support_req_nums">{{ support_req_nums }}</span></h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Support Request List -->
+    <div class="table-responsive" style="margin-top: 2rem;">
+        <table class="table table-hover">
+            <thead class="table-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">CSO Email</th>
+                <th scope="col">Room Slug</th>
+                <th scope="col">Online</th>
+                <th scope="col">Joined Date</th>
+                <th scope="col">Last Update</th>
+            </tr>
+            </thead>
+            <tbody id="tbody">
+            {% for cso_online in cso_online %}
+            <tr id="Row_cso_online_{{ cso_online.room_slug }}">
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ cso_online.cso_email }}</td>
+                <td>{{ cso_online.room_slug }}</td>
+                {% if cso_online.is_active %}
+                    <td class="text-center fw-bold"><span style="font-size: 2.5rem;" id="cso_online_{{ cso_online.room_slug }}">&#10003;</span></td>   <!-- to demonstrate CSO Online -->
+                {% else %}
+                    <td class="text-center"><span style="font-size: 1.5rem;" id="cso_online_{{ cso_online.room_slug }}">&#10060;</span></td>  <!-- to demonstrate CSO offline -->
+                {% endif %}
+                <td>{{ cso_online.joined_at }}</td>
+                <td>{{ cso_online.last_update }}</td>
+            </tr>
+            <!-- using "empty" block solution: https://stackoverflow.com/a/902786 -->
+            {% empty %}
+            <tr>
+                <td scope="row" colspan="6" class="text-center"><b>Currently no CSO is online :)</b></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+
+
+<!-- Custom JS -->
+{% block js %}
+<!-- WebSocket Script -->
+<script>
+    // VARIABLES
+    const url = `ws://${window.location.host}/ws/cso-workload/cso-connectivity-dashboard-consumer/`;    // [PRODUCTION - working]construct the websocket url
+    // WEBSOCKET OBJECT
+    const socket = new WebSocket(url);
+    // console.log(socket);
+
+    // Open the websocket connection for the frontend
+    socket.onopen = function (e) {
+        console.log('Frontend Websocket: Connection Established!');
+    }
+
+    // socket receiver: Backend --> Frontend
+    socket.onmessage = function (e) {
+        // console.log(JSON.parse(e.data));
+        const data = JSON.parse(e.data);
+
+        // CSO Connectivity Status;
+        if (data.connectivity_status) {
+            // console.log(`connectivity_status: ${data.connectivity_status}`);
+            // console.log(`connectivity_report_email: ${data.connectivity_report_email}`);
+            // console.log(`connectivity_report_room_slug: ${data.connectivity_report_room_slug}`);
+            console.log(`connectivity_report_online: ${data.connectivity_report_online}`);
+            console.log(`connectivity_report_online data-type: ${typeof(data.connectivity_report_online)}`);
+
+            // connectivity_report_email = `{{ data.connectivity_report_email }}`;
+            // connectivity_report_room_slug = `${data.connectivity_report_room_slug}`;
+            
+            let table_row_id = document.getElementById(`Row_cso_online_${data.connectivity_report_room_slug}`);
+            let online_column_id = document.getElementById(`cso_online_${data.connectivity_report_room_slug}`);
+            if (data.connectivity_status === "old") {
+                if (data.connectivity_report_online) {
+                    online_column_id.innerHTML = '&#10003;';    // ONLINE
+                    online_column_id.style.fontSize = '2.5rem';
+                    online_column_id.style.fontWeight = 'bold';
+                } else {
+                    online_column_id.innerHTML = '&#10060;';    // OFFLINE
+                    online_column_id.style.fontSize = '1.5rem';
+                }
+            } else {
+                // CODE IT LATER
+            }
+        }
+    }
+
+    // socket connection closed
+    socket.onclose = function (e) {
+        console.log('Frontend Websocket: Connection Closed!');
+    }
+</script>
+{% endblock %}

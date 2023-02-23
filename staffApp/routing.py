@@ -1,10 +1,14 @@
 from django.urls import re_path, path
-from .consumers import support_dashboard_consumer as sdc
+from .consumers import (
+    support_dashboard_consumer as sdc,
+    cso_connectivity_dashboard_consumer as ccdc
+)
 
 
 websocket_urlpatterns = [
     # path('ws/cso-workload/support-dashboard/', sdc.SupportDashboardConsumer.as_asgi()),   # [OLD]
     path('ws/cso-workload/support-dashboard/<str:cso_mail>/', sdc.SupportDashboardConsumer.as_asgi()),
+    path('ws/cso-workload/cso-connectivity-dashboard-consumer/', ccdc.CSOOnlineConnectivityConsumer.as_asgi()),
 ]
 
 

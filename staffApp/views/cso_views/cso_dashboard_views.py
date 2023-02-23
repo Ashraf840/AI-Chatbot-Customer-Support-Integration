@@ -3,6 +3,7 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from home.models import CustomerSupportRequest
 from authenticationApp.models import User
+from ...cso_connectivity_models import CSOOnline
 
 
 # TODO: [Done] Create cso dashboard class
@@ -53,3 +54,17 @@ class SupportDashboardNew(LoginRequiredMixin, View):
         self.context['cso_email'] = request.user.email
         # --------------------------------------------------------------------------------
         return render(request, 'staffApp/cso/support_dashboard_newUI.html', self.context)
+
+
+
+class CSOOnlineConnectivityDashboard(LoginRequiredMixin, View):
+    login_url = 'authenticationApplication:CsoAuth:CSOLoginPageView'
+    context = {
+        'title': 'CSO Online Connectivity Dashboard',
+    }
+
+    def get(self, request):
+        cso_online = CSOOnline.objects.all().order_by('-id')
+        self.context['cso_online'] = cso_online
+        return render(request, 'staffApp/cso/cso_online_connectivity_dashboard.html', self.context)
+

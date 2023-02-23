@@ -64,10 +64,18 @@
 
 <!-- Custom JS -->
 {% block js %}
+<script>
+    // Prevent CSO's to reload this certain page, they're meant to enter/close this page for the timebeing.
+    // Bug temp-solution
+    alert("test");
+    window.onbeforeunload = function(event, inputText) {
+        event.preventDefault();
+    }
+</script>
 <!-- WebSocket Script -->
 <script>
     // VARIABLES
-    let  cso_email = `{{ cso_email }}`;
+    let cso_email = `{{ cso_email }}`;
     console.log(`CSO Email (backend channel-group will normalize the email-string):`, cso_email);
     const url = `ws://${window.location.host}/ws/cso-workload/support-dashboard/${cso_email}/`;    // [PRODUCTION - working]construct the websocket url
     // console.log(url);
