@@ -29,8 +29,6 @@ class CustomerSupportRequest(models.Model):
         """
         # instances = CustomerSupportRequest.objects.all()
         instances = list(CustomerSupportRequest.objects.values('client_ip', 'room_slug', 'visitor_session_uuid'))   # Solution: https://stackoverflow.com/a/7811582
-        # data = [i for i in instances]
-        # data = instances
         return instances
 
     # https://stackoverflow.com/questions/53461830/send-message-using-django-channels-from-outside-consumer-class

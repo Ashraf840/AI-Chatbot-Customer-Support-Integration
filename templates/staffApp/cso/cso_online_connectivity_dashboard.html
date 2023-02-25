@@ -16,7 +16,7 @@
         <div class="col"><h4>CSO Username: {{ request.user.username }} </h4></div>
         <div class="col">
             <div class="row">
-                <h4 class="text-center pb-4">Current CSO Online(s): <span id="support_req_nums">{{ support_req_nums }}</span></h4>
+                <h4 class="text-center pb-4">Current CSO Online: <span id="support_req_nums">{{ support_req_nums }}</span></h4>
             </div>
         </div>
     </div>
@@ -37,7 +37,10 @@
             <tbody id="tbody">
             {% for cso_online in cso_online %}
             <tr id="Row_cso_online_{{ cso_online.room_slug }}">
+                {% comment %}
                 <th scope="row">{{ forloop.counter }}</th>
+                {% endcomment %}
+                <th scope="row">{{ cso_online.pk }}</th>
                 <td>{{ cso_online.cso_email }}</td>
                 <td>{{ cso_online.room_slug }}</td>
                 {% if cso_online.is_active %}
@@ -50,7 +53,7 @@
             </tr>
             <!-- using "empty" block solution: https://stackoverflow.com/a/902786 -->
             {% empty %}
-            <tr>
+            <tr id="empty_row">
                 <td scope="row" colspan="6" class="text-center"><b>Currently no CSO is online :)</b></td>
             </tr>
             {% endfor %}
@@ -84,35 +87,55 @@
 
         // CSO Connectivity Status;
         if (data.connectivity_status) {
-            // console.log(`connectivity_status: ${data.connectivity_status}`);
             // console.log(`connectivity_report_email: ${data.connectivity_report_email}`);
             // console.log(`connectivity_report_room_slug: ${data.connectivity_report_room_slug}`);
-            console.log(`connectivity_report_online: ${data.connectivity_report_online}`);
-            console.log(`connectivity_report_online data-type: ${typeof(data.connectivity_report_online)}`);
+            // console.log(`connectivity_report_online: ${data.connectivity_report_online}`);
+            // console.log(`connectivity_report_online data-type: ${typeof(data.connectivity_report_online)}`);
 
             // connectivity_report_email = `{{ data.connectivity_report_email }}`;
             // connectivity_report_room_slug = `${data.connectivity_report_room_slug}`;
             
-            let table_row_id = document.getElementById(`Row_cso_online_${data.connectivity_report_room_slug}`);
-            let online_column_id = document.getElementById(`cso_online_${data.connectivity_report_room_slug}`);
             if (data.connectivity_status === "old") {
                 if (data.connectivity_report_online) {
+                    let table_row_id = document.getElementById(`Row_cso_online_${data.connectivity_report_room_slug}`);
+                    let online_column_id = document.getElementById(`cso_online_${data.connectivity_report_room_slug}`);
+                    // console.log(`connectivity_status: ${data.connectivity_status}`);
+                    // console.log(`CSO Online: True`);
                     online_column_id.innerHTML = '&#10003;';    // ONLINE
                     online_column_id.style.fontSize = '2.5rem';
                     online_column_id.style.fontWeight = 'bold';
                 } else {
+                    let table_row_id = document.getElementById(`Row_cso_online_${data.connectivity_report_room_slug}`);
+                    let online_column_id = document.getElementById(`cso_online_${data.connectivity_report_room_slug}`);
+                    // console.log(`connectivity_status: ${data.connectivity_status}`);
+                    // console.log(`CSO Online: False`);
                     online_column_id.innerHTML = '&#10060;';    // OFFLINE
                     online_column_id.style.fontSize = '1.5rem';
                 }
             } else {
                 // CODE IT LATER
+                let empty_row = document.querySelector("#empty_row");
+                if (empty_row != null) {
+                    empty_row.remove();
+                }
+                let tbodytr = document.querySelector("tbody#tbody");
+                tbody.innerHTML += `<tr id="Row_cso_online_${data.connectivity_report_room_slug}">
+                    <th scope="row">${data.instance_id}</th>
+                    <td>${data.connectivity_report_email}</td>
+                    <td>${data.connectivity_report_room_slug}</td>
+                    <td class="text-center fw-bold"><span style="font-size: 2.5rem;" 
+                        id="cso_online_${data.connectivity_report_room_slug}">&#10003;</span>
+                    </td>
+                    <td>${data.connectivity_report_joined_at}</td>
+                    <td>${data.connectivity_report_last_update}</td>
+                </tr>`;
             }
         }
     }
 
     // socket connection closed
     socket.onclose = function (e) {
-        console.log('Frontend Websocket: Connection Closed!');
+        // console.log('Frontend Websocket: Connection Closed!');
     }
 </script>
 {% endblock %}

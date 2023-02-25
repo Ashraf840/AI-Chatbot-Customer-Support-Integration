@@ -31,29 +31,35 @@ class CSOOnlineConnectivityConsumer(WebsocketConsumer):
     
     # Custom method: send all new support-req from the db-signal's (home.signals.customer_support_request_signal) channel-group-send method.
     def cso_online_connectivity(self, event):
+        instance_id = event['instance_id']
         connectivity_report_email = event['connectivity_report_email']
         connectivity_report_room_slug = event['connectivity_report_room_slug']
         connectivity_status = event['connectivity_status']
         # connectivity_report_online = 'online' if event['connectivity_report_online'] else 'offline'
         connectivity_report_online = event['connectivity_report_online']
+        connectivity_report_joined_at = event['connectivity_report_joined_at']
+        connectivity_report_last_update = event['connectivity_report_last_update']
 
-        print("\n"*3)
-        print("$"*50)
-        print(f"instance cso_email (sent from the signal): {connectivity_report_email}")
-        print(f"instance cso_email data-type: {type(connectivity_report_email)}")
-        print(f"instance room_slug (sent from the signal): {connectivity_report_room_slug}")
-        print(f"instance room_slug data-type: {type(connectivity_report_room_slug)}")
-        print(f"instance connectivity_status (sent from the signal): {connectivity_status}")
-        print(f"instance connectivity_status data-type: {type(connectivity_status)}")
-        print(f"instance connectivity_report_online (sent from the signal): {connectivity_report_online}")
-        print(f"instance connectivity_report_online data-type: {type(connectivity_report_online)}")
-        print("$"*50)
-        print("\n"*3)
+        # print("\n"*3)
+        # print("$"*50)
+        # print(f"instance cso_email (sent from the signal): {connectivity_report_email}")
+        # print(f"instance cso_email data-type: {type(connectivity_report_email)}")
+        # print(f"instance room_slug (sent from the signal): {connectivity_report_room_slug}")
+        # print(f"instance room_slug data-type: {type(connectivity_report_room_slug)}")
+        # print(f"instance connectivity_status (sent from the signal): {connectivity_status}")
+        # print(f"instance connectivity_status data-type: {type(connectivity_status)}")
+        # print(f"instance connectivity_report_online (sent from the signal): {connectivity_report_online}")
+        # print(f"instance connectivity_report_online data-type: {type(connectivity_report_online)}")
+        # print("$"*50)
+        # print("\n"*3)
 
         self.send(text_data=json.dumps({
+            'instance_id': instance_id,
             'connectivity_report_email': connectivity_report_email,
             'connectivity_report_room_slug': connectivity_report_room_slug,
             'connectivity_report_online': connectivity_report_online,
+            'connectivity_report_joined_at': connectivity_report_joined_at,
+            'connectivity_report_last_update': connectivity_report_last_update,
             'connectivity_status': connectivity_status,
         }))
     

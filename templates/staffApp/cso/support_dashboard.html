@@ -64,14 +64,6 @@
 
 <!-- Custom JS -->
 {% block js %}
-<script>
-    // Prevent CSO's to reload this certain page, they're meant to enter/close this page for the timebeing.
-    // Bug temp-solution
-    alert("test");
-    window.onbeforeunload = function(event, inputText) {
-        event.preventDefault();
-    }
-</script>
 <!-- WebSocket Script -->
 <script>
     // VARIABLES
