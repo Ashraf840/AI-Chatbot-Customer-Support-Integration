@@ -39,6 +39,7 @@ class CSOOnlineConnectivityConsumer(WebsocketConsumer):
         connectivity_report_online = event['connectivity_report_online']
         connectivity_report_joined_at = event['connectivity_report_joined_at']
         connectivity_report_last_update = event['connectivity_report_last_update']
+        total_connected_cso = event['total_connected_cso']
 
         # print("\n"*3)
         # print("$"*50)
@@ -61,6 +62,7 @@ class CSOOnlineConnectivityConsumer(WebsocketConsumer):
             'connectivity_report_joined_at': connectivity_report_joined_at,
             'connectivity_report_last_update': connectivity_report_last_update,
             'connectivity_status': connectivity_status,
+            'total_connected_cso': total_connected_cso,
         }))
     
     def disconnect(self, *args, **kwargs):

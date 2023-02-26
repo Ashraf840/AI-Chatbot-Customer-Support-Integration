@@ -65,6 +65,7 @@ class CSOOnlineConnectivityDashboard(LoginRequiredMixin, View):
 
     def get(self, request):
         cso_online = CSOOnline.objects.all().order_by('-id')
-        self.context['cso_online'] = cso_online
+        self.context['cso_online_offline'] = cso_online
+        self.context['cso_online'] = len(CSOOnline.get_active_cso())
         return render(request, 'staffApp/cso/cso_online_connectivity_dashboard.html', self.context)
 

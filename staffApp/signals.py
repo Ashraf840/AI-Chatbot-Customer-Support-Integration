@@ -15,6 +15,7 @@ def cso_online_signal(sender, instance, created, **kwargs):
         print(f"CSO ID: {instance.pk}")
         print(f"New instance email: {instance.cso_email}")
         print(f"New instance room-slug: {instance.room_slug}")
+        print(f"Total active cso: {len(instance.get_active_cso())}")
 
         # Broadcast the "data" into the "CSOOnlineConnectivityConsumer" consumer channel-group
         # [Explanation] Create a method in the consumer-class which will be responsible 
@@ -32,6 +33,7 @@ def cso_online_signal(sender, instance, created, **kwargs):
                 'connectivity_report_joined_at': str(instance.joined_at),
                 'connectivity_report_last_update': str(instance.last_update),
                 'connectivity_status': 'new',
+                'total_connected_cso': len(instance.get_active_cso()),
             }
         )
     else:
@@ -40,6 +42,7 @@ def cso_online_signal(sender, instance, created, **kwargs):
         print(f"CSO ID: {instance.pk}")
         print(f"New instance email: {instance.cso_email}")
         print(f"New instance room-slug: {instance.room_slug}")
+        print(f"Total active cso: {len(instance.get_active_cso())}")
 
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
@@ -53,5 +56,6 @@ def cso_online_signal(sender, instance, created, **kwargs):
                 'connectivity_report_joined_at': str(instance.joined_at),
                 'connectivity_report_last_update': str(instance.last_update),
                 'connectivity_status': 'old',
+                'total_connected_cso': len(instance.get_active_cso()),
             }
         )

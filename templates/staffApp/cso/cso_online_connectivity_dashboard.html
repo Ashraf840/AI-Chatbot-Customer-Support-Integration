@@ -16,7 +16,7 @@
         <div class="col"><h4>CSO Username: {{ request.user.username }} </h4></div>
         <div class="col">
             <div class="row">
-                <h4 class="text-center pb-4">Current CSO Online: <span id="support_req_nums">{{ support_req_nums }}</span></h4>
+                <h4 class="text-center pb-4">Current CSO Online: <span id="support_req_nums">{{ cso_online }}</span></h4>
             </div>
         </div>
     </div>
@@ -35,7 +35,7 @@
             </tr>
             </thead>
             <tbody id="tbody">
-            {% for cso_online in cso_online %}
+            {% for cso_online in cso_online_offline %}
             <tr id="Row_cso_online_{{ cso_online.room_slug }}">
                 {% comment %}
                 <th scope="row">{{ forloop.counter }}</th>
@@ -95,6 +95,7 @@
             // connectivity_report_email = `{{ data.connectivity_report_email }}`;
             // connectivity_report_room_slug = `${data.connectivity_report_room_slug}`;
             
+            let total_cso_online = document.getElementById(`support_req_nums`);
             if (data.connectivity_status === "old") {
                 if (data.connectivity_report_online) {
                     let table_row_id = document.getElementById(`Row_cso_online_${data.connectivity_report_room_slug}`);
@@ -104,6 +105,7 @@
                     online_column_id.innerHTML = '&#10003;';    // ONLINE
                     online_column_id.style.fontSize = '2.5rem';
                     online_column_id.style.fontWeight = 'bold';
+                    total_cso_online.innerHTML = data.total_connected_cso;
                 } else {
                     let table_row_id = document.getElementById(`Row_cso_online_${data.connectivity_report_room_slug}`);
                     let online_column_id = document.getElementById(`cso_online_${data.connectivity_report_room_slug}`);
@@ -111,6 +113,7 @@
                     // console.log(`CSO Online: False`);
                     online_column_id.innerHTML = '&#10060;';    // OFFLINE
                     online_column_id.style.fontSize = '1.5rem';
+                    total_cso_online.innerHTML = data.total_connected_cso;
                 }
             } else {
                 // CODE IT LATER
@@ -118,6 +121,7 @@
                 if (empty_row != null) {
                     empty_row.remove();
                 }
+                total_cso_online.innerHTML = data.total_connected_cso;
                 let tbodytr = document.querySelector("tbody#tbody");
                 tbody.innerHTML += `<tr id="Row_cso_online_${data.connectivity_report_room_slug}">
                     <th scope="row">${data.instance_id}</th>
