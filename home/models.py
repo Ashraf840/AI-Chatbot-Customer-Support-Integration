@@ -17,6 +17,7 @@ class CustomerSupportRequest(models.Model):
     client_ip = models.CharField(max_length=20, blank=True, null=True)
     room_slug = models.SlugField(unique=True)
     visitor_session_uuid = models.CharField(max_length=36, blank=True, null=True)   # uuid4 generated a string length of 36 chars
+    assigned_cso = models.CharField(max_length=60, blank=True, null=True)
     created_at = models.DateTimeField(verbose_name="Created at", auto_now=True)
 
     class Meta:
