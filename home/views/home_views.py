@@ -11,15 +11,7 @@ from channels.layers import get_channel_layer
 # from asgiref.sync import async_to_sync
 
 
-
 today = date.today()
-
-
-# def homePage(request):
-#     context = {
-#         'title': 'Dhaka Residential Model College',
-#     }
-#     return render(request, 'home/index.html' , context)
 
 
 # Landing Page View
