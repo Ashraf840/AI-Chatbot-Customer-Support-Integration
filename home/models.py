@@ -29,14 +29,34 @@ class CustomerSupportRequest(models.Model):
         This method is used in the signals.py file's "customer_support_request_signal" func, so that whenever a record is created, the signal can use this func to get all the records (updated) from the table
         """
         # instances = CustomerSupportRequest.objects.all()
-        instances = list(CustomerSupportRequest.objects.values('client_ip', 'room_slug', 'visitor_session_uuid'))   # Solution: https://stackoverflow.com/a/7811582
+        instances = list(CustomerSupportRequest.objects.values('client_ip', 'room_slug', 'visitor_session_uuid', 'assigned_cso'))   # Solution: https://stackoverflow.com/a/7811582
         return instances
+
+    @staticmethod
+    def get_reqs_with_assigned_cso(cso_email=None):
+        """
+        This method is will return the assigned message requests. 
+        This method is also used for get curated message-requests according to the cso_emails if provided while invoking the method.
+        """
+        # instances = CustomerSupportRequest.objects.all()
+        instances = CustomerSupportRequest.objects.values('client_ip', 'room_slug', 'visitor_session_uuid', 'assigned_cso', 'created_at').order_by('-id')
+        result = []
+        if cso_email is None:
+            for i in instances:
+                if i['assigned_cso'] is not None:
+                    result.append(i)
+        else:
+            for i in instances:
+                if i['assigned_cso'] == cso_email:
+                    result.append(i)
+        return result
 
     # https://stackoverflow.com/questions/53461830/send-message-using-django-channels-from-outside-consumer-class
 
     # group-send about all the support-request-query from this model's signal (post_save) to "CSODashboardConsumer" consumer.
 
 
+# Store each message of both a CSO & a visitor
 class CSOVisitorMessage(models.Model):
     message = models.CharField(max_length=255, blank=True, null=True)
     user_identity = models.CharField(max_length=25)
