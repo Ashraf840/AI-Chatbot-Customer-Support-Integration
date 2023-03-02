@@ -8,6 +8,7 @@ class NewCustomerDistribution:
     
     def add_new_chat(self):
         # Find the support member with the minimum number of chats
+        print('NewCustomerDistribution class:', self.cso_id_chatamt_timestamp)
         minimum_chat_handler = min(self.cso_id_chatamt_timestamp, key=lambda x: x['num_of_chats'])
         next_member = None
         if len(minimum_chat_handler) != 1:

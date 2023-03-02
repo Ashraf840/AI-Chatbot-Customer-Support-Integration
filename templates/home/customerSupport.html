@@ -3,7 +3,7 @@
 {% load static %}
 
 <!-- Title -->
-{% block title %} {{ title }} | Dhaka Residential Model College {% endblock %}
+{% block title %} {{ title }} | iBAS++ {% endblock %}
 
 <!-- Custom CSS -->
 {% block css %}
@@ -26,6 +26,7 @@
                 </p>
             </div>
             <div class="col text-end">
+                {% if not conversationInfo.is_resolved %}
                 <button class="btn btn-success btn-xl text-uppercase" id="is-resolved">Is resolved</button>
                 <!-- Fill up the input field with the cso dashboard-url -->
                 <input type="text" id="cso-dashboard-url" value='{% url "staffApplication:CsoWorkload:SupportDashboard" request.user.email  %}' readonly disabled hidden>
@@ -33,6 +34,9 @@
                     {% csrf_token %}
                     <button type="submit" class="btn btn-success btn-xl text-uppercase">Is resolved</button>
                 </form> -->
+                {% else %}
+                <button class="btn btn-secondary btn-xl text-uppercase" readonly>resolved</button>
+                {% endif %}
             </div>
         </div>
     {% else %}

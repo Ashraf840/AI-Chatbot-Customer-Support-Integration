@@ -275,10 +275,14 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
                 # TODO: Make the "CSOVisitorConvoInfo" record as resolved.
                 cso_email = data['cso_email']
                 room_slug = data['roomslug']
-                cso_visitor_convo_info = CSOVisitorConvoInfo.objects.get(room_slug=room_slug, cso_email=cso_email)
+                cso_visitor_convo_info = CSOVisitorConvoInfo.objects.get(room_slug=room_slug, cso_email=cso_email)  # mark the convo-info as resolved, & make the CSO disconnected from the conversation
+                cust_support_req = CustomerSupportRequest.objects.get(room_slug=room_slug)
                 if (not cso_visitor_convo_info.is_resolved) and cso_visitor_convo_info.is_connected:
                     cso_visitor_convo_info.is_resolved, cso_visitor_convo_info.is_connected = True, False
                     cso_visitor_convo_info.save()
+                    if not cust_support_req.is_resolved:
+                        cust_support_req.is_resolved = True
+                        cust_support_req.save()
                     async_to_sync(self.channel_layer.group_send)(
                         self.room_group_name,
                         # pass a dictionary with custom key-value pairs

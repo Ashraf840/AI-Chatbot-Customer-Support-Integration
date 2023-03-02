@@ -3,13 +3,13 @@
 {% load static %}
 
 <!-- Title -->
-{% block title %} {{ title }} | Dhaka Residential Model College {% endblock %}
+{% block title %} {{ title }} | iBAS++ {% endblock %}
 
 <!-- Content Body -->
 {% block content %}
 <div class="container-fluid">
     <div class="row d-flex justify-content-center">
-        <div class="col"><h1>Customer Support Request | DRMC</h1></div>
+        <div class="col"><h1>Customer Support Request | iBAS++ </h1></div>
     </div>
 
     <div class="row d-flex justify-content-center">
@@ -36,7 +36,7 @@
             </thead>
             <tbody id="tbody">
             {% for csr in customer_support_requests %}
-            <tr>
+            <tr id="Row_msg_req_{{ csr.room_slug }}">
                 <th scope="row">{{ forloop.counter }}</th>
                 <td>{{ csr.client_ip }}</td>
                 <td>{{ csr.visitor_session_uuid }}</td>
@@ -106,7 +106,7 @@
             updated_reqs.forEach((req) => {
                 // console.log(req);
                 // newtr += `${req.client_ip} ----- ${req.room_slug}`;
-                newtr += `<tr>
+                newtr += `<tr id="Row_msg_req_${req.room_slug}">
                     <th scope="row">${counter += 1}</th>
                     <td>${req.client_ip}</td>
                     <td>${req.visitor_session_uuid}</td>
@@ -121,6 +121,15 @@
                 </tr>`;
             });
             tbody.innerHTML = newtr;
+        }
+
+        // Old Cust-Support Request is resolved
+        if (data.old_supprt_req_roomSlug) {
+            let old_supprt_req_roomSlug = data.old_supprt_req_roomSlug;
+            let old_supprt_req_isResolved = data.old_supprt_req_isResolved;
+            console.log(`An old message request is resolved!`);
+            let msg_req_row = document.getElementById(`Row_msg_req_${data.old_supprt_req_roomSlug}`);
+            msg_req_row.remove();   // remove the msg-req-row which is currently marked as "Resolved" by the CSO
         }
     }
 

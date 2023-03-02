@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import CustomerSupportRequest
+from .models import CustomerSupportRequest, CSOVisitorConvoInfo
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from staffApp.cso_connectivity_models import CSOOnline
@@ -9,7 +9,8 @@ from home.utils.messageRequestDistributionProtocol import NewCustomerDistributio
 
 @receiver(post_save, sender=CustomerSupportRequest)
 def customer_support_request_signal(sender, instance, created, **kwargs):
-    # report = instance
+    channel_layer = get_channel_layer()
+    # On Create
     if created:
         print("[from 'customer_support_request_signal*()' func]New customer support request is created!")
         
@@ -21,8 +22,16 @@ def customer_support_request_signal(sender, instance, created, **kwargs):
         # total_active_cso = len(active_cso)
         # TODO: Get all the message_requests where the cso_email is not null
         total_msg = CustomerSupportRequest.get_reqs_with_assigned_cso()
+        # cso_user_chat_info = CSOVisitorConvoInfo.get_unresolved_msg()
+        # room_tuple = tuple([r['room_slug'] for r in cso_user_chat_info])
+        # unresolved_total_msg = []
+        # for tm in total_msg:
+        #     if tm['room_slug'] in room_tuple:
+        #         unresolved_total_msg.append(tm)
+        
+        # total_msg = unresolved_total_msg
+
         # print(f'Total msg: {total_msg}')
-        # msg_req = []
         # keys = ['cso', 'num_of_chats']
         # print(total_msg)
         # for msg in total_msg:
@@ -91,13 +100,14 @@ def customer_support_request_signal(sender, instance, created, **kwargs):
         # [Explanation] Create a method in the consumer-class which will be responsible 
         # for sending the payload to each individual cso-channel's frontend wbSocket 
         # through "CSODashboardConsumer".
-        channel_layer = get_channel_layer()
+        # channel_layer = get_channel_layer()   # MOVED TO THE TOP
 
         # TODO: This signal will be custom-made later, logic will be implemented here to decide in which cso-support-dashboard-channel the request will be sent to.
-        # cso_email = "tanjim.ashraf@doer.com.bd"
+        cso_email = "tanjim.ashraf@doer.com.bd"
         # cso_email = "tanjim.ashraf.doer.bp@gmail.com"
+        next_cso = cso_email    # COMMENT IT
         # instance.assigned_cso = cso_email
-        instance.assigned_cso = next_cso
+        instance.assigned_cso = next_cso      # OK
         instance.save()
 
         # Get all the message reqs of the individual CSO
@@ -121,3 +131,24 @@ def customer_support_request_signal(sender, instance, created, **kwargs):
                 'new_support_request': result,
             }
         )
+
+    # On update
+    if not created:
+        # print('\n'*3)
+        # print('+'*50)
+        # print(f'Update the customer support request! {instance.is_resolved}')
+
+        instance_room_slug = instance.room_slug
+        instance_resolved = instance.is_resolved
+        instance_cso_email = instance.assigned_cso
+        room_name_normalized="".join(ch for ch in instance_cso_email if ch.isalnum())
+        async_to_sync(channel_layer.group_send)(
+            f'chat_dashboard_{room_name_normalized}',
+            {
+                'type': 'old_support_req_resolved', 
+                'instance_room_slug': instance_room_slug,
+                'instance_resolved': instance_resolved,
+            }
+        )
+        # print('+'*50)
+        # print('\n'*3)   
