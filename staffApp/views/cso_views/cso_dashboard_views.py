@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
-from home.models import CustomerSupportRequest
+from home.models import CustomerSupportRequest, CSOVisitorConvoInfo
 from authenticationApp.models import User
 from ...cso_connectivity_models import CSOOnline
 
@@ -30,6 +30,15 @@ class SupportDashboard(LoginRequiredMixin, View):
         # user = get_object_or_404(User, email=email)
         # customer_support_requests = CustomerSupportRequest.objects.all().order_by('-id')  # get all the msg-reqs in descending order of the 'created_at' field
         customer_support_requests = CustomerSupportRequest.get_reqs_with_assigned_cso(cso_email=email)
+
+        # cso_user_chat_info = CSOVisitorConvoInfo.get_unresolved_msg()
+        # room_tuple = tuple([r['room_slug'] for r in cso_user_chat_info])
+        # unresolved_total_msg = []
+        # for csr in customer_support_requests:
+        #     if csr['room_slug'] in room_tuple:
+        #         unresolved_total_msg.append(csr)
+        
+        # customer_support_requests = unresolved_total_msg
         print(f"'SupportDashboard' class queryset: {customer_support_requests}")
         print(f"total support requests: {len(customer_support_requests)}")
         self.context['support_req_nums'] = len(customer_support_requests)
@@ -39,6 +48,7 @@ class SupportDashboard(LoginRequiredMixin, View):
         return render(request, 'staffApp/cso/support_dashboard.html', self.context)
 
 
+# NOT USING CURRENTLY
 class SupportDashboardNew(LoginRequiredMixin, View):
     login_url = 'authenticationApplication:CsoAuth:CSOLoginPageView'
     context = {

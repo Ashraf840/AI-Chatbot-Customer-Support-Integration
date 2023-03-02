@@ -78,7 +78,10 @@ class CustomerSupportRoom(View):
                     room_slug=kwargs['room_slug'],
                     cso_email=request.user.email,
                 ).order_by('-created_at').first()
+                print('\n'*3, '#'*50)
                 print('conversations:', conversations)
+                print('#'*50, '\n'*3)
+                self.context['conversationInfo'] = conversations
                 if conversations is not None:
                     print('conversations room slug:', conversations.room_slug, '------ email:', conversations.cso_email, '------ craeted at:', conversations.created_at)
                 # for convo in conversations:

@@ -18,6 +18,7 @@ class CustomerSupportRequest(models.Model):
     room_slug = models.SlugField(unique=True)
     visitor_session_uuid = models.CharField(max_length=36, blank=True, null=True)   # uuid4 generated a string length of 36 chars
     assigned_cso = models.CharField(max_length=60, blank=True, null=True)
+    is_resolved = models.BooleanField(default=False, help_text="Marked as resolved if the CSO marked the coordinating convoInfo as resolved")
     created_at = models.DateTimeField(verbose_name="Created at", auto_now=True)
 
     class Meta:
@@ -35,19 +36,19 @@ class CustomerSupportRequest(models.Model):
     @staticmethod
     def get_reqs_with_assigned_cso(cso_email=None):
         """
-        This method is will return the assigned message requests. 
-        This method is also used for get curated message-requests according to the cso_emails if provided while invoking the method.
+        This method will return the assigned message requests. 
+        This method is also used for getting curated message-requests according to the cso_emails if provided while invoking the method.
         """
         # instances = CustomerSupportRequest.objects.all()
-        instances = CustomerSupportRequest.objects.values('client_ip', 'room_slug', 'visitor_session_uuid', 'assigned_cso', 'created_at').order_by('-id')
+        instances = CustomerSupportRequest.objects.values('client_ip', 'room_slug', 'visitor_session_uuid', 'assigned_cso', 'is_resolved', 'created_at').order_by('-id')
         result = []
         if cso_email is None:
             for i in instances:
-                if i['assigned_cso'] is not None:
+                if i['assigned_cso'] is not None and not i['is_resolved']:
                     result.append(i)
         else:
             for i in instances:
-                if i['assigned_cso'] == cso_email:
+                if i['assigned_cso'] == cso_email and not i['is_resolved']:
                     result.append(i)
         return result
 
@@ -71,8 +72,21 @@ class CSOVisitorConvoInfo(models.Model):
     room_slug = models.CharField(max_length=25)
     cso_email = models.CharField(max_length=60, verbose_name='Customer Support Officer Email')
     is_resolved = models.BooleanField(default=False)
-    is_connected = models.BooleanField(verbose_name='Is CSO connected?', default=False)
+    is_connected = models.BooleanField(verbose_name='Is CSO connected?', default=False, help_text="The CSO has marked this conversation as resolved if it's displayed 'False'")
     created_at = models.DateTimeField(verbose_name="Conversation created at", auto_now=True)
 
     class Meta:
         verbose_name_plural = "CSO Visitor Conversation Information"
+    
+    @staticmethod
+    def get_unresolved_msg():
+        """
+        This method will get the curated messages which are not resolved yet.
+        """
+        # instances = CustomerSupportRequest.objects.all()
+        instances = list(CSOVisitorConvoInfo.objects.values('room_slug', 'cso_email', 'is_resolved', 'is_connected'))   # Solution: https://stackoverflow.com/a/7811582
+        result = []
+        for msgInfo in instances:
+            if not msgInfo['is_resolved']:
+                result.append(msgInfo)
+        return result

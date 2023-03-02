@@ -165,6 +165,20 @@ class SupportDashboardConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps({
             'new_supprt_reqst': new_supprt_reqst,
         }))
+    
+    # Custom method: send the old support req which is marked as resolved, to the frontend of the specific CSO's email.
+    def old_support_req_resolved(self, event):
+        old_supprt_req_roomSlug = event['instance_room_slug']
+        old_supprt_req_isResolved = event['instance_resolved']
+        print('\n'*3)
+        print('+'*50)
+        print('Old support request is resolved (from SupportDashboardConsumer consumer)!')
+        print('+'*50)
+        print('\n'*3)
+        self.send(text_data=json.dumps({
+            'old_supprt_req_roomSlug': old_supprt_req_roomSlug,
+            'old_supprt_req_isResolved': old_supprt_req_isResolved,
+        }))
 
     # Default method of "WebsocketConsumer" class
     def disconnect(self, *args, **kwargs):
