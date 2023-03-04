@@ -13,6 +13,7 @@
 
 <!-- Content Body -->
 {% block content %}
+{% comment %}
 <h1>Customer Support Page - (Real-time Chat)</h1>
 <p>Room Slug: {{ room_slug }}</p>
 {% if request.user.username != '' %}
@@ -50,9 +51,89 @@
         <a class="btn btn-primary btn-xl text-uppercase" href="{% url 'homeApplication:LangingPage' %}">Quit</a>
     </p>
 {% endif %}
+{% endcomment %}
 
 
-<div class="row h-80">
+
+<!-- New UI for chatbox -->
+<div class="container-fluid my-4">
+    <div class="row">
+        <div class="col">
+            <!-- User Info Row -->
+            <div class="row bg-warning">
+                <div class="row">
+                    <div class="col-5 bg-primary">
+                        <svg height="250" width="500">
+                            <ellipse cx="160" cy="125" rx="120" ry="120"
+                            style="fill:yellow;stroke:purple;stroke-width:2" />
+                        </svg>
+                    </div>
+                    <div class="col">
+                        <div class="row" style="margin-top: 5rem;">
+                            <div class="row"><h1>John Doe</h1></div>
+                            <div class="row"><h2>জন ডোও</h2></div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="row" style="margin-top: 3rem;">
+                    <div class="col">
+                        <div class="row my-2"><h3>Email: abdc@gmail.com</h3></div>
+                        <div class="row my-2"><h3>Phone: 123456789</h3></div>
+                        <div class="row my-2"><h3>Email: 1234567893249874</h3></div>
+                    </div>
+                    <div class="col-3 bg-secondary position-relative">
+                        <button class="btn btn-lg bg-primary position-absolute bottom-0 end-0">Unsolved</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ticket Issue -->
+            <div class="row mt-4 bg-danger">
+                <div class="row position-relative">
+                    <div class="row text-center bg-info mt-4 position-absolute" style="margin: 0 auto;">
+                        <h2>Ticket Issue</h2>
+                    </div>
+                    <div class="row" style="margin-top: 5.5rem;">
+                        <div class="row my-2"><h3>Issuer name: abdc@gmail.com</h3></div>
+                        <div class="row my-2"><h3>Issuer name: abdc@gmail.com</h3></div>
+                        <div class="row my-2"><h3>Issuer name: abdc@gmail.com</h3></div>
+                        <div class="row my-2"><h3>Issuer name: abdc@gmail.com</h3></div>
+                    </div>
+                    <div class="row bg-primary mt-4" style="margin: 0 auto;">
+                        <div class="col d-flex flex-row-reverse">
+                            <button class="btn btn-lg bg-success mx-1">Resolved</button>
+                            <button class="btn btn-lg bg-secondary mx-1">Unsolved</button>
+                            <button class="btn btn-lg bg-secondary mx-1">Transferred</button>
+                            <button class="btn btn-lg bg-danger mx-1">Invalid</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-7 bg-info ms-3">
+            <div class="row bg-danger text-center d-flex align-items-center" style="height: 7rem;">
+                <h2>iBAS++ Customer Support Chatbox</h2>
+            </div>
+
+            <div class="row mt-3 bg-warning" style="height: 78.2vh;">
+                {% include 'home/customerSupportComponents/chatBody.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+{% comment %}
+<div class="row h-100 bg-primary">
     <div class="col"></div>
     <!-- Template copied from:  https://mdbootstrap.com/docs/standard/extended/chat/ -->
     <div class="col-8">
@@ -60,7 +141,7 @@
     </div>
     <div class="col"></div>
 </div>
-
+{% endcomment %}
 
 {% endblock %}
 

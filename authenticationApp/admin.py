@@ -1,10 +1,10 @@
 from django.contrib import admin
-from .models import User
+from .models import User, User_Profile
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 
 class UserAdmin(BaseUserAdmin):
-    list_display = ['id', 'email', 'username', 'first_name', 'last_name', 'gender', 'phone', 'date_joined', 'last_login', 'last_update', 'is_first_login', 'is_active', 'is_staff', 'is_cso', 'is_admin', 'is_superuser']
+    list_display = ['id', 'email', 'username', 'first_name', 'last_name', 'gender', 'phone', 'date_joined', 'last_login', 'last_update', 'is_first_login', 'is_active', 'is_staff', 'is_cso', 'is_user', 'is_admin', 'is_superuser']
     list_display_links = ['email']
     search_fields = ['id', 'email', 'username', 'first_name', 'last_name', 'phone' ]
     readonly_fields = ['password', 'initial_password', 'is_first_login', 'date_joined', 'last_login', 'last_update'] # to view these fields in the "User List" model inside the admin-panel, it's required to mention explicitly these fields as readonly fields to views the fields related to date.
@@ -42,9 +42,19 @@ class UserAdmin(BaseUserAdmin):
             'classes': ('wide',),
         }),
         ('User Permissions', {
-            'fields': ('is_active', 'is_staff', 'is_cso', 'is_admin', 'is_superuser'),
+            'fields': ('is_active', 'is_staff', 'is_cso', 'is_user', 'is_admin', 'is_superuser'),
             'classes': ('wide',),
         })
     ]
 
+
+class User_ProfileAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user_email', 'user_name_bn', 'user_father_name', 'user_mother_name', 'user_NID_no']
+    list_display_links = ['id']
+    search_fields = list_display
+    list_per_page = 15
+    ordering = ['-id']
+
+
 admin.site.register(User, UserAdmin)
+admin.site.register(User_Profile, User_ProfileAdmin)
