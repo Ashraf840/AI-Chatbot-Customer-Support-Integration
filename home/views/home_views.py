@@ -8,6 +8,7 @@ from datetime import date
 import datetime
 import uuid
 from channels.layers import get_channel_layer
+from django.contrib.auth.mixins import LoginRequiredMixin
 # from asgiref.sync import async_to_sync
 
 
@@ -15,7 +16,8 @@ today = date.today()
 
 
 # Landing Page View
-class LangingPage(View):
+class LangingPage(LoginRequiredMixin, View):
+    login_url = 'authenticationApplication:UserAuth:UserLoginPageView'
     template_name = 'home/landingPage.html'
     form_class = CustomerSupportRequestForm
     context = {
@@ -44,6 +46,7 @@ class CustomerSupportRoom(View):
     This class provides the CSO-Visitor-Chat platform for both the Customer Support Officer &
     the visitors.
     """
+    login_url = 'authenticationApplication:UserAuth:UserLoginPageView'
     template_name = 'home/customerSupport.html'
     context = {
         'title': 'Customer Support',

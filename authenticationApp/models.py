@@ -40,11 +40,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_cso = models.BooleanField(default=False)
+    is_user = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
     class Meta:
-        verbose_name_plural = "User"
+        verbose_name_plural = "User (Staff, CSO, Admin, User, Superuser)"
 
     objects = UserManager()
 
@@ -58,3 +59,19 @@ class User(AbstractBaseUser, PermissionsMixin):
         # TODO: Hide the two "password" fields while creating new user from dj-admin-panel
         # TODO: make sure to check the password is set only at the user-creation.
         super(User, self).save(*args, **kwargs)
+
+
+
+
+# Get automatically from "User.phone", ("User.first_name" + "User.last_name"), "User.email" from the "User" model
+class User_Profile(models.Model):
+    # TODO: "user_email" will only have "unique=True" instead of "blank=True, null=True" later after development phase of "User_Profile"
+    user_email = models.EmailField(verbose_name='User Email', max_length=60, blank=True, null=True)
+    user_address = models.TextField(verbose_name='User Address', blank=True, null=True)
+    user_name_bn = models.CharField(verbose_name='ইউজার নাম (বাংলা)', max_length=255, blank=True, null=True)
+    user_father_name = models.CharField(verbose_name='Father Name', max_length=255, blank=True, null=True)
+    user_mother_name = models.CharField(verbose_name='Mother Name', max_length=255, blank=True, null=True)
+    user_NID_no = models.CharField(verbose_name='NID no.', max_length=255, blank=True, null=True)
+
+    class Meta:
+        verbose_name_plural = "User Profile"

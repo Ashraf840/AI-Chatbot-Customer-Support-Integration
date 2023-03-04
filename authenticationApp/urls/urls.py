@@ -6,8 +6,11 @@ from ..views import (
 app_name = "authenticationApp"
 
 urlpatterns = [
+    # cso-auth
     path("cso-auth/", include(('authenticationApp.urls.staff_auth.cso_auth_urls', 'app_name'), namespace="CsoAuth")),
     # Password-Reset (First Time Login)
     # TODO: Pass email as extra param in the URI.
     path("initial-login/password-reset/<str:email>/", prv.PasswordResetView.as_view(), name="PasswordResetView"),
+    # user-auth
+    path("user-auth/", include(('authenticationApp.urls.user_auth.user_auth_urls', 'app_name'), namespace="UserAuth")),
 ]

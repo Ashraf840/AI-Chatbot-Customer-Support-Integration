@@ -1,6 +1,6 @@
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
-from .models import User
+from .models import User, User_Profile
 from .utils.emailService import EmailService
 from django.contrib.auth.hashers import make_password
 import string, random
@@ -29,5 +29,12 @@ def user_signal(sender, instance, created, **kwargs):
             to_mail = instance.email
             email = EmailService(from_email=from_mail, to_email=to_mail)
             email.send_mail_cso(username=instance.username, password=rand_pass)
+        
+        if instance.is_user:
+            User_Profile.objects.create(
+                user_email=instance.email,
+            )
+
+
 
 
