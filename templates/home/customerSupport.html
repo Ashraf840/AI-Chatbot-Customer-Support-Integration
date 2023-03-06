@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% extends 'base/home_base.html' %}
+{% extends 'base/chatroom_base.html' %}
 {% load static %}
 
 <!-- Title -->
@@ -13,6 +13,8 @@
 
 <!-- Content Body -->
 {% block content %}
+
+
 {% comment %}
 <h1>Customer Support Page - (Real-time Chat)</h1>
 <p>Room Slug: {{ room_slug }}</p>
@@ -56,51 +58,111 @@
 
 
 <!-- New UI for chatbox -->
-<div class="container-fluid my-4">
+<div class="container-fluid my-4" style="background-color: #D9D9D9;">
     <div class="row">
         <div class="col">
             <!-- User Info Row -->
-            <div class="row bg-warning">
+            <div class="row bg-light p-2 rounded shadow">
                 <div class="row">
-                    <div class="col-5 bg-primary">
-                        <svg height="250" width="500">
-                            <ellipse cx="160" cy="125" rx="120" ry="120"
-                            style="fill:yellow;stroke:purple;stroke-width:2" />
-                        </svg>
+                    <div class="col-5">
+                        <!-- <ellipse cx="140" cy="125" rx="120" ry="120"
+                        style="fill:yellow;stroke:purple;stroke-width:2" /> -->
+                        {% if request.user.is_user %}
+                        <img src="{{ cso_user_profile_pic.url }}" 
+                                id="user_profile_image"
+                                alt="Avatar"
+                                style="z-index: 1;
+                                    width: 15rem;
+                                    height: 15rem;"
+                                class="rounded mx-auto"> 
+                        {% endif %}
+                        {% if request.user.is_cso %}
+                            <img src="{{ registered_user_profile_pic.url }}" 
+                            id="cso_profile_image"
+                            alt="Avatar"
+                            style="z-index: 1;
+                                width: 15rem;
+                                height: 15rem;"
+                                class="rounded mx-auto"> 
+                        {% endif %}
                     </div>
                     <div class="col">
-                        <div class="row" style="margin-top: 5rem;">
-                            <div class="row"><h1>John Doe</h1></div>
-                            <div class="row"><h2>জন ডোও</h2></div>
+                        <div class="row" style="margin-top: .5rem;">
+                            <div class="col">
+                                <!-- user-end -->
+                                {% if request.user.is_user %}
+                                    <h1 class="text-center">CSO Information</h1>
+                                    <small><b>User Chat end</b></small>
+                                    <p>{{ request.user.email }}</p>
+                                    {% endif %}
+                                    <!-- CSO-end -->
+                                    {% if request.user.is_cso %}
+                                    <h1 class="text-center">User Information</h1>
+                                    <small><b>CSO Chat end</b></small>
+                                    <p>{{ request.user.email }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 2rem;">
+                            {% if request.user.is_user %}
+                                <div class="row"><h2>{{ cso_user_fullname }}</h2></div>
+                            {% endif %}
+                            {% if request.user.is_cso %}
+                                <div class="row"><h3>{{ registered_user_fullname }}</h3></div>
+                                {% if userName_bn != 'null' %}
+                                <div class="row"><h2>{{ userName_bn }}</h2></div>
+                                {% endif %}
+                            {% endif %}
                         </div>
                     </div>
                 </div>
     
+                {% if request.user.is_user %}
+                <!-- Display CSO information -->
                 <div class="row" style="margin-top: 3rem;">
                     <div class="col">
-                        <div class="row my-2"><h3>Email: abdc@gmail.com</h3></div>
-                        <div class="row my-2"><h3>Phone: 123456789</h3></div>
-                        <div class="row my-2"><h3>Email: 1234567893249874</h3></div>
+                        <div class="row my-2"><h3>Email: {{ cso_user_email }}</h3></div>
+                        <div class="row my-2"><h3>Phone: {{ cso_user_phone }}</h3></div>
                     </div>
-                    <div class="col-3 bg-secondary position-relative">
-                        <button class="btn btn-lg bg-primary position-absolute bottom-0 end-0">Unsolved</button>
+                    <div class="col-3 position-relative">
+                        <button class="btn btn-lg bg-secondary position-absolute bottom-0 end-0">View Detail</button>
                     </div>
                 </div>
+                {% endif %}
+                {% if request.user.is_cso %}
+                <!-- Display user information -->
+                <div class="row" style="margin-top: 1rem;">
+                    <div class="col">
+                        <div class="row my-2"><h3>Email: {{ registered_user_email }}</h3></div>
+                        <div class="row my-2"><h3>Phone: {{ phone }}</h3></div>
+                        <div class="row my-2"><h3>NID: {{ registered_user_phone }}</h3></div>
+                    </div>
+                    <div class="col-3 position-relative">
+                        <button class="btn btn-lg bg-secondary position-absolute bottom-0 end-0">View Detail</button>
+                    </div>
+                </div>
+                {% endif %}
             </div>
 
             <!-- Ticket Issue -->
-            <div class="row mt-4 bg-danger">
+            <div class="row mt-4 bg-light p-2 rounded shadow">
                 <div class="row position-relative">
-                    <div class="row text-center bg-info mt-4 position-absolute" style="margin: 0 auto;">
+                    <div class="row text-center mt-4 position-absolute" style="margin: 0 auto;">
                         <h2>Ticket Issue</h2>
                     </div>
                     <div class="row" style="margin-top: 5.5rem;">
-                        <div class="row my-2"><h3>Issuer name: abdc@gmail.com</h3></div>
-                        <div class="row my-2"><h3>Issuer name: abdc@gmail.com</h3></div>
-                        <div class="row my-2"><h3>Issuer name: abdc@gmail.com</h3></div>
-                        <div class="row my-2"><h3>Issuer name: abdc@gmail.com</h3></div>
+                        <div class="col">
+                            <div class="row my-2"><h3>Issue ID: ISSUE - 2023-1-21430</h3></div>
+                            <div class="row my-2"><h3>Issuer Name: ABCD</h3></div>
+                            <div class="row my-2"><h3>Issuer Mobile Number: 123456789</h3></div>
+                            <div class="row my-2"><h3>Issuer Category: BEFTN</h3></div>
+                            <div class="row my-2"><h3>Project: Smart Banking</h3></div>
+                        </div>
+                        <div class="col-2 position-relative">
+                            <button class="btn btn-lg bg-secondary position-absolute bottom-0 end-0">View Detail</button>
+                        </div>
                     </div>
-                    <div class="row bg-primary mt-4" style="margin: 0 auto;">
+                    <div class="row mt-4" style="margin: 0 auto;">
                         <div class="col d-flex flex-row-reverse">
                             <button class="btn btn-lg bg-success mx-1">Resolved</button>
                             <button class="btn btn-lg bg-secondary mx-1">Unsolved</button>
@@ -111,12 +173,12 @@
                 </div>
             </div>
         </div>
-        <div class="col-7 bg-info ms-3">
-            <div class="row bg-danger text-center d-flex align-items-center" style="height: 7rem;">
+        <div class="col-7 bg-light ms-3 rounded shadow">
+            <div class="row text-center d-flex align-items-center" style="height: 7rem;">
                 <h2>iBAS++ Customer Support Chatbox</h2>
             </div>
 
-            <div class="row mt-3 bg-warning" style="height: 78.2vh;">
+            <div class="row mt-3" style="height: 78.2vh;">
                 {% include 'home/customerSupportComponents/chatBody.html' %}
             </div>
         </div>

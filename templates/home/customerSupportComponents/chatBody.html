@@ -2,15 +2,20 @@
 {% load static %}
 
 <!-- Template Copied from:  https://mdbootstrap.com/docs/standard/extended/chat/ -->
-<section style="background-color: #ff9a9a; height: 100%;">
-    <div class="container py-2" style="background-color: #e6d785; height: 100%; margin: 0; padding: 0;">
+<section style="height: 100%;">
+    <div class="container py-2" style="height: 100%; margin: 0; padding: 0;">
 
-        <div class="row d-flex justify-content-center" style="background-color: #93e66d; height: 100%;">
-            <div class="col-md-10 col-lg-10 col-xl-12" style="background-color: #6de2e6; height: 100%; margin: 0; padding: 0;">
+        <div class="row d-flex justify-content-center" style="height: 100%;">
+            <div class="col-md-10 col-lg-10 col-xl-12" style="height: 100%; margin: 0; padding: 0;">
 
-                <div class="card" id="chat2" style="background-color: #6d89e6; height: 100%;">
+                <div class="card" id="chat2" style="height: 100%;">
                     <div class="card-header d-flex justify-content-between align-items-center p-3">
-                        <h5 class="mb-0">CSO Name: ABD</h5>
+                        {% if request.user.is_user %}
+                        <h5 class="mb-0">CSO Name: {{ cso_user_fullname }}</h5>
+                        {% endif %}
+                        {% if request.user.is_cso %}
+                        <h5 class="mb-0">User Name: {{ registered_user_fullname }}</h5>
+                        {% endif %}
                         <!-- <button type="button" class="btn btn-primary btn-sm" data-mdb-ripple-color="dark">Let's Chat
                             App</button> -->
                     </div>

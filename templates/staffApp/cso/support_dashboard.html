@@ -30,6 +30,7 @@
                 <th scope="col">#</th>
                 <th scope="col">Client IP</th>
                 <th scope="col">Visitor Session UUID</th>
+                <th scope="col">Registered User Email</th>
                 <th scope="col">Room Slug</th>
                 <th scope="col">Enter Chat</th>
             </tr>
@@ -40,6 +41,7 @@
                 <th scope="row">{{ forloop.counter }}</th>
                 <td>{{ csr.client_ip }}</td>
                 <td>{{ csr.visitor_session_uuid }}</td>
+                <td>{{ csr.registered_user_email_normalized }}</td>
                 <td>{{ csr.room_slug }}</td>
                 <td>
                     <a href="{% url 'homeApplication:CustomerSupportRoom' csr.room_slug %}"
