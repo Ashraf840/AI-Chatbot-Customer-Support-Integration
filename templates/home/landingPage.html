@@ -6,9 +6,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>{{ title }} | Dhaka Residential Model College</title>
+        <title>{{ title }} | iBAS++</title>
         <!-- Favicon-->
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <link rel="icon" type="image/png" href="{% static 'images/logo/ibas_logo.png' %}">
         <!-- Font Awesome icons (free version)-->
         <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
         <!-- Google fonts-->
@@ -382,7 +382,7 @@
                 </form>
 
                 <!-- Client Support form (hidden) -->
-                <div class="col-md-4" hidden>
+                <div class="col-md-4">
                     <form action="{% url 'homeApplication:CustomerSupportRequest' %}" 
                         method="POST" id="support-request-connection">
                         {% csrf_token %}
@@ -390,6 +390,9 @@
                         <input type="text" name="roomSlug" id="roomSlug" readonly="readonly">
                         {% if visitor_session_uuid %}
                         <input type="text" name="visitorSessionUUID" id="visitorSessionUUID" value="{{ visitor_session_uuid }}" readonly="readonly">
+                        {% endif %}
+                        {% if user_email_normalized %}
+                        <input type="text" name="user_email_normalized" id="user_email_normalized" value="{{ user_email_normalized }}" readonly="readonly">
                         {% endif %}
                         <button type="submit">Submit</button>
                     </form>

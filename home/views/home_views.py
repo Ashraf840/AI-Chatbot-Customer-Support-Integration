@@ -10,6 +10,7 @@ import uuid
 from channels.layers import get_channel_layer
 from django.contrib.auth.mixins import LoginRequiredMixin
 # from asgiref.sync import async_to_sync
+from authenticationApp.models import User_Profile
 
 
 today = date.today()
@@ -37,6 +38,11 @@ class LangingPage(LoginRequiredMixin, View):
                 request.session['visitor_session_uuid'] = str(uuid.uuid4())
                 print('Created a new session key-value pair! User session uuid:', request.session['visitor_session_uuid'])
             self.context['visitor_session_uuid'] = request.session['visitor_session_uuid']
+        else:
+            print(f"User Id: {request.user.id}")
+            usremail_normalized="".join(uemail for uemail in request.user.email if uemail.isalnum())
+            self.context['user_email_normalized'] = usremail_normalized
+            # self.context['user_email'] = request.user.email
         print('#'*50)
         return render(request, self.template_name, context=self.context)
 
@@ -79,7 +85,6 @@ class CustomerSupportRoom(View):
                 # [{Edge-case - explaination for not using 'is_resolved=False' & 'is_connected=False' in the filter condition}: After the convo's being resolved, if the cso wants to re-visit the convo, don't create another convoInfo-record. Thus don't filter with 'is_resolved=False' as well as 'is_connected'=False, because 'is_connected'=False clause will hinder to find any such record & create a new record whenever the cso goes out the page & comes back during giving a resolution (bcz each record is created with 'is_connected'=True in the following creation-block). On the other hand, the 'is_resolved'=False will also hinder finding any such record & thus create another record if the CSO want to visit the room after making the 'is_resolved'=True by after giving the resolution.]
                 conversations = CSOVisitorConvoInfo.objects.filter(
                     room_slug=kwargs['room_slug'],
-                    cso_email=request.user.email,
                 ).order_by('-created_at').first()
                 print('\n'*3, '#'*50)
                 print('conversations:', conversations)
@@ -87,15 +92,63 @@ class CustomerSupportRoom(View):
                 self.context['conversationInfo'] = conversations
                 if conversations is not None:
                     print('conversations room slug:', conversations.room_slug, '------ email:', conversations.cso_email, '------ craeted at:', conversations.created_at)
+                    conversations.cso_email = request.user.email
+                    conversations.save()
                 # for convo in conversations:
                 #     print('conversations room slug:', convo.room_slug, '------ email:', convo.cso_email, '------ craeted at:', convo.created_at)
                 # print(conversations is None)
                 if conversations is None:
-                    CSOVisitorConvoInfo.objects.create(
+                    conversations = CSOVisitorConvoInfo.objects.create(
                         room_slug=kwargs['room_slug'], 
                         cso_email=request.user.email ,
-                        is_connected=True,
+                        is_connected=True,  # meant to mark the assign CSO as connected to this conversation
                     )
+                # Fetch registered user's fullname, email, phonr, NID to display in the cso-chat-end. [The CSO will access the chatroom later]
+                registeredUserEmail = conversations.registered_user_email
+                registeredUser_record = User.objects.get(email=registeredUserEmail)
+                self.context['registered_user_fullname'] = registeredUser_record.first_name + ' ' + registeredUser_record.last_name
+                self.context['registered_user_email'] = registeredUser_record.email
+                self.context['registered_user_phone'] = registeredUser_record.phone
+                self.context['registered_user_profile_pic'] = registeredUser_record.profile_pic
+                try:
+                    userName_bn = User_Profile.objects.get(user_email=registeredUserEmail)
+                    print(userName_bn.user_name_bn)
+                    if not userName_bn.user_name_bn is None:
+                        print('Username is not none!')
+                        self.context['userName_bn'] = userName_bn.user_name_bn
+                    else:
+                        print('Username is none!')
+                        self.context['userName_bn'] = 'null'
+                except User_Profile.DoesNotExist:
+                    print('User profile does not exist!')
+                    self.context['userName_bn'] = 'null'
+            if request.user.is_user:
+                # self.context['registered_user_full_name'] = request.user.first_name + ' ' + request.user.last_name
+                # print(self.context['registered_user_full_name'])
+                # Search the conversation-info based on the room-slug only (while a registered user is accessing the chat-room)
+                conversations = CSOVisitorConvoInfo.objects.filter(
+                    room_slug=kwargs['room_slug'],
+                ).order_by('-created_at').first()
+                self.context['conversationInfo'] = conversations
+                if conversations is not None:
+                    # TODO: update the "CSOVisitorConvoInfo.registered_user_email" field with the user-email
+                    conversations.registered_user_email = request.user.email
+                    conversations.save()
+                    print('conversations room slug:', conversations.room_slug, '------ email:', conversations.registered_user_email, '------ craeted at:', conversations.created_at)
+                if conversations is None:
+                    # TODO: create a new record with "CSOVisitorConvoInfo.registered_user_email" field defined with the registeres-user-email
+                    conversations = CSOVisitorConvoInfo.objects.create(
+                        room_slug=kwargs['room_slug'], 
+                        registered_user_email=request.user.email,
+                    )
+                # Fetch registered CSO's fullname, email, phone to display in the user-chat-end. [The registered user will access the chatroom later]
+                csr_record = CustomerSupportRequest.objects.get(room_slug=conversations.room_slug)
+                cso_user_email = csr_record.assigned_cso
+                cso_user_record = User.objects.get(email=cso_user_email)
+                self.context['cso_user_fullname'] = cso_user_record.first_name + ' ' + cso_user_record.last_name
+                self.context['cso_user_email'] = cso_user_email
+                self.context['cso_user_phone'] = cso_user_record.phone
+                self.context['cso_user_profile_pic'] = cso_user_record.profile_pic
         else:
             print('Anonymous User')
             # print('Anonymous user unique 32-char unique-code:', uuid.uuid4())
@@ -142,6 +195,13 @@ class CustomerSupportRoom(View):
         #     cso email: {request.user.email}')
 
 
+def createCustomerSupportRequest(visitorSessionUUID=None, user_email=None):
+    if visitorSessionUUID != None:
+        pass
+    if user_email != None:
+        pass
+    pass
+
 class CustomerSupportReq(View):
     """
     This class is used to handles the visitors' CSO-Support requests (creation), validation & 
@@ -161,6 +221,7 @@ class CustomerSupportReq(View):
         # TODO: store the support-req data into a DB table ("CustomerSupportRequest");
         # TODO: Check if a request with the same visitor_session_uuid is already created.
         # [Concept - Storing visitor's uuid into his/her dj-session-key]:  https://www.youtube.com/watch?v=l5WZ_MlE14E&t=139s
+        # FOR ANONYMOUS USER
         if 'visitorSessionUUID' in request.POST:
             # if found any, search for the room_slug in the "CustomerSupportRequest" model, if found then redirect the user to that room.
             visitor_support_req = CustomerSupportRequest.objects.filter(
@@ -173,6 +234,20 @@ class CustomerSupportReq(View):
                 CustomerSupportRequest.objects.create(
                     client_ip=client_ip,
                     visitor_session_uuid=request.POST['visitorSessionUUID'],
+                    room_slug=room_slug,
+                )
+        # FOR REGISTERED USER
+        if 'user_email_normalized' in request.POST:
+            user_support_req = CustomerSupportRequest.objects.filter(
+                    registered_user_email_normalized=request.POST['user_email_normalized'],
+                ).order_by('-created_at').first()
+            if user_support_req is not None:
+                room_slug = user_support_req.room_slug
+            else:
+                client_ip, room_slug = request.POST['clientIP'], request.POST['roomSlug']
+                CustomerSupportRequest.objects.create(
+                    client_ip=client_ip,
+                    registered_user_email_normalized=request.POST['user_email_normalized'],
                     room_slug=room_slug,
                 )
 

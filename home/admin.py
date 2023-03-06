@@ -14,7 +14,7 @@ class ChatbotVisitorMessageAdmin(admin.ModelAdmin):
 
 
 class CustomerSupportRequestAdmin(admin.ModelAdmin):
-    list_display = ['id', 'client_ip', 'room_slug', 'visitor_session_uuid', 'assigned_cso', 'is_resolved', 'created_at']
+    list_display = ['id', 'client_ip', 'room_slug', 'visitor_session_uuid', 'registered_user_email_normalized', 'assigned_cso', 'is_resolved', 'created_at']
     list_display_links = ['id']
     search_fields = list_display
     readonly_fields = ['room_slug', 'visitor_session_uuid', 'created_at'] # to view these fields in the "Food" model inside the admin-panel, it's required to explicitly mention these fields as readonly fields, oetherwise they won't be visible.
@@ -34,7 +34,7 @@ class CSOVisitorMessageAdmin(admin.ModelAdmin):
 
 
 class CSOVisitorConvoInfoAdmin(admin.ModelAdmin):
-    list_display = ['id', 'room_slug', 'cso_email', 'is_resolved', 'is_connected', 'created_at']
+    list_display = ['id', 'room_slug', 'cso_email', 'registered_user_email', 'is_resolved', 'is_connected', 'created_at']
     list_display_links = ['id']
     search_fields = list_display[:-1]   # except the "created_at" field
     # readonly_fields = ['room_slug', 'created_at']
