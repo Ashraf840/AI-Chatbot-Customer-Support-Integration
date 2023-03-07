@@ -3,25 +3,31 @@
 
 <!-- Template Copied from:  https://mdbootstrap.com/docs/standard/extended/chat/ -->
 <section style="height: 100%;">
-    <div class="container py-2" style="height: 100%; margin: 0; padding: 0;">
+    <div class="container-fluid" style="height: 100%; margin: 0; padding: 0;">
 
         <div class="row d-flex justify-content-center" style="height: 100%;">
             <div class="col-md-10 col-lg-10 col-xl-12" style="height: 100%; margin: 0; padding: 0;">
 
                 <div class="card" id="chat2" style="height: 100%;">
-                    <div class="card-header d-flex justify-content-between align-items-center p-3">
-                        {% if request.user.is_user %}
-                        <h5 class="mb-0">CSO Name: {{ cso_user_fullname }}</h5>
-                        {% endif %}
-                        {% if request.user.is_cso %}
-                        <h5 class="mb-0">User Name: {{ registered_user_fullname }}</h5>
-                        {% endif %}
-                        <!-- <button type="button" class="btn btn-primary btn-sm" data-mdb-ripple-color="dark">Let's Chat
-                            App</button> -->
+                    
+                    <div class="card-header p-4">
+                        <div class="row d-flex justify-content-between align-items-center">
+                            <div class="col">
+                                {% if request.user.is_user %}
+                                <h3 class="mb-0">CSO Name: {{ cso_user_fullname }}</h3>
+                                {% endif %}
+                                {% if request.user.is_cso %}
+                                <h5 class="mb-0">User Name: {{ registered_user_fullname }}</h5>
+                                {% endif %}
+                            </div>
+                            <div class="col text-end">
+                                <button type="button" class="btn btn-danger btn-md me-5" data-mdb-ripple-color="dark">Cancel Chat</button>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body overflow-auto chat-messages-box" data-mdb-perfect-scrollbar="true" id="chatbody-scroller"
                         style="position: relative; height: 400px">
-<!-- IMPORTANT COMMENTS -->
+                        <!-- IMPORTANT COMMENTS -->
                         <!-- <div class="d-flex flex-row justify-content-start">
                             <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
                                 alt="avatar 1" style="width: 45px; height: 100%;">
