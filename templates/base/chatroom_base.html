@@ -15,7 +15,13 @@
 
 <body style="background-color: #D9D9D9;">
     <div class="container-fluid">
+        <!-- Navbar -->
+        {% include 'base/components/staffApp_base/chatroom_header_navbar.html' %}
+        <!-- End Navbar -->
+
+        <!-- Main Container Body -->
         {% block content %} {% endblock %}
+        <!-- End Main Container Body -->
     </div>
 
     <!-- Bootstrap 5.2.3 JS -->

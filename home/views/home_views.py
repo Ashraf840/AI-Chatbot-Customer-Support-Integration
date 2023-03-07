@@ -144,11 +144,17 @@ class CustomerSupportRoom(View):
                 # Fetch registered CSO's fullname, email, phone to display in the user-chat-end. [The registered user will access the chatroom later]
                 csr_record = CustomerSupportRequest.objects.get(room_slug=conversations.room_slug)
                 cso_user_email = csr_record.assigned_cso
-                cso_user_record = User.objects.get(email=cso_user_email)
-                self.context['cso_user_fullname'] = cso_user_record.first_name + ' ' + cso_user_record.last_name
-                self.context['cso_user_email'] = cso_user_email
-                self.context['cso_user_phone'] = cso_user_record.phone
-                self.context['cso_user_profile_pic'] = cso_user_record.profile_pic
+                try:
+                    cso_user_record = User.objects.get(email=cso_user_email)
+                    self.context['cso_user_fullname'] = cso_user_record.first_name + ' ' + cso_user_record.last_name
+                    self.context['cso_user_email'] = cso_user_email
+                    self.context['cso_user_phone'] = cso_user_record.phone
+                    self.context['cso_user_profile_pic'] = cso_user_record.profile_pic
+                except User.DoesNotExist:
+                    self.context['cso_user_fullname'] = 'null'
+                    self.context['cso_user_email'] = 'null'
+                    self.context['cso_user_phone'] = 'null'
+                    self.context['cso_user_profile_pic'] = 'null'
         else:
             print('Anonymous User')
             # print('Anonymous user unique 32-char unique-code:', uuid.uuid4())

@@ -3,6 +3,7 @@ from django.views.generic import View
 from ...forms import UserLoginForm
 from django.contrib.auth import authenticate, login
 from django.urls.base import reverse
+import requests, json
 
 
 # Concept Ref: https://openclassrooms.com/en/courses/7107341-intermediate-django/7263527-create-a-login-page-with-class-based-views
@@ -25,7 +26,24 @@ class CSOLoginPageView(View):
                 email=form.cleaned_data['email'],
                 password=form.cleaned_data['password'],
             )
-            if user is not None:
+            # TODO: Try to fetch signin-token from TMS
+            url = "https://tms-test.celloscope.net/api/v1/user/signin"
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            payload = json.dumps({
+                # "user_id": "chat.bot",
+                "user_id": f"{user.username}",
+                "password": f"{form.cleaned_data['password']}"
+            })
+            TMS_res = requests.post(url, headers=headers, data=payload)
+            TMS_res_dict = TMS_res.json()
+            print(TMS_res_dict)
+            print(TMS_res_dict['status'])
+            if user is not None and TMS_res_dict['status']:
+                # TODO: store user-signin-token to db-table ("User Signin Token (TMS)")
+                
+                # TODO: Only CSO will be able to access the CSO-dashboard; restrict & redirect User with "is_user" permission to user login panel
                 # TODO: Check if the user login is the first time
                 if user.is_first_login:
                     print("[CSOLoginPageView() Class-post-method] User logged in for the first time!")
@@ -36,6 +54,7 @@ class CSOLoginPageView(View):
                         kwargs={"email": user.email}
                     ))
                 login(request, user)
+                # TODO: Get TMS-signin-token & store into DB table (User Signin Token)
                 return redirect('staffApplication:CsoWorkload:CsoDashboard')
         self.context['message'] = 'Login failed!'
         return render(request, self.template_name, context=self.context)
