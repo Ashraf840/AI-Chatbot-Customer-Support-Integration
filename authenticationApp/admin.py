@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, User_Profile
+from .models import User, User_Profile, User_signin_token_tms
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 
@@ -56,5 +56,13 @@ class User_ProfileAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
 
+class User_signin_token_tmsAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user_email', 'user_id', 'user_token', 'token_type']
+    list_display_links = ['id']
+    search_fields = list_display
+    list_per_page = 15
+    ordering = ['-id']
+
 admin.site.register(User, UserAdmin)
 admin.site.register(User_Profile, User_ProfileAdmin)
+admin.site.register(User_signin_token_tms, User_signin_token_tmsAdmin)

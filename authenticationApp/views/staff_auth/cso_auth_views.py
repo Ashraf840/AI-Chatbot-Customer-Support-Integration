@@ -4,6 +4,20 @@ from ...forms import UserLoginForm
 from django.contrib.auth import authenticate, login
 from django.urls.base import reverse
 import requests, json
+from ...models import User_signin_token_tms
+
+
+# User token creation method
+def user_token_creation(user_email=None,
+                        user_id=None,
+                        user_token=None,
+                        token_type=None):
+    User_signin_token_tms.objects.create(
+        user_email=user_email,
+        user_id=user_id,
+        user_token=user_token,
+        token_type=token_type
+    )
 
 
 # Concept Ref: https://openclassrooms.com/en/courses/7107341-intermediate-django/7263527-create-a-login-page-with-class-based-views
@@ -40,8 +54,27 @@ class CSOLoginPageView(View):
             TMS_res_dict = TMS_res.json()
             print(TMS_res_dict)
             print(TMS_res_dict['status'])
+            print(TMS_res_dict['token']['access_token'])
+            print(TMS_res_dict['token']['token_type'])
             if user is not None and TMS_res_dict['status']:
-                # TODO: store user-signin-token to db-table ("User Signin Token (TMS)")
+                # TODO: store user-signin-token to db-table ("User Signin Token (TMS)"). Firstly, check if there is any access-token record already in the db for removing that before creating a new-record
+                # TODO: CODE OPTIMIZATION IN USER-ACCESS-TOKEN-CREATION
+                try:
+                    User_signin_token_tms.objects.get(
+                        user_email=user.email,
+                        user_id=user.username,    
+                    ).delete()
+                    user_token_creation(user_email=user.email,
+                        user_id=user.username,
+                        user_token=TMS_res_dict['token']['access_token'],
+                        token_type=TMS_res_dict['token']['token_type'])
+                except User_signin_token_tms.DoesNotExist:
+                    user_token_creation(user_email=user.email,
+                        user_id=user.username,
+                        user_token=TMS_res_dict['token']['access_token'],
+                        token_type=TMS_res_dict['token']['token_type'])
+                    
+                
                 
                 # TODO: Only CSO will be able to access the CSO-dashboard; restrict & redirect User with "is_user" permission to user login panel
                 # TODO: Check if the user login is the first time

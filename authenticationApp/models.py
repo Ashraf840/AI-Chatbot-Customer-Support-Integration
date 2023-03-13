@@ -75,3 +75,15 @@ class User_Profile(models.Model):
 
     class Meta:
         verbose_name_plural = "User Profile"
+
+
+# Store user-signin-token-tms
+class User_signin_token_tms(models.Model):
+    user_email = models.EmailField(verbose_name='User Email', max_length=60, blank=True, null=True)
+    user_id = models.CharField(verbose_name='User id (TMS)', max_length=200, blank=True, null=True,
+                               help_text="TMS 'user_id' is the 'uesrname' of the COS",)
+    user_token = models.CharField(verbose_name='Access Token', max_length=255, blank=True, null=True)
+    token_type = models.EmailField(verbose_name='Token Type', max_length=10, blank=True, null=True)
+
+    class Meta:
+        verbose_name_plural = "User Signin Token (TMS)"

@@ -20,6 +20,7 @@ class CustomerSupportRequest(models.Model):
     registered_user_email_normalized = models.CharField(verbose_name='User Email (normalized)', max_length=60, blank=True, null=True)   # uuid4 generated a string length of 36 chars
     assigned_cso = models.CharField(max_length=60, blank=True, null=True)
     is_resolved = models.BooleanField(default=False, help_text="Marked as resolved if the CSO marked the coordinating convoInfo as resolved")
+    issue_by_oid = models.CharField(max_length=60, blank=True, null=True, default='6f8b28a3-0e2e-4f06-b3eb-6f7b4e2da5ac', help_text='Remove the default oid later (when the bot will create the issue & get the response)')
     created_at = models.DateTimeField(verbose_name="Created at", auto_now=True)
 
     class Meta:
@@ -31,7 +32,7 @@ class CustomerSupportRequest(models.Model):
         This method is used in the signals.py file's "customer_support_request_signal" func, so that whenever a record is created, the signal can use this func to get all the records (updated) from the table
         """
         # instances = CustomerSupportRequest.objects.all()
-        instances = list(CustomerSupportRequest.objects.values('client_ip', 'room_slug', 'visitor_session_uuid', 'registered_user_email_normalized', 'assigned_cso'))   # Solution: https://stackoverflow.com/a/7811582
+        instances = list(CustomerSupportRequest.objects.values('client_ip', 'room_slug', 'visitor_session_uuid', 'registered_user_email_normalized', 'issue_by_oid', 'assigned_cso'))   # Solution: https://stackoverflow.com/a/7811582
         return instances
 
     @staticmethod
@@ -77,7 +78,7 @@ class CSOVisitorConvoInfo(models.Model):
     """
     room_slug = models.CharField(max_length=25)
     cso_email = models.CharField(max_length=60, verbose_name='Customer Support Officer Email')
-    registered_user_email = models.CharField(verbose_name='User Email', max_length=60, blank=True, null=True)   # uuid4 generated a string length of 36 chars
+    registered_user_email = models.CharField(verbose_name='User Email', max_length=60, blank=True, null=True)
     is_resolved = models.BooleanField(default=False)
     is_connected = models.BooleanField(verbose_name='Is CSO connected?', default=False, help_text="The CSO has marked this conversation as resolved if it's displayed 'False'")
     created_at = models.DateTimeField(verbose_name="Conversation created at", auto_now=True)

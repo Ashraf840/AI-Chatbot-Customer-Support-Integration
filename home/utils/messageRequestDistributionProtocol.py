@@ -4,11 +4,20 @@ class NewCustomerDistribution:
     def __init__(self, amt_of_members, max_amt_of_chats_per_member, cso_id_chatamt_timestamp):
         self.amt_of_members = amt_of_members
         self.max_amt_of_chats_per_member = max_amt_of_chats_per_member
-        self.cso_id_chatamt_timestamp = cso_id_chatamt_timestamp
+        self.cso_id_chatamt_timestamp = cso_id_chatamt_timestamp    # 'id' refers to the CSO email
     
     def add_new_chat(self):
         # Find the support member with the minimum number of chats
         print('NewCustomerDistribution class:', self.cso_id_chatamt_timestamp)
+
+        # TODO: Use a try/catch block. When found empty, make a random distribution of the new request among the active CSOs
+        # try:
+        #     minimum_chat_handler = min(self.cso_id_chatamt_timestamp, key=lambda x: x['num_of_chats'])
+        # except ValueError:
+        #     print('\n'*2, '%'*50)
+        #     print('Randomly distribute the new msg-req to a CSO among active CSO!')
+        #     print('\n'*2, '%'*50)
+
         minimum_chat_handler = min(self.cso_id_chatamt_timestamp, key=lambda x: x['num_of_chats'])
         next_member = None
         if len(minimum_chat_handler) != 1:

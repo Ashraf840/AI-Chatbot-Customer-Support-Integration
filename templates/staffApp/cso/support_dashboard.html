@@ -9,11 +9,15 @@
 {% block content %}
 <div class="container-fluid">
     <div class="row d-flex justify-content-center">
-        <div class="col"><h1>Customer Support Request | iBAS++ </h1></div>
+        <div class="col">
+            <h1>Customer Support Request | iBAS++ </h1>
+        </div>
     </div>
 
     <div class="row d-flex justify-content-center">
-        <div class="col"><h4>CSO Username: {{ request.user.username }} </h4></div>
+        <div class="col">
+            <h4>CSO Username: {{ request.user.username }} </h4>
+        </div>
         <div class="col">
             <div class="row">
                 <h4 class="text-center pb-4">Current Request(s): <span id="support_req_nums">{{ support_req_nums }}</span></h4>
@@ -26,38 +30,67 @@
     <div class="table-responsive" style="margin-top: 2rem;">
         <table class="table table-hover">
             <thead class="table-dark">
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Client IP</th>
-                <th scope="col">Visitor Session UUID</th>
-                <th scope="col">Registered User Email</th>
-                <th scope="col">Room Slug</th>
-                <th scope="col">Enter Chat</th>
-            </tr>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Client IP</th>
+                    <th scope="col">Visitor Session UUID</th>
+                    <th scope="col">Registered User Email</th>
+                    <th scope="col">Room Slug</th>
+                    <th scope="col">Enter Chat</th>
+                    <th scope="col">View Ticket</th>
+                </tr>
             </thead>
             <tbody id="tbody">
-            {% for csr in customer_support_requests %}
-            <tr id="Row_msg_req_{{ csr.room_slug }}">
-                <th scope="row">{{ forloop.counter }}</th>
-                <td>{{ csr.client_ip }}</td>
-                <td>{{ csr.visitor_session_uuid }}</td>
-                <td>{{ csr.registered_user_email_normalized }}</td>
-                <td>{{ csr.room_slug }}</td>
-                <td>
-                    <a href="{% url 'homeApplication:CustomerSupportRoom' csr.room_slug %}"
-                       class="btn btn-primary btn-xl px-4" target="_blank">
-                        Enter
-                    </a>
-                </td>
-            </tr>
-            <!-- using "empty" block solution: https://stackoverflow.com/a/902786 -->
-            {% empty %}
-            <tr>
-                <th scope="row" colspan="5" class="text-center"><b>No Support Request :)</b></td>
-            </tr>
-            {% endfor %}
+                {% for csr in customer_support_requests %}
+                <tr id="Row_msg_req_{{ csr.room_slug }}">
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ csr.client_ip }}</td>
+                    <td>{{ csr.visitor_session_uuid }}</td>
+                    <td>{{ csr.registered_user_email_normalized }}</td>
+                    <td>{{ csr.room_slug }}</td>
+                    <td>
+                        <a href="{% url 'homeApplication:CustomerSupportRoom' csr.room_slug %}"
+                            class="btn btn-primary btn-xl px-4" target="_blank">
+                            Enter
+                        </a>
+                    </td>
+                    <td>
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-secondary" data-id="ISBN-001122"
+                            onclick="disp(msg_id='{{ csr.room_slug }}', ticket_issue_oid='{{ csr.issue_by_oid }}')"
+                            data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            Ticket
+                        </button>
+                    </td>
+                </tr>
+                <!-- using "empty" block solution: https://stackoverflow.com/a/902786 -->
+                {% empty %}
+                <tr>
+                    <th scope="row" colspan="7" class="text-center"><b>No Support Request :)</b></td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -66,6 +99,52 @@
 
 <!-- Custom JS -->
 {% block js %}
+<!-- Jquery CDN (To get client IP address) -->
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+<!-- Fetch TMS Issue data using Jquery -->
+
+<script>
+    // $(document).on("click", ".open-AddBookDialog", function () {
+    //      var myBookId = $(this).data('id');
+    //      $(".modal-body #bookId").val( myBookId );
+    // });
+
+
+    function disp(msg_id = 1, ticket_issue_oid = 2) {
+        console.log(`clicked! ${msg_id}`);
+        console.log(`Ticket Issue Id: ${ticket_issue_oid}`);
+
+        var myHeaders = new Headers();
+        myHeaders.append("Accept", "application/json, text/plain, */*");
+        myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidGVzdF90YW5qaW1fMSIsInJvbGUiOiJDQUxMIENFTlRFUiBBR0VOVCIsImxvZ2luX29pZCI6ImQ0NDZmNDMzLWE4YWYtNDAwMS1iNTMzLTdmYzU5MWQ2Y2Y0YiIsImlhdCI6MTY3ODQ0NDY2OSwiZXhwIjoxNjc4NTMxMDY5fQ.UDqsENv3yPmu0OehNIkOOJyVUvbSiYyvuDVptqaia3g");
+        myHeaders.append("Content-Type", "application/json");
+        // myHeaders.append("Referer", `https://tms-test.celloscope.net/issue/admin-issue-list/${ticket_issue_oid}`);
+        // myHeaders.append("Referer", `http://172.16.6.134/issue/admin-issue-list/${ticket_issue_oid}`);
+        myHeaders.append("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 OPR/96.0.0.0");
+        myHeaders.append("sec-ch-ua", "\"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"110\", \"Opera\";v=\"96\"");
+        myHeaders.append("sec-ch-ua-mobile", "?0");
+        myHeaders.append("sec-ch-ua-platform", "\"Linux\"");
+
+        var raw = JSON.stringify({
+            "oid": `${ticket_issue_oid}`
+        });
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        // fetch("https://tms-test.celloscope.net/api/v1/issue-detail-by-oid", requestOptions)
+        fetch("http://172.16.6.134/api/v1/issue-detail-by-oid", requestOptions)
+            .then(response => response.text())
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
+    }
+</script>
+
+
 <!-- WebSocket Script -->
 <script>
     // VARIABLES
@@ -118,8 +197,15 @@
                         <a href="${url}/${req.room_slug}/"
                             class="btn btn-primary btn-xl px-4" 
                             target="_blank">
-                            Emter
+                            Enter
                         </a>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-secondary" data-id="ISBN-001122"
+                            onclick="disp(msg_id='${req.room_slug}', ticket_issue_oid='${req.issue_by_oid}')"
+                            data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            Ticket
+                        </button>
                     </td>
                 </tr>`;
             });
