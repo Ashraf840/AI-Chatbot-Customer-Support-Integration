@@ -144,9 +144,9 @@ def customer_support_request_signal(sender, instance, created, **kwargs):
                 print(d)
 
 
-            # msg_distribution = NewCustomerDistribution(amt_of_members=5, max_amt_of_chats_per_member=5, cso_id_chatamt_timestamp=data)
-            # next_cso = msg_distribution.add_new_chat()
-            # print(f'next_cso: {next_cso}')
+            msg_distribution = NewCustomerDistribution(amt_of_members=5, max_amt_of_chats_per_member=5, cso_id_chatamt_timestamp=data)
+            next_cso = msg_distribution.add_new_chat()
+            print(f'next_cso: {next_cso}')
 
             # Broadcast the "data" into the "CSODashboardConsumer" consumer channel-group
             # Solution: https://stackoverflow.com/a/7811582

@@ -9,6 +9,8 @@
 {% block css %}
 <!-- Fontawesome CDN -->
 <script src="https://kit.fontawesome.com/272e010829.js" crossorigin="anonymous"></script>
+<!-- Skeleton Loading CSS -->
+<link rel="stylesheet" href="{% static 'css/home/customerSupport/skeletonLoading.css' %}">
 {% endblock %}
 
 <!-- Content Body -->
@@ -155,12 +157,20 @@
                         <h2>Ticket Issue</h2>
                     </div>
                     <div class="row" style="margin-top: 5.5rem;">
-                        <div class="col">
-                            <div class="row my-2"><h3>Issue ID: ISSUE - 2023-1-21430</h3></div>
-                            <div class="row my-2"><h3>Issuer Name: ABCD</h3></div>
-                            <div class="row my-2"><h3>Issuer Mobile Number: 123456789</h3></div>
-                            <div class="row my-2"><h3>Issuer Category: BEFTN</h3></div>
-                            <div class="row my-2"><h3>Project: Smart Banking</h3></div>
+                        <div class="col grid-tms-issue-skeleton">
+                            <div class="row my-2"><h5>Issue ID: <div class="skeleton skeleton-text"></div></h5></div>
+                            <div class="row my-2"><h5>Issue: <div class="skeleton skeleton-text"></div></h5></div>
+                            <div class="row my-2"><h5>Project: <div class="skeleton skeleton-text"></div></h5></div>
+                            <div class="row my-2"><h5>Issuer Mobile Number: <div class="skeleton skeleton-text"></div></h5></div>
+                            <div class="row my-2"><h5>Issue Status: <div class="skeleton skeleton-text"></div></h5></div>
+                        </div>
+
+                        <div class="col grid-tms-issue-data" style="display: none">
+                            <div class="row my-2"><h5>Issue ID: <div id="div_issue_id">ISSUE - 2023-2-41433</div></h5></div>
+                            <div class="row my-2"><h5>Issue: <div id="div_issue">Fund Transfer</div></h5></div>
+                            <div class="row my-2"><h5>Project: <div id="div_project">Smart Banking</div></h5></div>
+                            <div class="row my-2"><h5>Issuer Mobile Number: <div id="div_issuer_mobile_number">+8801810176825</div></h5></div>
+                            <div class="row my-2"><h5>Issue Status: <div id="div_status">Submitted</div></h5></div>
                         </div>
                         <div class="col-3 position-relative">
                             <button class="btn btn-lg bg-secondary position-absolute bottom-0 end-0">View Detail</button>
@@ -214,7 +224,87 @@
 
 <!-- Custom JS -->
 {% block js %}
-<!-- Miscellaneaous JS -->
+<!-- Miscellaneaous JS: TMS Issue Fetch Load (Skeleton Loader) 
+Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
+-->
+<script>
+    let grid_tms_issue_skeleton = document.querySelector('.grid-tms-issue-skeleton');
+    let grid_tms_issue_data = document.querySelector('.grid-tms-issue-data');
+    
+    function disp(ticket_issue_oid=1, user_signin_token=2) {
+        console.log(`Ticket Issue Id (from 'disp()' function): ${ticket_issue_oid}`);
+        // let user_signing_token_tms = "{{ user_signing_token_tms }}";
+        console.log(`User signin token (from 'disp()' function): ${user_signin_token}`);
+
+        let span_issue_id = document.getElementById('div_issue_id');
+        let span_issue = document.getElementById('div_issue');
+        let span_project = document.getElementById('div_project');
+        let span_issuer_mobile_number = document.getElementById('div_issuer_mobile_number');
+        let span_status = document.getElementById('div_status');
+
+        var myHeaders = new Headers();
+        myHeaders.append("Accept", "application/json, text/plain, */*");
+        myHeaders.append("Authorization", `Bearer ${user_signin_token}`);
+        myHeaders.append("Content-Type", "application/json");
+        // myHeaders.append("Referer", `https://tms-test.celloscope.net/issue/admin-issue-list/${ticket_issue_oid}`);
+        // myHeaders.append("Referer", `http://172.16.6.134/issue/admin-issue-list/${ticket_issue_oid}`);
+        myHeaders.append("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 OPR/96.0.0.0");
+        myHeaders.append("sec-ch-ua", "\"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"110\", \"Opera\";v=\"96\"");
+        myHeaders.append("sec-ch-ua-mobile", "?0");
+        myHeaders.append("sec-ch-ua-platform", "\"Linux\"");
+
+        var raw = JSON.stringify({
+            "oid": `${ticket_issue_oid}`
+            // "oid": `64ecfb10-e036-418d-8bc0-eea566b28ca0`
+            // "oid": `f6b4aca6-43b7-49ef-a491-4c4684f058ed`
+        });
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        // fetch("https://tms-test.celloscope.net/api/v1/issue-detail-by-oid", requestOptions)
+        fetch("http://172.16.6.134/api/v1/issue-detail-by-oid", requestOptions)
+            // .then(response => response.text())
+            .then(response => response.json())
+            .then(result => {
+                // HIDE LOADER WILL BE IMPLEMENTED HERE
+                grid_tms_issue_skeleton.style.display = "none";
+                // grid_tms_issue_skeleton.remove();
+                // grid_tms_issue_data.style.visibi = "block";
+                grid_tms_issue_data.removeAttribute('style');
+
+                // console.log(result);
+                span_issue_id.innerHTML = "";
+                span_issue_id.innerHTML = `${result.data.issue_id}`;
+                span_issue.innerHTML = "";
+                span_issue.innerHTML = `${result.data.category_title_en}`;
+                span_project.innerHTML = "";
+                span_project.innerHTML = `${result.data.project_title_en}`;
+                span_status.innerHTML = "";
+                span_status.innerHTML = `${result.data.status}`;
+                span_issuer_mobile_number.innerHTML = "";
+                span_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
+            })
+            .catch(error => console.log('error', error));       // HIDE LOADER WILL BE IMPLEMENTED HERE
+    }
+
+    window.onload = function() {
+        // yourFunction(param1, param2);
+        console.log(`Window is fully laoded!`);
+        tms_issue_oid = "{{ tms_issue_by_oid }}";
+        // console.log(`TSM Issue OID: ${tms_issue_oid}`);
+        let user_signing_token_tms = "{{ user_signing_token_tms }}";
+        // console.log(`User signin token: ${user_signing_token_tms}`);
+        disp(ticket_issue_oid=tms_issue_oid, user_signin_token=user_signing_token_tms);
+    };
+</script>
+
+
+<!-- Miscellaneaous JS: Chat-body scroller -->
 <script>
     // Scroll down the chatbody div after window loads
     var divElement = document.getElementById("chatbody-scroller");

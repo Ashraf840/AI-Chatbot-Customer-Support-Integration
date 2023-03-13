@@ -42,7 +42,7 @@ class CustomerSupportRequest(models.Model):
         This method is also used for getting curated message-requests according to the cso_emails if provided while invoking the method.
         """
         # instances = CustomerSupportRequest.objects.all()
-        instances = CustomerSupportRequest.objects.values('client_ip', 'room_slug', 'visitor_session_uuid', 'registered_user_email_normalized', 'assigned_cso', 'is_resolved', 'created_at').order_by('-id')
+        instances = CustomerSupportRequest.objects.values('client_ip', 'room_slug', 'visitor_session_uuid', 'registered_user_email_normalized', 'assigned_cso', 'issue_by_oid', 'is_resolved', 'created_at').order_by('-id')
         print(f"message-req-instances: {instances}")
         result = []
         if cso_email is None:

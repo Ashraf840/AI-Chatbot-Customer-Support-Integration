@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from home.models import CustomerSupportRequest
@@ -31,7 +31,13 @@ class SupportDashboard(LoginRequiredMixin, View):
         # customer_support_requests = CustomerSupportRequest.objects.all().order_by('-id')  # get all the msg-reqs in descending order of the 'created_at' field
         customer_support_requests = CustomerSupportRequest.get_reqs_with_assigned_cso(cso_email=email)
 
-
+        try:
+            user_signing_token_tms = User_signin_token_tms.objects.get(user_email=email)
+            self.context['user_signing_token_tms'] = user_signing_token_tms.user_token;
+        except User_signin_token_tms.DoesNotExist:
+            # TODO: Logout the user & prompt the CSO to login into the system again
+            # TODO: Provide a flash-msg afterwards the CSO is logged out & redirected to the login page. ("TMS authentication-token is expired")
+            return redirect('authenticationApplication:CsoAuth:CSOLogoutView')
         # cso_user_chat_info = CSOVisitorConvoInfo.get_unresolved_msg()
         # room_tuple = tuple([r['room_slug'] for r in cso_user_chat_info])
         # unresolved_total_msg = []
