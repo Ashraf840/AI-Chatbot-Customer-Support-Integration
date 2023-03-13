@@ -3,6 +3,8 @@ import json
 import torch
 from model import NeuralNet
 from nltk_utils import bag_of_words, tokenize
+from staffApp.cso_connectivity_models import CSOOnline
+from home.models import CustomerSupportRequest
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -44,6 +46,20 @@ def get_response(msg):
     if prob.item() > 0.75:
         for intent in intents['intents']:
             if tag == intent['tag']:
+                if intent['tag'] == "customersupport":
+                    active_cso = CSOOnline.get_active_cso()
+                    print(f'total active cso: {len(active_cso)}')
+                    if len(active_cso) == 0:
+                        return "No CSO is currently available! A CSO will contact with you soon!"
+                    if len(active_cso) == 1:
+                        print(f'Active cso: {active_cso[0]["cso_email"]}')
+                        total_msg = CustomerSupportRequest.get_reqs_with_assigned_cso(cso_email=active_cso[0]["cso_email"])
+                        # print(f'Total msg of the CSO {active_cso[0]["cso_email"]: {total_msg}}')
+                        print(f'Total msg: {len(total_msg)}')
+                        if len(total_msg) >= 5:
+                            return "No CSO is currently available! A CSO will contact with you soon!"
+                        else:
+                            print(f'The chat will be routed to {active_cso[0]["cso_email"]}')
                 return random.choice(intent['responses'])
     return "I do not understand..."
 

@@ -68,7 +68,7 @@
                         <!-- <ellipse cx="140" cy="125" rx="120" ry="120"
                         style="fill:yellow;stroke:purple;stroke-width:2" /> -->
                         {% if request.user.is_user %}
-                            {% if cso_user_profile_pic != 'null' %}
+                            {% if cso_user_profile_pic %}
                                 <img src="{{ cso_user_profile_pic.url }}" 
                                         id="user_profile_image"
                                         alt="Avatar"
@@ -76,6 +76,8 @@
                                             width: 15rem;
                                             height: 15rem;"
                                         class="rounded mx-auto">
+                            {% else %}
+                                <h1>No Profile Picture</h1>
                             {% endif %}
                         {% endif %}
                         {% if request.user.is_cso %}

@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from home.models import CustomerSupportRequest
-from authenticationApp.models import User
+from authenticationApp.models import User, User_signin_token_tms
 from ...cso_connectivity_models import CSOOnline
 
 
@@ -30,6 +30,7 @@ class SupportDashboard(LoginRequiredMixin, View):
         # user = get_object_or_404(User, email=email)
         # customer_support_requests = CustomerSupportRequest.objects.all().order_by('-id')  # get all the msg-reqs in descending order of the 'created_at' field
         customer_support_requests = CustomerSupportRequest.get_reqs_with_assigned_cso(cso_email=email)
+
 
         # cso_user_chat_info = CSOVisitorConvoInfo.get_unresolved_msg()
         # room_tuple = tuple([r['room_slug'] for r in cso_user_chat_info])

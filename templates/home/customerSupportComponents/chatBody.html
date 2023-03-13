@@ -21,7 +21,9 @@
                                 {% endif %}
                             </div>
                             <div class="col text-end">
+                                {% if request.user.is_user %}
                                 <button type="button" class="btn btn-danger btn-md me-5" data-mdb-ripple-color="dark">Cancel Chat</button>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

@@ -105,6 +105,7 @@ class CustomerSupportRoom(View):
                     )
                 # Fetch registered user's fullname, email, phonr, NID to display in the cso-chat-end. [The CSO will access the chatroom later]
                 registeredUserEmail = conversations.registered_user_email
+                print(f'CSO Visitor Convo Info: {registeredUserEmail}')
                 registeredUser_record = User.objects.get(email=registeredUserEmail)
                 self.context['registered_user_fullname'] = registeredUser_record.first_name + ' ' + registeredUser_record.last_name
                 self.context['registered_user_email'] = registeredUser_record.email
@@ -150,7 +151,12 @@ class CustomerSupportRoom(View):
                     self.context['cso_user_email'] = cso_user_email
                     self.context['cso_user_phone'] = cso_user_record.phone
                     self.context['cso_user_profile_pic'] = cso_user_record.profile_pic
-                except User.DoesNotExist:
+                # except User.DoesNotExist:
+                #     self.context['cso_user_fullname'] = 'null'
+                #     self.context['cso_user_email'] = 'null'
+                #     self.context['cso_user_phone'] = 'null'
+                #     self.context['cso_user_profile_pic'] = 'null'
+                except:
                     self.context['cso_user_fullname'] = 'null'
                     self.context['cso_user_email'] = 'null'
                     self.context['cso_user_phone'] = 'null'
@@ -201,12 +207,14 @@ class CustomerSupportRoom(View):
         #     cso email: {request.user.email}')
 
 
+
 def createCustomerSupportRequest(visitorSessionUUID=None, user_email=None):
     if visitorSessionUUID != None:
         pass
     if user_email != None:
         pass
     pass
+
 
 class CustomerSupportReq(View):
     """
@@ -244,18 +252,24 @@ class CustomerSupportReq(View):
                 )
         # FOR REGISTERED USER
         if 'user_email_normalized' in request.POST:
-            user_support_req = CustomerSupportRequest.objects.filter(
-                    registered_user_email_normalized=request.POST['user_email_normalized'],
-                ).order_by('-created_at').first()
-            if user_support_req is not None:
-                room_slug = user_support_req.room_slug
-            else:
-                client_ip, room_slug = request.POST['clientIP'], request.POST['roomSlug']
-                CustomerSupportRequest.objects.create(
-                    client_ip=client_ip,
-                    registered_user_email_normalized=request.POST['user_email_normalized'],
-                    room_slug=room_slug,
-                )
+            # user_support_req = CustomerSupportRequest.objects.filter(
+            #         registered_user_email_normalized=request.POST['user_email_normalized'],
+            #         # is_resolved=False
+            #     ).order_by('-created_at')
+            # print(f'User message request: {user_support_req}')
+            # for usr in user_support_req:
+            #     if not usr['is_resolved']:
+            #         result.append(i)
+            # if user_support_req is not None:
+            #     room_slug = user_support_req.room_slug
+            # else:
+            #     pass
+            client_ip, room_slug = request.POST['clientIP'], request.POST['roomSlug']
+            CustomerSupportRequest.objects.create(
+                client_ip=client_ip,
+                registered_user_email_normalized=request.POST['user_email_normalized'],
+                room_slug=room_slug,
+            )
 
         return redirect(reverse(
             'homeApplication:CustomerSupportRoom', 
