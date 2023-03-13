@@ -20,7 +20,9 @@
         </div>
         <div class="col">
             <div class="row">
-                <h4 class="text-center pb-4">Current Request(s): <span id="support_req_nums">{{ support_req_nums }}</span></h4>
+                <h4 class="text-center pb-4">Current Request(s): 
+                    <span id="support_req_nums">{{ support_req_nums }}</span>
+                </h4>
             </div>
         </div>
     </div>
@@ -77,18 +79,61 @@
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <h1 class="modal-title fs-2" id="exampleModalLabel">Issue Detail</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                ...
+                <div class="container">
+                    <div class="row py-2">
+                        <div class="col text-start">
+                            <p class="fs-4"><b>Issue ID: <span id="span_issue_id">ISSUE - 2023-2-41433</span></b></p>
+                        </div>
+                    </div>
+                    <div class="row py-2">
+                        <div class="col text-start">
+                            <p class="fs-5"><b>Issue: <span id="span_issue">Fund Transfer</span></b></p> 
+                        </div>
+                        <div class="col text-start">
+                            <p class="fs-5"><b>Project: <span id="span_project">Smart Banking</span></b></p> 
+                        </div>
+                    </div>
+                    <div class="row py-2">
+                        <div class="col text-start">
+                            <p class="fs-5"><b>Status: <span id="span_status">Submitted</span></b></p> 
+                        </div>
+                        <div class="col text-start">
+                            <p class="fs-5"><b>Issuer Name: <span id="span_issuer_name">Zubair Azim Miazi</span></b></p> 
+                        </div>
+                    </div>
+                    <div class="row py-2">
+                        <div class="col text-start">
+                            <p class="fs-5"><b>Issuer Mobile Number: <span id="span_issuer_mobile_number">+8801810176825</span></b></p> 
+                        </div>
+                        <div class="col text-start">
+                            <p class="fs-5"><b>Issuer Email: <span id="span_issuer_email">zubair.miazi@doer.com.bd</span></b></p> 
+                        </div>
+                    </div>
+                    <div class="row py-2">
+                        <div class="col text-start">
+                            <p class="fs-5"><b>Created By: <span id="span_created_by">Chatbot</span></b></p> 
+                        </div>
+                        <div class="col text-start">
+                            <p class="fs-5"><b>Created On: <span id="span_created_on">2023-03-09T11:38:18.757Z</span></b></p> 
+                        </div>
+                    </div>
+                    <div class="row py-2">
+                        <div class="col text-start">
+                            <p class="fs-5"><b>Description: <span id="span_description">1721221642</span></b></p> 
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
             </div>
         </div>
     </div>
@@ -99,24 +144,28 @@
 
 <!-- Custom JS -->
 {% block js %}
-<!-- Jquery CDN (To get client IP address) -->
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
-<!-- Fetch TMS Issue data using Jquery -->
-
 <script>
-    // $(document).on("click", ".open-AddBookDialog", function () {
-    //      var myBookId = $(this).data('id');
-    //      $(".modal-body #bookId").val( myBookId );
-    // });
-
-
+    // msg_id -> message-request-id
+    // ticket_issue_oid -> tms-ticket-issue-oid
     function disp(msg_id = 1, ticket_issue_oid = 2) {
         console.log(`clicked! ${msg_id}`);
         console.log(`Ticket Issue Id: ${ticket_issue_oid}`);
+        let user_signing_token_tms = "{{ user_signing_token_tms }}";
+
+        let span_issue_id = document.getElementById('span_issue_id');
+        let span_issue = document.getElementById('span_issue');
+        let span_project = document.getElementById('span_project');
+        let span_status = document.getElementById('span_status');
+        let span_issuer_name = document.getElementById('span_issuer_name');
+        let span_issuer_mobile_number = document.getElementById('span_issuer_mobile_number');
+        let span_issuer_email = document.getElementById('span_issuer_email');
+        let span_created_by = document.getElementById('span_created_by');
+        let span_created_on = document.getElementById('span_created_on');
+        let span_description = document.getElementById('span_description');
 
         var myHeaders = new Headers();
         myHeaders.append("Accept", "application/json, text/plain, */*");
-        myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidGVzdF90YW5qaW1fMSIsInJvbGUiOiJDQUxMIENFTlRFUiBBR0VOVCIsImxvZ2luX29pZCI6ImQ0NDZmNDMzLWE4YWYtNDAwMS1iNTMzLTdmYzU5MWQ2Y2Y0YiIsImlhdCI6MTY3ODQ0NDY2OSwiZXhwIjoxNjc4NTMxMDY5fQ.UDqsENv3yPmu0OehNIkOOJyVUvbSiYyvuDVptqaia3g");
+        myHeaders.append("Authorization", `Bearer ${user_signing_token_tms}`);
         myHeaders.append("Content-Type", "application/json");
         // myHeaders.append("Referer", `https://tms-test.celloscope.net/issue/admin-issue-list/${ticket_issue_oid}`);
         // myHeaders.append("Referer", `http://172.16.6.134/issue/admin-issue-list/${ticket_issue_oid}`);
@@ -127,6 +176,8 @@
 
         var raw = JSON.stringify({
             "oid": `${ticket_issue_oid}`
+            // "oid": `64ecfb10-e036-418d-8bc0-eea566b28ca0`
+            // "oid": `20f90502-54a9-4e9b-954e-9c5502b1ceb7`
         });
 
         var requestOptions = {
@@ -138,10 +189,49 @@
 
         // fetch("https://tms-test.celloscope.net/api/v1/issue-detail-by-oid", requestOptions)
         fetch("http://172.16.6.134/api/v1/issue-detail-by-oid", requestOptions)
-            .then(response => response.text())
-            .then(result => console.log(result))
-            .catch(error => console.log('error', error));
+            // .then(response => response.text())
+            .then(response => response.json())
+            .then(result => {
+                // HIDE LOADER WILL BE IMPLEMENTED HERE
+
+                // console.log(result);
+                // console.log(result.data);
+                // console.log(result.data.oid);
+                // console.log(result.data.issue_id);
+                // console.log(result.data.category_title_en);
+                // console.log(result.data.project_title_en);
+                // console.log(result.data.status);
+                // console.log(result.data.issuer_name_en);
+                // console.log(result.data.issuer_mobile_number);
+                // console.log(result.data.issuer_email);
+                // console.log(result.data.created_by_en);
+                // console.log(result.data.created_on);
+                // console.log(result.data.description);
+
+                span_issue_id.innerHTML = "";
+                span_issue_id.innerHTML = `${result.data.issue_id}`;
+                span_issue.innerHTML = "";
+                span_issue.innerHTML = `${result.data.category_title_en}`;
+                span_project.innerHTML = "";
+                span_project.innerHTML = `${result.data.project_title_en}`;
+                span_status.innerHTML = "";
+                span_status.innerHTML = `${result.data.status}`;
+                span_issuer_name.innerHTML = "";
+                span_issuer_name.innerHTML = `${result.data.issuer_name_en}`;
+                span_issuer_mobile_number.innerHTML = "";
+                span_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
+                span_issuer_email.innerHTML = "";
+                span_issuer_email.innerHTML = `${result.data.issuer_email}`;
+                span_created_by.innerHTML = "";
+                span_created_by.innerHTML = `${result.data.created_by_en}`;
+                span_created_on.innerHTML = "";
+                span_created_on.innerHTML = `${result.data.created_on}`;
+                span_description.innerHTML = "";
+                span_description.innerHTML = `${result.data.description}`;
+            })
+            .catch(error => console.log('error', error));       // HIDE LOADER WILL BE IMPLEMENTED HERE
     }
+
 </script>
 
 

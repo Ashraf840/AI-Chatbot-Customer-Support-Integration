@@ -54,6 +54,7 @@
             </div>
         </header>
         <!-- ------------------------------------------------------------ -->
+
         <!-- Chatbot window -->
         <div class="chatbox fixed-bottom">
             <div class="chatbox__support">
@@ -78,6 +79,7 @@
                 <button><img src="{% static 'images/home/chatbot/chatbox-icon.svg' %}" alt="chat-btn-img"/></button>
             </div>
         </div>
+        
         <!-- ------------------------------------------------------------ -->
         <!-- Services-->
         <!-- <section class="page-section" id="services">
@@ -640,7 +642,34 @@
                 $('input[name="clientIP"]').val(`${data.ip}`);
             });
         </script>
+
         <!-- Chatbot JS -->
+        <!-- <script>!(function () {console.log('mr. tanvir is bad')
+            let e = document.createElement("script"),
+              t = document.head || document.getElementsByTagName("head")[0];
+            (e.src =
+              "https://cdn.jsdelivr.net/npm/rasa-webchat@1.x.x/lib/index.js"),
+              // Replace 1.x.x with the version that you want
+              (e.async = !0),
+              (e.onload = () => {
+                window.WebChat.default(
+                  {
+                    title: "Agrani Doer",
+                    initPayload: ['/greet_en'].join(''),
+                    customData: { language: "en", agentName: this.name },
+                    socketUrl: "http://localhost:5005",
+                    inputTextFieldHint: "Type a message",
+                    showMessageDate: true,
+                    displayUnreadCount: true
+                  },
+                  null
+                );
+              }),
+              t.insertBefore(e, t.firstChild);
+          })();
+          </script> -->
+
+
         <script>
             const csrf_token =  `{{ csrf_token }}`;
             // console.log(csrf_token);
@@ -678,6 +707,8 @@
                 // redirect the user to that spicific room with the random-room-name (websocket will be enabled in that page)
             }
         </script>
+
+
         <script src="{% static 'js/home/chatbot/app.js' %}"></script>
 
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>

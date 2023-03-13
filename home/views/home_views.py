@@ -10,7 +10,7 @@ import uuid
 from channels.layers import get_channel_layer
 from django.contrib.auth.mixins import LoginRequiredMixin
 # from asgiref.sync import async_to_sync
-from authenticationApp.models import User_Profile
+from authenticationApp.models import User_Profile, User_signin_token_tms
 
 
 today = date.today()
@@ -65,6 +65,7 @@ class CustomerSupportRoom(View):
         self.context['room_slug'] = kwargs['room_slug']
         # print('Room Slug:', kwargs['room_slug'])
         if request.user.username != '':
+            # FOR CSO END
             if request.user.is_cso:
                 # Create CSOVisitorConvoInfo record here
                 # check the chat support reqs of today
@@ -111,6 +112,11 @@ class CustomerSupportRoom(View):
                 self.context['registered_user_email'] = registeredUser_record.email
                 self.context['registered_user_phone'] = registeredUser_record.phone
                 self.context['registered_user_profile_pic'] = registeredUser_record.profile_pic
+
+                csr_record = CustomerSupportRequest.objects.get(room_slug=kwargs['room_slug'])
+                tms_issue_by_oid = csr_record.issue_by_oid
+                self.context['tms_issue_by_oid'] = tms_issue_by_oid
+
                 try:
                     userName_bn = User_Profile.objects.get(user_email=registeredUserEmail)
                     print(userName_bn.user_name_bn)
@@ -123,6 +129,17 @@ class CustomerSupportRoom(View):
                 except User_Profile.DoesNotExist:
                     print('User profile does not exist!')
                     self.context['userName_bn'] = 'null'
+                
+
+                try:
+                    user_signing_token_tms = User_signin_token_tms.objects.get(user_email=request.user.email)
+                    self.context['user_signing_token_tms'] = user_signing_token_tms.user_token;
+                except User_signin_token_tms.DoesNotExist:
+                    # TODO: Logout the user & prompt the CSO to login into the system again
+                    # TODO: Provide a flash-msg afterwards the CSO is logged out & redirected to the login page. ("TMS authentication-token is expired")
+                    return redirect('authenticationApplication:CsoAuth:CSOLogoutView')
+            
+            # FOR USER END
             if request.user.is_user:
                 # self.context['registered_user_full_name'] = request.user.first_name + ' ' + request.user.last_name
                 # print(self.context['registered_user_full_name'])
@@ -145,6 +162,9 @@ class CustomerSupportRoom(View):
                 # Fetch registered CSO's fullname, email, phone to display in the user-chat-end. [The registered user will access the chatroom later]
                 csr_record = CustomerSupportRequest.objects.get(room_slug=conversations.room_slug)
                 cso_user_email = csr_record.assigned_cso
+                tms_issue_by_oid = csr_record.issue_by_oid
+                self.context['tms_issue_by_oid'] = tms_issue_by_oid
+
                 try:
                     cso_user_record = User.objects.get(email=cso_user_email)
                     self.context['cso_user_fullname'] = cso_user_record.first_name + ' ' + cso_user_record.last_name
