@@ -13,4 +13,6 @@ urlpatterns = [
     path("initial-login/password-reset/<str:email>/", prv.PasswordResetView.as_view(), name="PasswordResetView"),
     # user-auth
     path("user-auth/", include(('authenticationApp.urls.user_auth.user_auth_urls', 'app_name'), namespace="UserAuth")),
+    # User API
+    path("user-auth/api/", include(('authenticationApp.api.user_api_urls', 'app_name'), namespace="UserAuthAPI")),
 ]

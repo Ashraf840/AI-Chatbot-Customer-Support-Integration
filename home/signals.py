@@ -156,8 +156,8 @@ def customer_support_request_signal(sender, instance, created, **kwargs):
             # channel_layer = get_channel_layer()   # MOVED TO THE TOP
 
             # TODO: This signal will be custom-made later, logic will be implemented here to decide in which cso-support-dashboard-channel the request will be sent to.
-            cso_email = "tanjim.ashraf@doer.com.bd"
-            # cso_email = "tanjim.ashraf.doer.bp@gmail.com"
+            cso_email = "tanjim.ashraf@doer.com.bd" # COMMENT IT
+            # cso_email = "tanjim.ashraf.doer.bp@gmail.com" # COMMENT IT
             next_cso = cso_email    # COMMENT IT
             # instance.assigned_cso = cso_email
             instance.assigned_cso = next_cso      # OK

@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "home.apps.HomeConfig",
     "authenticationApp.apps.AuthenticationappConfig",
     "staffApp.apps.StaffappConfig",
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
