@@ -10,25 +10,31 @@
         <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Dashboard</li>
       </ol>
       {% endcomment %}
-      <h6 class="font-weight-bolder mb-0">Dashboard
-        <small>({{request.user.email}})</small>
-      </h6>
+      <a href="{% url 'staffApplication:CsoWorkload:CsoDashboard' %}">
+        <h6 class="font-weight-bolder mb-0">Dashboard
+          <small>({{request.user.email}})</small>
+        </h6>
+      </a>
     </nav>
 
     <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
       <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+        {% comment %}
         <div class="input-group">
           <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
           <input type="text" class="form-control" placeholder="Type here...">
         </div>
+        {% endcomment %}
       </div>
       <ul class="navbar-nav  justify-content-end">
+        
         <li class="nav-item d-flex align-items-center">
           <a href="{% url 'authenticationApplication:CsoAuth:CSOLogoutView' %}" class="nav-link text-body font-weight-bold px-0">
-            <i class="fa fa-user me-sm-1"></i>
-            <span class="d-sm-inline d-none">Logout</span>
+            <i class="fa fa-user me-sm-1 fa-2x"></i>
+            <span class="d-sm-inline d-none fs-5">Logout</span>
           </a>
         </li>
+
         <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
           <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
             <div class="sidenav-toggler-inner">
@@ -38,6 +44,9 @@
             </div>
           </a>
         </li>
+
+        
+        {% comment %}
         <li class="nav-item px-3 d-flex align-items-center">
           <a href="javascript:;" class="nav-link text-body p-0">
             <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
@@ -117,6 +126,8 @@
             </li>
           </ul>
         </li>
+        {% endcomment %}
+
       </ul>
     </div>
   </div>

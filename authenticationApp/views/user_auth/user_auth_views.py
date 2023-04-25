@@ -3,6 +3,7 @@ from django.views.generic import View
 from ...forms import UserLoginForm
 from django.contrib.auth import authenticate, login
 from django.urls.base import reverse
+from django.contrib import messages
 
 
 # Concept Ref: https://openclassrooms.com/en/courses/7107341-intermediate-django/7263527-create-a-login-page-with-class-based-views
@@ -35,9 +36,22 @@ class UserLoginPageView(View):
                 #         'authenticationApplication:PasswordResetView', 
                 #         kwargs={"email": user.email}
                 #     ))
-                login(request, user)
-                return redirect('homeApplication:LangingPage')
-                # return redirect('staffApplication:CsoWorkload:CsoDashboard')
+                # TODO: Check if the user has the perm of "is_user", if user is "is_cso", then redirect to the CSO login page including an error-msg, otherwise throw an error-msg only.
+                if user.is_user:
+                    login(request, user)
+                    return redirect('homeApplication:LangingPage')
+                elif user.is_cso:
+                    msg = 'Login using the CSO login system!'
+                    messages.info(request, '%s' % msg)
+                    return redirect('authenticationApplication:CsoAuth:CSOLoginPageView')
+                else:
+                    msg = 'Permission denied!'
+                    messages.info(request, '%s' % msg)
+                    return redirect('authenticationApplication:UserAuth:UserLoginPageView')
+            # User login unsuccessful
+            msg = 'Invalid credentials!'
+            messages.info(request, '%s' % msg)
+            return redirect('authenticationApplication:UserAuth:UserLoginPageView')
         self.context['message'] = 'Login failed!'
         return render(request, self.template_name, context=self.context)
 

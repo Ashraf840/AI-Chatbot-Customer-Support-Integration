@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import User, User_Profile, User_signin_token_tms
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+# from schoolManagementSystem.custom_admin_panel import custom_admin_site
 
 
 class UserAdmin(BaseUserAdmin):
@@ -18,7 +19,7 @@ class UserAdmin(BaseUserAdmin):
             'fields': ('date_joined', 'last_login', 'last_update')
         }),
         ('Roles', {
-            'fields': ('is_active', 'is_staff', 'is_cso', 'is_admin', 'is_superuser')
+            'fields': ('is_active', 'is_staff', 'is_cso', 'is_user', 'is_admin', 'is_superuser')
         }),
         ('Groups', {
             'fields': ('groups',),
@@ -66,3 +67,4 @@ class User_signin_token_tmsAdmin(admin.ModelAdmin):
 admin.site.register(User, UserAdmin)
 admin.site.register(User_Profile, User_ProfileAdmin)
 admin.site.register(User_signin_token_tms, User_signin_token_tmsAdmin)
+

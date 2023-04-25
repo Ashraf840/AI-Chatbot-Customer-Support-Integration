@@ -9,8 +9,9 @@ import datetime
 import uuid
 from channels.layers import get_channel_layer
 from django.contrib.auth.mixins import LoginRequiredMixin
-# from asgiref.sync import async_to_sync
+from asgiref.sync import async_to_sync
 from authenticationApp.models import User_Profile, User_signin_token_tms
+# import os
 
 
 today = date.today()
@@ -19,7 +20,7 @@ today = date.today()
 # Landing Page View
 class LangingPage(LoginRequiredMixin, View):
     login_url = 'authenticationApplication:UserAuth:UserLoginPageView'
-    template_name = 'home/landingPage.html'
+    template_name = 'home/Chatbot-Widget-IBAS/landingPage.html'
     form_class = CustomerSupportRequestForm
     context = {
         'title': 'Home',
@@ -27,6 +28,11 @@ class LangingPage(LoginRequiredMixin, View):
     def get(self, request):
         # self.context['form'] = self.form_class()
         print('#'*50)
+        # directory = os.getcwd()
+        # directory = os.chdir("/home/tanjim/Documents/Django Proj/AI-Chatbot-Integrated-Customer-Support (Working dir-2)/static/landing_page_chatbot_statics/static/img/sara_avatar.png")
+        # print("Path directory 'home_views' class", directory)
+        # bot_img = "/home/tanjim/Documents/Django Proj/AI-Chatbot-Integrated-Customer-Support (Working dir-2)/static/landing_page_chatbot_statics/static/img/sara_avatar.png"
+        # self.context['bot_img'] = bot_img
         # print(f"Landing page form: { self.context['form'] }")
         # print('User session key:', request.session.session_key)
         if request.user.id == None:
@@ -41,7 +47,10 @@ class LangingPage(LoginRequiredMixin, View):
         else:
             print(f"User Id: {request.user.id}")
             usremail_normalized="".join(uemail for uemail in request.user.email if uemail.isalnum())
+            self.context['user_email'] = request.user.email
             self.context['user_email_normalized'] = usremail_normalized
+            request.session['registered_user_session_uuid'] = str(uuid.uuid4())
+            self.context['registered_user_session_uuid'] = request.session['registered_user_session_uuid']
             # self.context['user_email'] = request.user.email
         print('#'*50)
         return render(request, self.template_name, context=self.context)
@@ -55,7 +64,7 @@ class CustomerSupportRoom(View):
     login_url = 'authenticationApplication:UserAuth:UserLoginPageView'
     template_name = 'home/customerSupport.html'
     context = {
-        'title': 'Customer Support',
+        'title': 'Customer Support ChatRoom',
     }
 
     def get(self, request, *args, **kwargs):
@@ -91,9 +100,11 @@ class CustomerSupportRoom(View):
                 print('conversations:', conversations)
                 print('#'*50, '\n'*3)
                 self.context['conversationInfo'] = conversations
+                self.context['chat_convo_cancelled'] = conversations.is_cancelled
                 if conversations is not None:
                     print('conversations room slug:', conversations.room_slug, '------ email:', conversations.cso_email, '------ craeted at:', conversations.created_at)
                     conversations.cso_email = request.user.email
+                    conversations.is_connected = True
                     conversations.save()
                 # for convo in conversations:
                 #     print('conversations room slug:', convo.room_slug, '------ email:', convo.cso_email, '------ craeted at:', convo.created_at)
@@ -113,6 +124,7 @@ class CustomerSupportRoom(View):
                 self.context['registered_user_phone'] = registeredUser_record.phone
                 self.context['registered_user_profile_pic'] = registeredUser_record.profile_pic
 
+                # TODO: GET ISSUE_OID FROM "CSOVisitorConvoInfo" INSTEAD OF "CustomerSupportRequest".
                 csr_record = CustomerSupportRequest.objects.get(room_slug=kwargs['room_slug'])
                 tms_issue_by_oid = csr_record.issue_by_oid
                 self.context['tms_issue_by_oid'] = tms_issue_by_oid
@@ -133,7 +145,7 @@ class CustomerSupportRoom(View):
 
                 try:
                     user_signing_token_tms = User_signin_token_tms.objects.get(user_email=request.user.email)
-                    self.context['user_signing_token_tms'] = user_signing_token_tms.user_token;
+                    self.context['user_signing_token_tms'] = user_signing_token_tms.user_token
                 except User_signin_token_tms.DoesNotExist:
                     # TODO: Logout the user & prompt the CSO to login into the system again
                     # TODO: Provide a flash-msg afterwards the CSO is logged out & redirected to the login page. ("TMS authentication-token is expired")
@@ -148,6 +160,8 @@ class CustomerSupportRoom(View):
                     room_slug=kwargs['room_slug'],
                 ).order_by('-created_at').first()
                 self.context['conversationInfo'] = conversations
+
+                # NB: TO GET PREVIOUS CONVERSATION INFO (May require later)
                 if conversations is not None:
                     # TODO: update the "CSOVisitorConvoInfo.registered_user_email" field with the user-email
                     conversations.registered_user_email = request.user.email
@@ -164,6 +178,12 @@ class CustomerSupportRoom(View):
                 cso_user_email = csr_record.assigned_cso
                 tms_issue_by_oid = csr_record.issue_by_oid
                 self.context['tms_issue_by_oid'] = tms_issue_by_oid
+                # Get CSO's TMS-signin-token
+                user_signing_token_tms = User_signin_token_tms.objects.get(user_email=csr_record.assigned_cso)
+                self.context['user_signing_token_tms'] = user_signing_token_tms.user_token
+                # Update ticket issue to "CSOVisitorConvoInfo()" model
+                conversations.issue_by_oid=csr_record.issue_by_oid
+                conversations.save()
 
                 try:
                     cso_user_record = User.objects.get(email=cso_user_email)
@@ -194,34 +214,43 @@ class CustomerSupportRoom(View):
         self.context['chat_messages'] = messages
         return render(request, self.template_name, context=self.context)
     
+
+    # NOT USING THE POST METHOD
     # post-method: Only used by the CSO to make the convoInfo record's "is_resolved=True", "is_connected=False"
-    def post(self, request, *args, **kwargs):
-        """
-        This post() method will make the "is_resolved=True", "is_connected=False" of the following convo-info-record.
-        Then redirect the cso into his/her CSO-support-dashboard & the visitor into the homepage (through socket-connection).
-        """
-        room_slug = kwargs['room_slug']
-        # TODO: Check if the "request.user" is cso.
-        if request.user.is_cso:
-            # TODO: Get the "convoInfo" record uisng "room_slug" & "cso_email". 
-            # Check if the record of 'convoInfo' has the "is_connected=True" & "is_resolved=False", then only change the two-fields into vice-versa values.
-            cso_visitor_convo_info = CSOVisitorConvoInfo.objects.get(room_slug=room_slug, cso_email=request.user.email)
-            # print('*'*50)            # print('convo is not resolved:', not cso_visitor_convo_info.is_resolved)            # print('convo is connected:', cso_visitor_convo_info.is_connected)            # print('*'*50)
-            if (not cso_visitor_convo_info.is_resolved) and cso_visitor_convo_info.is_connected:
-                cso_visitor_convo_info.is_resolved, cso_visitor_convo_info.is_connected = True, False
-                cso_visitor_convo_info.save()
-                # print('Change the record\'s field: "is_resolved=True" & "is_connected=False"')
-                # # TODO: Send a signal to that socket-consumer about the chat-support is resolved.
-                # channel_layer = get_channel_layer()
-                # async_to_sync(channel_layer.group_send)(
-                #     f'chat_{room_slug}',
-                #     {
-                #         'type': 'support_resolved',
-                #         'cso_email': request.user.email
-                #     }
-                # )
-        # TODO: Redirect the cso to his/her dashboard accordingly, then redirect the visitor to the homepage thorugh channel-connection automatic-btn-click with js from the visitor perspective in the "customerSupport.html" file.
-        return redirect(reverse('staffApplication:CsoWorkload:SupportDashboard', kwargs={'email': request.user.email}))
+    # def post(self, request, *args, **kwargs):
+    #     """
+    #     This post() method will make the "is_resolved=True", "is_connected=False" of the following convo-info-record.
+    #     Then redirect the cso into his/her CSO-support-dashboard & the visitor into the homepage (through socket-connection).
+    #     """
+    #     room_slug = kwargs['room_slug']
+    #     # TODO: Check if the "request.user" is cso.
+    #     if request.user.is_cso:
+    #         # TODO: Get the "convoInfo" record uisng "room_slug" & "cso_email". 
+    #         # Check if the record of 'convoInfo' has the "is_connected=True" & "is_resolved=False", then only change the two-fields into vice-versa values.
+    #         cso_visitor_convo_info = CSOVisitorConvoInfo.objects.get(room_slug=room_slug, cso_email=request.user.email)
+    #         customer_support_request_record = CustomerSupportRequest.objects.get(room_slug=room_slug)
+    #         # print('*'*50)            # print('convo is not resolved:', not cso_visitor_convo_info.is_resolved)            # print('convo is connected:', cso_visitor_convo_info.is_connected)            # print('*'*50)
+    #         if request.POST['resolved'] == "is_resolved":
+    #             # print("Is resolved button is clied & posted!")
+    #             # if (not cso_visitor_convo_info.is_resolved) and cso_visitor_convo_info.is_connected:
+    #             cso_visitor_convo_info.is_resolved, cso_visitor_convo_info.is_connected = True, False
+    #             cso_visitor_convo_info.save()
+                
+    #             customer_support_request_record.is_resolved = True
+    #             customer_support_request_record.save()
+            
+    #             # print('Change the record\'s field: "is_resolved=True" & "is_connected=False"')
+    #             # # TODO: Send a signal to that socket-consumer about the chat-support is resolved.
+    #             channel_layer = get_channel_layer()
+    #             async_to_sync(channel_layer.group_send)(
+    #                 f'chat_{room_slug}',
+    #                 {
+    #                     'type': 'support_resolved',
+    #                     'cso_email': request.user.email
+    #                 }
+    #             )
+    #     # TODO: Redirect the cso to his/her dashboard accordingly, then redirect the visitor to the homepage thorugh channel-connection automatic-btn-click with js from the visitor perspective in the "customerSupport.html" file.
+    #     return redirect(reverse('staffApplication:CsoWorkload:SupportDashboard', kwargs={'email': request.user.email}))
         # return HttpResponse(f' \
         #     Will redirect the cso to his/her dashboard. room_slug: {room_slug} \
         #     cso email: {request.user.email}')
@@ -284,11 +313,13 @@ class CustomerSupportReq(View):
             #     room_slug = user_support_req.room_slug
             # else:
             #     pass
-            client_ip, room_slug = request.POST['clientIP'], request.POST['roomSlug']
+            client_ip, room_slug, ticketIssuerOid = request.POST['clientIP'], request.POST['roomSlug'], request.POST['ticketIssuerOid']
+            # TODO: ADD ISSUE OID WHILE RECORD CREATION WHICH IS GET FROM ZUBAIR VAI'S CHATBOT
             CustomerSupportRequest.objects.create(
                 client_ip=client_ip,
                 registered_user_email_normalized=request.POST['user_email_normalized'],
                 room_slug=room_slug,
+                issue_by_oid=ticketIssuerOid,
             )
 
         return redirect(reverse(

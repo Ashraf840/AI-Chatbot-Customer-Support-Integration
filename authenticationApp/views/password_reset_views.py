@@ -1,10 +1,83 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import View
-from ..models import User
+from ..models import User, User_Profile, User_signin_token_tms
 from django.contrib.auth.mixins import LoginRequiredMixin
 from ..forms import UserPasswordResetForm
 from django.contrib.auth.hashers import make_password
 from django.urls.base import reverse
+import json, requests
+
+
+# User token creation method
+def user_token_creation(user_email=None,
+                        user_id=None,
+                        user_token=None,
+                        token_type=None):
+    User_signin_token_tms.objects.create(
+        user_email=user_email,
+        user_id=user_id,
+        user_token=user_token,
+        token_type=token_type
+    )
+
+
+def updateCSOPasswordTMS(user, username, auth_password, set_password):
+    """
+    This method will user the chage-password-api to change the password of the user by his/her ownself
+    """
+    url = "https://tms-test.celloscope.net/api/v1/user/signin"
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    payload = json.dumps({
+        "user_id": f"{username}",
+        "password": f"{auth_password}"
+    })
+    TMS_res = requests.post(url, headers=headers, data=payload)
+    TMS_res_dict = TMS_res.json()
+    user_token=TMS_res_dict['token']['access_token']
+
+    # Store user-signin-token into the TMS
+    try:
+        User_signin_token_tms.objects.get(
+            user_email=user.email,
+            user_id=user.username,    
+        ).delete()
+        user_token_creation(user_email=user.email,
+            user_id=user.username,
+            user_token=TMS_res_dict['token']['access_token'],
+            token_type=TMS_res_dict['token']['token_type'])
+    except User_signin_token_tms.DoesNotExist:
+        user_token_creation(user_email=user.email,
+            user_id=user.username,
+            user_token=TMS_res_dict['token']['access_token'],
+            token_type=TMS_res_dict['token']['token_type'])
+
+    # Reset/change the password of the user by his/her own credentials
+    url = "https://tms-test.celloscope.net/api/v1/change-password"
+
+    payload = json.dumps({
+        "oldPassword": f"{auth_password}",
+        "newPassword": f"{set_password}",
+        "confirmPassword": f"{set_password}",
+    })
+    headers = {
+        'Accept': 'application/json, text/plain, */*',
+        'Authorization': f'Bearer {user_token}',
+        'Content-Type': 'application/json',
+        'Referer': 'https://tms-test.celloscope.net/issuer',
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36 OPR/97.0.0.0',
+        'sec-ch-ua': '"Not?A_Brand";v="99", "Opera";v="97", "Chromium";v="111"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Linux"'
+    }
+
+    TMS_res = requests.post(url, headers=headers, data=payload)
+    TMS_res_dict = TMS_res.json()
+    print("After changing CSO's password into TMS:", TMS_res_dict)
+    return TMS_res_dict
+
 
 
 # class PasswordResetView(LoginRequiredMixin, View):
@@ -59,6 +132,13 @@ class PasswordResetView(View):
                     # TODO: Later, redirect the users to their dashboard according to their user role
                     # [NB]: Didn't understand why the user is redirected to login again at this stage.
                     print("[PasswordResetView() Class-post-method] password is set successfully!")
+
+                    # TODO: UPDATE CSO's PASSWORD REGARDING RESET-PASSWORD-API
+                    updateCSOPasswordTMS(user=user, username=user.username, auth_password=user.initial_password, set_password=password1)
+
+
+
+
                     return redirect('staffApplication:CsoWorkload:CsoDashboard')
                 else:
                     print("[PasswordResetView() Class-post-method] password didn't matched!")

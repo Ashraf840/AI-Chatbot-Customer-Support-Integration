@@ -274,24 +274,58 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
             if 'support_is_resolved' in data:
                 # TODO: Make the "CSOVisitorConvoInfo" record as resolved.
                 cso_email = data['cso_email']
+                reg_user_email = data['reg_user_email']
                 room_slug = data['roomslug']
                 cso_visitor_convo_info = CSOVisitorConvoInfo.objects.get(room_slug=room_slug, cso_email=cso_email)  # mark the convo-info as resolved, & make the CSO disconnected from the conversation
                 cust_support_req = CustomerSupportRequest.objects.get(room_slug=room_slug)
-                if (not cso_visitor_convo_info.is_resolved) and cso_visitor_convo_info.is_connected:
-                    cso_visitor_convo_info.is_resolved, cso_visitor_convo_info.is_connected = True, False
-                    cso_visitor_convo_info.save()
-                    if not cust_support_req.is_resolved:
-                        cust_support_req.is_resolved = True
-                        cust_support_req.save()
-                    async_to_sync(self.channel_layer.group_send)(
-                        self.room_group_name,
-                        # pass a dictionary with custom key-value pairs
-                        {
-                            'type': 'support_resolved',  # will be used to call as a method
-                            'cso_email': cso_email,
-                        }
-                    )
+                
+                # if (not cso_visitor_convo_info.is_resolved) and cso_visitor_convo_info.is_connected:
+                    
+                cso_visitor_convo_info.is_resolved, cso_visitor_convo_info.is_connected = True, False
+                cso_visitor_convo_info.save()
+                if not cust_support_req.is_resolved:
+                    cust_support_req.is_resolved = True
+                    cust_support_req.save()
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    # pass a dictionary with custom key-value pairs
+                    {
+                        'type': 'support_resolved',  # will be used to call as a method
+                        'cso_email': cso_email,
+                        'reg_user_email': reg_user_email,
+                    }
+                )
+                
                 print('The conversation is marked as resolved!')
+            
+            if 'cso_user_convo_cancelled' in data:
+                cso_email = data['cso_email']
+                reg_user_email = data['reg_user_email']
+                room_slug = data['roomslug']
+                print('The conversation is cancelled by the user!')
+                print("User email:", reg_user_email)
+                print("CSO email:", cso_email)
+
+                # TODO: Backend logics related to db
+                cso_visitor_convo_info = CSOVisitorConvoInfo.objects.get(room_slug=room_slug)  # mark the convo-info as resolved, & make the CSO disconnected from the conversation
+                cso_visitor_convo_info.is_cancelled, cso_visitor_convo_info.is_connected = True, False
+                cso_visitor_convo_info.save()
+
+                # Delete the message request in the CSR dashboard
+                cust_support_req = CustomerSupportRequest.objects.get(room_slug=room_slug).delete()
+
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    # pass a dictionary with custom key-value pairs
+                    {
+                        'type': 'chat_convo_cancelled',  # will be used to call as a method
+                        'cso_email': cso_email,
+                        'reg_user_email': reg_user_email,
+                        'room_slug': room_slug,
+                    }
+                )
+
+                
 
             print("[recieve() method] Recieved data to backend consumer class: CSOVisitorChatSuppportConsumer")
             print("#"*50)
@@ -323,9 +357,37 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
         print('The support is resolved')
         print('\n', '-'*50)
         cso_email = event['cso_email']
+        reg_user_email = event['reg_user_email']
         self.send(text_data=json.dumps({
             'support_is_resolved': 'The support is resolved!',
             'cso_email': cso_email,
+            'reg_user_email': reg_user_email,
+        }))
+    
+
+    def support_request_cleared(self, event):
+        print('\n', '-'*50)
+        print('The support request is cleared!')
+        print('\n', '-'*50)
+        # cso_email = event['cso_email']
+        # reg_user_email = event['reg_user_email']
+        self.send(text_data=json.dumps({
+            'support_req_is_removed': 'The support request is removed!',
+        }))
+
+    
+    def chat_convo_cancelled(self, event):
+        print('\n', '-'*50)
+        print('The chat conversation is cancelled by the user!')
+        print('\n', '-'*50)
+        cso_email = event['cso_email']
+        reg_user_email = event['reg_user_email']
+        room_slug = event['room_slug']
+        self.send(text_data=json.dumps({
+            'conversation_is_cancelled': 'True',
+            'cso_email': cso_email,
+            'reg_user_email': reg_user_email,
+            'room_slug': room_slug,
         }))
 
 

@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from home.models import CustomerSupportRequest
 from authenticationApp.models import User, User_signin_token_tms
 from ...cso_connectivity_models import CSOOnline
+from django.urls.base import reverse
 
 
 # TODO: [Done] Create cso dashboard class
@@ -53,6 +54,27 @@ class SupportDashboard(LoginRequiredMixin, View):
         self.context['cso_email'] = request.user.email
         # --------------------------------------------------------------------------------
         return render(request, 'staffApp/cso/support_dashboard.html', self.context)
+    
+    def post(self, request, email):
+        cso_email = request.POST['cso_email']
+        room_slug = request.POST['room_slug']
+        print('\n'*3, '$'*50)
+        print(f'CSO email: {cso_email}; Room slug: {room_slug}')
+        print('\n'*3, '$'*50)
+        try:
+            msg_req = CustomerSupportRequest.objects.get(assigned_cso=cso_email, room_slug=room_slug)
+            msg_req.delete()
+        except:
+            return redirect(reverse(
+                'staffApplication:CsoWorkload:SupportDashboard', 
+                kwargs={"email": cso_email}
+            ))
+        # return reverse('staffApplication:CsoWorkload:SupportDashboard', kwargs={'email': cso_email})
+        return redirect(reverse(
+            'staffApplication:CsoWorkload:SupportDashboard', 
+            kwargs={"email": cso_email}
+        ))
+
 
 
 # NOT USING CURRENTLY

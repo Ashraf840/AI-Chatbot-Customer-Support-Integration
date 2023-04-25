@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ChatbotVisitorMessage, CustomerSupportRequest, CSOVisitorMessage, CSOVisitorConvoInfo
+from .models import ChatbotVisitorMessage, CustomerSupportRequest, CSOVisitorMessage, CSOVisitorConvoInfo, UserChatbotSocket
 from .user_connectivity_models import ChatSupportUserOnline, ChatSupportUserConnectedChannels
 
 
@@ -14,7 +14,7 @@ class ChatbotVisitorMessageAdmin(admin.ModelAdmin):
 
 
 class CustomerSupportRequestAdmin(admin.ModelAdmin):
-    list_display = ['id', 'client_ip', 'room_slug', 'visitor_session_uuid', 'registered_user_email_normalized', 'assigned_cso', 'is_resolved', 'created_at']
+    list_display = ['id', 'client_ip', 'room_slug', 'visitor_session_uuid', 'registered_user_email_normalized', 'assigned_cso', 'is_resolved', 'issue_by_oid', 'created_at']
     list_display_links = ['id']
     search_fields = list_display
     readonly_fields = ['room_slug', 'visitor_session_uuid', 'created_at'] # to view these fields in the "Food" model inside the admin-panel, it's required to explicitly mention these fields as readonly fields, oetherwise they won't be visible.
@@ -34,12 +34,12 @@ class CSOVisitorMessageAdmin(admin.ModelAdmin):
 
 
 class CSOVisitorConvoInfoAdmin(admin.ModelAdmin):
-    list_display = ['id', 'room_slug', 'cso_email', 'registered_user_email', 'is_resolved', 'is_connected', 'created_at']
+    list_display = ['id', 'room_slug', 'cso_email', 'registered_user_email', 'is_resolved', 'is_connected', 'is_cancelled', 'is_cleared', 'created_at']
     list_display_links = ['id']
     search_fields = list_display[:-1]   # except the "created_at" field
     # readonly_fields = ['room_slug', 'created_at']
     readonly_fields = ['created_at']
-    list_filter = ['is_resolved', 'is_connected', 'created_at']
+    list_filter = ['is_resolved', 'is_connected', 'is_cancelled', 'is_cleared', 'created_at']
     list_per_page = 15
     ordering = ['-id']
 
@@ -64,10 +64,20 @@ class ChatSupportUserConnectedChannelsAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
 
+class UserChatbotSocketAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user_email', 'chatbot_socket_id', 'created_at']
+    list_display_links = ['id']
+    search_fields = list_display
+    readonly_fields = ['created_at']
+    list_per_page = 15
+    ordering = ['-id']
+
+
 admin.site.register(ChatbotVisitorMessage, ChatbotVisitorMessageAdmin)
 admin.site.register(CustomerSupportRequest, CustomerSupportRequestAdmin)
 admin.site.register(CSOVisitorMessage, CSOVisitorMessageAdmin)
 admin.site.register(CSOVisitorConvoInfo, CSOVisitorConvoInfoAdmin)
+admin.site.register(UserChatbotSocket, UserChatbotSocketAdmin)
 
 # User online connectivity models
 admin.site.register(ChatSupportUserOnline, ChatSupportUserOnlineAdmin)

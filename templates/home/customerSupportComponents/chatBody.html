@@ -10,25 +10,34 @@
 
                 <div class="card" id="chat2" style="height: 100%;">
                     
-                    <div class="card-header p-4">
-                        <div class="row d-flex justify-content-between align-items-center">
-                            <div class="col">
-                                {% if request.user.is_user %}
-                                <h3 class="mb-0">CSO Name: {{ cso_user_fullname }}</h3>
-                                {% endif %}
-                                {% if request.user.is_cso %}
-                                <h5 class="mb-0">User Name: {{ registered_user_fullname }}</h5>
-                                {% endif %}
+                    <div class="card-header p-4" style="background-color: #344767;">
+                        <div class="row">
+                            <div class="col d-flex justify-content-start align-items-center">
+                                <h2 class="text-light">Chatbox</h2>
                             </div>
-                            <div class="col text-end">
+                            <div class="col d-flex justify-content-end align-items-center">
                                 {% if request.user.is_user %}
-                                <button type="button" class="btn btn-danger btn-md me-5" data-mdb-ripple-color="dark">Cancel Chat</button>
+                                        {% if not conversationInfo.is_resolved %}
+                                        <button type="button" class="btn btn-danger btn-md" id="cancel-chat-btn" data-mdb-ripple-color="dark" style="width: 8rem;">Cancel Chat</button>
+                                        {% else %}
+                                        <button type="button" class="btn btn-secondary btn-md text-dark" data-mdb-ripple-color="dark" style="width: 8rem;">Resolved</button>
+                                        {% endif %}
+                                {% endif %}
+
+                                    <!-- Notify the CSO that the user has cancelled the chat-convo -->
+                                {% if request.user.is_cso %}
+                                    <!-- If chat-convo.is_cancelled is False, render this div -->
+                                    {% if not chat_convo_cancelled %}
+                                    <div id="chat-cancel" hidden>
+                                        <h5 class="mb-0">User has cancelled the chat conversation. {{ chat_convo_cancelled }}</h5>
+                                    </div>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                         </div>
                     </div>
                     <div class="card-body overflow-auto chat-messages-box" data-mdb-perfect-scrollbar="true" id="chatbody-scroller"
-                        style="position: relative; height: 400px">
+                        style="position: relative; height: 400px;">
                         <!-- IMPORTANT COMMENTS -->
                         <!-- <div class="d-flex flex-row justify-content-start">
                             <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
@@ -138,8 +147,8 @@
                         {% for m in chat_messages %}
                             {% if m.user_identity == 'cso' %}
                                 <div class="d-flex flex-row justify-content-start">
-                                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
-                                        alt="avatar 1" style="width: 45px; height: 100%;">
+                                    <img src="{{ cso_user_profile_pic.url }}"
+                                        alt="avatar 1" style="width: 45px; height: 45px;">
                                     <div>
                                         <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">{{ m.message }}</p>
                                         <p class="small ms-3 mb-3 rounded-3 text-muted">23:58</p>
@@ -151,22 +160,21 @@
                                         <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">{{ m.message }}</p>
                                         <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">00:06</p>
                                     </div>
-                                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava4-bg.webp"
-                                        alt="avatar 1" style="width: 45px; height: 100%;">
+                                    <img src="{{ registered_user_profile_pic.url }}"
+                                        alt="avatar 1" style="width: 45px; height: 45px;">
                                 </div>
                             {% endif %}
                         {% endfor %}
-                        
                     </div>
-                    <div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
-                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
-                            alt="avatar 3" style="width: 40px; height: 100%;" class="me-1">
+                    <div class="card-footer text-muted d-flex justify-content-start align-items-center px-1 py-2">
+                        <!-- <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
+                            alt="avatar 3" style="width: 40px; height: 100%;" class="me-1"> -->
                         <input type="text" class="form-control form-control-lg ms-2" id="chat-message-input"
                             placeholder="Type message">
                         <!-- <a class="ms-1 text-muted" href="#!"><i class="fas fa-paperclip"></i></a> -->
                         <!-- <a class="ms-3 text-muted" href="#!"><i class="fas fa-smile"></i></a> -->
-                        <a class="ms-3 me-1" id="chat-message-send-btn" 
-                            style="cursor: pointer;"><i class="fas fa-paper-plane fa-2x"></i></a>
+                        <a class="mx-3" id="chat-message-send-btn" 
+                            style="cursor: pointer;"><i class="fas fa-paper-plane fa-2x" style="color: #344767;"></i></a>
                     </div>
                 </div>
 

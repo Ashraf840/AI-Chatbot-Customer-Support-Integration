@@ -60,6 +60,20 @@ def get_response(msg):
                             return "No CSO is currently available! A CSO will contact with you soon!"
                         else:
                             print(f'The chat will be routed to {active_cso[0]["cso_email"]}')
+                    if len(active_cso) > 1:
+                        total_msg = CustomerSupportRequest.get_reqs_with_assigned_cso()
+                        msg_req = []
+                        for msg in total_msg:
+                            msg_req.append(msg['assigned_cso'])
+                        msg_req_set = set(msg_req)
+                        msg_count = []
+                        msg_req_list = list(msg_req_set)
+                        for i in msg_req_list:
+                            msg_count.append(msg_req.count(i))
+                        for x in msg_count:
+                            if x < 5:   # if there is any cso whose handling less than 5 chats at the current moment
+                                return random.choice(intent['responses'])
+                        return "No CSO is currently available! A CSO will contact with you soon!"
                 return random.choice(intent['responses'])
     return "I do not understand..."
 

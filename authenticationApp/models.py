@@ -53,6 +53,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
 
+    def has_module_perms(self, app_label):
+       return True
+    
+    def has_perm(self, perm, obj=None):
+        return True
+
     def save(self, *args, **kwargs):
         # TODO: halt save method, create random password, store into "first_time_pass" field, lastly set that random password into the "password" field.
         # TODO: define a field "is_first_login(bool)" to track first-time-login of users.

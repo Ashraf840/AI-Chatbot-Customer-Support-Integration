@@ -99,6 +99,7 @@ def deactive_user_online(room_slug, channel_name, cso_email):
         if len(total_active_channel) == 0:
             # Make the user offline if it's online by passing the "user_online_obj" entirely, so that the follwing func doesn't require to query the "ChatSupportUserOnline" model before making the user offline.
             make_user_offline(cso_online_obj)
+            CSOConnectedChannels.objects.filter(cso_email=cso_email).delete()
     except CSOOnline.DoesNotExist:
         print('CSO doesn\'t exist to make the CSO offline!')
 
@@ -122,7 +123,7 @@ class SupportDashboardConsumer(WebsocketConsumer):
         self.room_name = self.scope['url_route']['kwargs']['cso_mail']
         print(f"room name: {self.room_name}")
         self.room_name_normalized="".join(ch for ch in self.room_name if ch.isalnum())   # keeps only alphanumeric-chars in the room-name. [Ref]: https://www.scaler.com/topics/remove-special-characters-from-string-python/
-        self.room_group_name = 'chat_dashboard_%s' % self.room_name_normalized    # THIS pattern is required to sent any asynchrobous msg to this consumer-channel
+        self.room_group_name = 'chat_dashboard_%s' % self.room_name_normalized    # THIS pattern is required to send any asynchronous msg to this consumer-channel
         print(f"room-group name: {self.room_group_name}")
         self.user_obj = self.scope['user']
         # print(f"Newly Connected (username): {self.user_obj.username}")
@@ -159,7 +160,7 @@ class SupportDashboardConsumer(WebsocketConsumer):
         print("[recieve() method] Recieved data to backend consumer class: SupportDashboardConsumer")
         print("#"*50)
     
-    # Custom method: send all new support-req from the db-signal's (home.signals.customer_support_request_signal) channel-group-send method.
+    # Custom method: send all new support-req from the db-signal's (home.signals.customer_support_request_signal_post_save) channel-group-send method.
     def new_support_req(self, event):
         new_supprt_reqst = event['new_support_request']
         self.send(text_data=json.dumps({
@@ -170,6 +171,7 @@ class SupportDashboardConsumer(WebsocketConsumer):
     def old_support_req_resolved(self, event):
         old_supprt_req_roomSlug = event['instance_room_slug']
         old_supprt_req_isResolved = event['instance_resolved']
+        total_current_reqs = event['total_current_reqs']
         print('\n'*3)
         print('+'*50)
         print('Old support request is resolved (from SupportDashboardConsumer consumer)!')
@@ -178,6 +180,24 @@ class SupportDashboardConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps({
             'old_supprt_req_roomSlug': old_supprt_req_roomSlug,
             'old_supprt_req_isResolved': old_supprt_req_isResolved,
+            'total_current_reqs': total_current_reqs,
+        }))
+    
+
+    # Custom method: send the chat-convo-cancelled-by-user to the frontend of the specific CSO's email.
+    def support_req_chat_convo_cancelled(self, event):
+        instance_room_slug = event['instance_room_slug']
+        # old_supprt_req_isResolved = event['instance_resolved']
+        total_current_reqs_after_convo_cancelled = event['total_current_reqs_after_convo_cancelled']
+        print('\n'*3)
+        print('+'*50)
+        print('Chat convo is cancelled (from SupportDashboardConsumer consumer)!')
+        print('+'*50)
+        print('\n'*3)
+        self.send(text_data=json.dumps({
+            'chat_convo_cancelled': 'True',
+            'instance_room_slug': instance_room_slug,
+            'total_current_reqs_after_convo_cancelled': total_current_reqs_after_convo_cancelled,
         }))
 
     # Default method of "WebsocketConsumer" class

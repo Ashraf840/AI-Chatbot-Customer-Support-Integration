@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "authenticationApp.apps.AuthenticationappConfig",
     "staffApp.apps.StaffappConfig",
     'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -43,6 +44,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = "schoolManagementSystem.urls"
@@ -61,6 +64,14 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+    "http://127.0.0.1:5502",
+    "http://127.0.0.1:5500",
+    "http://127.0.0.1:5501"
 ]
 
 WSGI_APPLICATION = "schoolManagementSystem.wsgi.application"  # [use WSGI to run vannila-dj-app]

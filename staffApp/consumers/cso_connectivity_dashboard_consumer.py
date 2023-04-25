@@ -29,7 +29,7 @@ class CSOOnlineConnectivityConsumer(WebsocketConsumer):
         print("[recieve() method] Recieved data to backend consumer class: CSOOnlineConnectivityConsumer")
         print("#"*50)
     
-    # Custom method: send all new support-req from the db-signal's (home.signals.customer_support_request_signal) channel-group-send method.
+    # Custom method: send all new support-req from the db-signal's (home.signals.customer_support_request_signal_post_save) channel-group-send method.
     def cso_online_connectivity(self, event):
         instance_id = event['instance_id']
         connectivity_report_email = event['connectivity_report_email']
