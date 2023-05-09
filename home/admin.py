@@ -34,12 +34,12 @@ class CSOVisitorMessageAdmin(admin.ModelAdmin):
 
 
 class CSOVisitorConvoInfoAdmin(admin.ModelAdmin):
-    list_display = ['id', 'room_slug', 'cso_email', 'registered_user_email', 'is_resolved', 'is_connected', 'is_cancelled', 'is_cleared', 'created_at']
+    list_display = ['id', 'room_slug', 'cso_email', 'registered_user_email', 'is_resolved', 'is_dismissed', 'is_connected', 'is_cancelled', 'is_cleared', 'created_at']
     list_display_links = ['id']
     search_fields = list_display[:-1]   # except the "created_at" field
     # readonly_fields = ['room_slug', 'created_at']
     readonly_fields = ['created_at']
-    list_filter = ['is_resolved', 'is_connected', 'is_cancelled', 'is_cleared', 'created_at']
+    list_filter = ['is_resolved', 'is_dismissed', 'is_connected', 'is_cancelled', 'is_cleared', 'created_at']
     list_per_page = 15
     ordering = ['-id']
 

@@ -116,6 +116,7 @@ class CustomerSupportRoom(View):
                         is_connected=True,  # meant to mark the assign CSO as connected to this conversation
                     )
                 # Fetch registered user's fullname, email, phonr, NID to display in the cso-chat-end. [The CSO will access the chatroom later]
+                csoEmail = conversations.cso_email
                 registeredUserEmail = conversations.registered_user_email
                 print(f'CSO Visitor Convo Info: {registeredUserEmail}')
                 registeredUser_record = User.objects.get(email=registeredUserEmail)
@@ -124,9 +125,14 @@ class CustomerSupportRoom(View):
                 self.context['registered_user_phone'] = registeredUser_record.phone
                 self.context['registered_user_profile_pic'] = registeredUser_record.profile_pic
 
+                self.context['common_cso_email'] = csoEmail
+                self.context['common_registered_user_email'] = registeredUserEmail
+
                 # TODO: GET ISSUE_OID FROM "CSOVisitorConvoInfo" INSTEAD OF "CustomerSupportRequest".
-                csr_record = CustomerSupportRequest.objects.get(room_slug=kwargs['room_slug'])
-                tms_issue_by_oid = csr_record.issue_by_oid
+                # csr_record = CustomerSupportRequest.objects.get(room_slug=kwargs['room_slug'])
+                # tms_issue_by_oid = csr_record.issue_by_oid
+
+                tms_issue_by_oid = conversations.issue_by_oid
                 self.context['tms_issue_by_oid'] = tms_issue_by_oid
 
                 try:
@@ -173,11 +179,20 @@ class CustomerSupportRoom(View):
                         room_slug=kwargs['room_slug'], 
                         registered_user_email=request.user.email,
                     )
+                
+                # print(f"conversations-----------------: {conversations}")
+                # print(f"conversations.registered_user_email-----------------: {conversations.registered_user_email}")
+                
                 # Fetch registered CSO's fullname, email, phone to display in the user-chat-end. [The registered user will access the chatroom later]
                 csr_record = CustomerSupportRequest.objects.get(room_slug=conversations.room_slug)
                 cso_user_email = csr_record.assigned_cso
                 tms_issue_by_oid = csr_record.issue_by_oid
                 self.context['tms_issue_by_oid'] = tms_issue_by_oid
+                # print(f"CustomerSupportRequest.cso_user_email-----------------: {cso_user_email}")
+                csoEmail = cso_user_email
+                registeredUserEmail = conversations.registered_user_email
+                self.context['common_cso_email'] = csoEmail
+                self.context['common_registered_user_email'] = registeredUserEmail
                 # Get CSO's TMS-signin-token
                 user_signing_token_tms = User_signin_token_tms.objects.get(user_email=csr_record.assigned_cso)
                 self.context['user_signing_token_tms'] = user_signing_token_tms.user_token

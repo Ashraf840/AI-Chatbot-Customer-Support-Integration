@@ -38,6 +38,7 @@ navigator.mediaDevices.getUserMedia(constraints)
 
         // Send the form data to the server.
         fetch(uploadURL, {
+            mode: 'no-cors',
             method: "POST",
             cache: "no-cache",
             body: formData

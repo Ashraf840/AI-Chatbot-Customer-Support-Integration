@@ -37,12 +37,13 @@ def updateCSOPasswordTMS(user, username, auth_password, set_password):
     TMS_res = requests.post(url, headers=headers, data=payload)
     TMS_res_dict = TMS_res.json()
     user_token=TMS_res_dict['token']['access_token']
+    print("TMS_res_dict:", TMS_res_dict)
 
     # Store user-signin-token into the TMS
     try:
         User_signin_token_tms.objects.get(
-            user_email=user.email,
-            user_id=user.username,    
+            user_email=f"{user.email}",
+            user_id=f"{user.username}",    
         ).delete()
         user_token_creation(user_email=user.email,
             user_id=user.username,

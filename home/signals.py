@@ -266,13 +266,18 @@ def customer_support_request_signal_post_delete(sender, instance, **kwargs):
         print("Successfully modify the record inside the 'CSOVisitorConvoInfo' model.")
         # Send a socket signal to the CSO-user chatroom, thus the user is redirected to the home-page & the CSO is redirected to the Support-Request-List page
         channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            f'chat_{cso_user_chat_info.room_slug}',
-            {
-                'type': 'support_request_cleared', 
-                # 'total_current_reqs': total_current_reqs,
-            }
-        )
+        # Check if the record contains "is_cancelled" is True
+        print(f"cso_user_chat_info.is_cancelled: {cso_user_chat_info.is_cancelled}")
+        print(f"cso_user_chat_info.is_dismissed: {cso_user_chat_info.is_dismissed}")
+        if (cso_user_chat_info.is_cancelled):
+            async_to_sync(channel_layer.group_send)(
+                f'chat_{cso_user_chat_info.room_slug}',
+                {
+                    'type': 'support_request_cleared', 
+                    # 'total_current_reqs': total_current_reqs,
+                    'CSOVisitorConvoInfo_isCancelled': True,
+                }
+            )
         print('room-slug assigned to msg-req:',instance.room_slug)
         print('assigned cso of msg-req:',instance.assigned_cso)
         data = CustomerSupportRequest.get_unresolved_customer_support_reqs()

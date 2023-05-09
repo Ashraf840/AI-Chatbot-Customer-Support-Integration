@@ -15,9 +15,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const elemsTap = document.querySelector(".tap-target");
   // eslint-disable-next-line no-undef
   const instancesTap = M.TapTarget.init(elemsTap, {});
-  instancesTap.open();
+  // instancesTap.open();
   setTimeout(() => {
-    instancesTap.close();
+    // instancesTap.close();
   }, 4000);
 });
 

@@ -91,18 +91,30 @@ AUTH_USER_MODEL = "authenticationApp.User"
 # }
 
 # Integrate MongoDB
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'djongo',
+#         'NAME': 'drmc_db',
+#         'CLIENT': {
+#             'host': 'mongodb://mongo:mongo@localhost:27017/?authSource=admin',
+#             'port': 27017,
+#             'username': 'mongo',
+#             'password': 'mongo',
+#             'authSource': 'admin',
+#             'authMechanism': 'SCRAM-SHA-1'
+#         },
+#     }
+# }
+
+# Integrate PostgreSQL
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'drmc_db',
-        'CLIENT': {
-            'host': 'mongodb://mongo:mongo@localhost:27017/?authSource=admin',
-            'port': 27017,
-            'username': 'mongo',
-            'password': 'mongo',
-            'authSource': 'admin',
-            'authMechanism': 'SCRAM-SHA-1'
-        },
+        'USER': 'ai_chatbot_chat_system',
+        'PASSWORD': 'hD937!dXJ6tI',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 

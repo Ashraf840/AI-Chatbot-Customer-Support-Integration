@@ -29,7 +29,12 @@
                                     <!-- If chat-convo.is_cancelled is False, render this div -->
                                     {% if not chat_convo_cancelled %}
                                     <div id="chat-cancel" hidden>
-                                        <h5 class="mb-0">User has cancelled the chat conversation. {{ chat_convo_cancelled }}</h5>
+                                        <h5 class="mb-0">User has cancelled the chat conversation.</h5>
+                                    </div>
+                                    {% endif %}
+                                    {% if chat_convo_cancelled %}
+                                    <div id="chat-cancel">
+                                        <h5 class="mb-0">User has cancelled the chat conversation.</h5>
                                     </div>
                                     {% endif %}
                                 {% endif %}
@@ -169,12 +174,20 @@
                     <div class="card-footer text-muted d-flex justify-content-start align-items-center px-1 py-2">
                         <!-- <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
                             alt="avatar 3" style="width: 40px; height: 100%;" class="me-1"> -->
+                        {% if chat_convo_cancelled %}
+                        <input type="text" class="form-control form-control-lg ms-2" id="chat-message-input"
+                            placeholder="Type message" disabled>
+                        <a class="mx-3" id="chat-message-send-btn" 
+                            style="cursor: not-allowed;"><i class="fas fa-paper-plane fa-2x" style="color: #344767;" disabled></i></a>
+                        {% endif %}
+                        {% if not chat_convo_cancelled %}
                         <input type="text" class="form-control form-control-lg ms-2" id="chat-message-input"
                             placeholder="Type message">
                         <!-- <a class="ms-1 text-muted" href="#!"><i class="fas fa-paperclip"></i></a> -->
                         <!-- <a class="ms-3 text-muted" href="#!"><i class="fas fa-smile"></i></a> -->
                         <a class="mx-3" id="chat-message-send-btn" 
                             style="cursor: pointer;"><i class="fas fa-paper-plane fa-2x" style="color: #344767;"></i></a>
+                        {% endif %}
                     </div>
                 </div>
 

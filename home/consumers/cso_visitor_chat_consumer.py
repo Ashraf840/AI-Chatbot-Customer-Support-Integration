@@ -325,7 +325,32 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
                     }
                 )
 
-                
+            if 'cso_user_convo_dismissed' in data:
+                cso_email = data['cso_email']
+                reg_user_email = data['reg_user_email']
+                room_slug = data['roomslug']
+                print('The conversation is dismissed by the CSO!')
+                print("User email:", reg_user_email)
+                print("CSO email:", cso_email)
+
+                # TODO: Backend logics related to db
+                cso_visitor_convo_info = CSOVisitorConvoInfo.objects.get(room_slug=room_slug)  # mark the convo-info as resolved, & make the CSO disconnected from the conversation
+                cso_visitor_convo_info.is_dismissed, cso_visitor_convo_info.is_connected = True, False
+                cso_visitor_convo_info.save()
+
+                # Delete the message request in the CSR dashboard
+                cust_support_req = CustomerSupportRequest.objects.get(room_slug=room_slug).delete()
+
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    # pass a dictionary with custom key-value pairs
+                    {
+                        'type': 'chat_convo_dismissed',  # will be used to call as a method
+                        'cso_email': cso_email,
+                        'reg_user_email': reg_user_email,
+                        'room_slug': room_slug,
+                    }
+                )
 
             print("[recieve() method] Recieved data to backend consumer class: CSOVisitorChatSuppportConsumer")
             print("#"*50)
@@ -369,11 +394,15 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
         print('\n', '-'*50)
         print('The support request is cleared!')
         print('\n', '-'*50)
-        # cso_email = event['cso_email']
+        CSOVisitorConvoInfo_isCancelled = event['CSOVisitorConvoInfo_isCancelled']
+        print(f"CSOVisitorConvoInfo_isCancelled: {CSOVisitorConvoInfo_isCancelled}")
         # reg_user_email = event['reg_user_email']
-        self.send(text_data=json.dumps({
-            'support_req_is_removed': 'The support request is removed!',
-        }))
+        # Check & send custom signal of clearing support-req if the chat-convo-is-cancelled
+        if (CSOVisitorConvoInfo_isCancelled):
+            self.send(text_data=json.dumps({
+                'support_req_is_removed': 'The support request is removed!',
+                'CSOVisitorConvoInfo_isCancelled': CSOVisitorConvoInfo_isCancelled
+            }))
 
     
     def chat_convo_cancelled(self, event):
@@ -385,6 +414,20 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
         room_slug = event['room_slug']
         self.send(text_data=json.dumps({
             'conversation_is_cancelled': 'True',
+            'cso_email': cso_email,
+            'reg_user_email': reg_user_email,
+            'room_slug': room_slug,
+        }))
+    
+    def chat_convo_dismissed(self, event):
+        print('\n', '-'*50)
+        print('The chat conversation is dismissed by the user!')
+        print('\n', '-'*50)
+        cso_email = event['cso_email']
+        reg_user_email = event['reg_user_email']
+        room_slug = event['room_slug']
+        self.send(text_data=json.dumps({
+            'conversation_is_dismissed': 'True',
             'cso_email': cso_email,
             'reg_user_email': reg_user_email,
             'room_slug': room_slug,
