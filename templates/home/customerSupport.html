@@ -454,54 +454,101 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
         let span_issuer_mobile_number = document.getElementById('div_issuer_mobile_number');
         let span_status = document.getElementById('div_status');
 
-        var myHeaders = new Headers();
-        myHeaders.append("Accept", "application/json, text/plain, */*");
-        myHeaders.append("Authorization", `Bearer ${user_signin_token}`);
-        myHeaders.append("Content-Type", "application/json");
-        // myHeaders.append("Referer", `https://tms-test.celloscope.net/issue/admin-issue-list/${ticket_issue_oid}`);
-        // myHeaders.append("Referer", `http://172.16.6.134/issue/admin-issue-list/${ticket_issue_oid}`);
-        myHeaders.append("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 OPR/96.0.0.0");
-        myHeaders.append("sec-ch-ua", "\"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"110\", \"Opera\";v=\"96\"");
-        myHeaders.append("sec-ch-ua-mobile", "?0");
-        myHeaders.append("sec-ch-ua-platform", "\"Linux\"");
 
-        var raw = JSON.stringify({
-            "oid": `${ticket_issue_oid}`
-            // "oid": `64ecfb10-e036-418d-8bc0-eea566b28ca0`
-            // "oid": `f6b4aca6-43b7-49ef-a491-4c4684f058ed`
-        });
+
+
+
+        // Fetch approach - 2
+        var get_tms_issue_detail_url = `http://${window.location.host}/staff/api/tms-issue/${ticket_issue_oid}/${user_signin_token}/`;
+        console.log("Fetch URL (GET):", get_tms_issue_detail_url);
+
 
         var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: raw,
+            method: 'GET',
             redirect: 'follow'
         };
 
-        // fetch("https://tms-test.celloscope.net/api/v1/issue-detail-by-oid", requestOptions)
-        fetch("http://172.16.6.134/api/v1/issue-detail-by-oid", requestOptions)
-            // .then(response => response.text())
-            .then(response => response.json())
-            .then(result => {
-                // HIDE LOADER WILL BE IMPLEMENTED HERE
-                grid_tms_issue_skeleton.style.display = "none";
-                // grid_tms_issue_skeleton.remove();
-                // grid_tms_issue_data.style.visibi = "block";
-                grid_tms_issue_data.removeAttribute('style');
+        // fetch(`http://${window.location.host}/staff/api/tms-issue/${ticket_issue_oid}/${user_signing_token_tms}/`, requestOptions)
+        fetch(`${get_tms_issue_detail_url}`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            // HIDE LOADER WILL BE IMPLEMENTED HERE
+            grid_tms_issue_skeleton.style.display = "none";
+            // grid_tms_issue_skeleton.remove();
+            // grid_tms_issue_data.style.visibi = "block";
+            grid_tms_issue_data.removeAttribute('style');
 
-                // console.log(result);
-                span_issue_id.innerHTML = "";
-                span_issue_id.innerHTML = `${result.data.issue_id}`;
-                span_issue.innerHTML = "";
-                span_issue.innerHTML = `${result.data.category_title_en}`;
-                span_project.innerHTML = "";
-                span_project.innerHTML = `${result.data.project_title_en}`;
-                span_status.innerHTML = "";
-                span_status.innerHTML = `${result.data.status}`;
-                span_issuer_mobile_number.innerHTML = "";
-                span_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
-            })
-            .catch(error => console.log('error', error));       // HIDE LOADER WILL BE IMPLEMENTED HERE
+            // console.log(result);
+            span_issue_id.innerHTML = "";
+            span_issue_id.innerHTML = `${result.data.issue_id}`;
+            span_issue.innerHTML = "";
+            span_issue.innerHTML = `${result.data.category_title_en}`;
+            span_project.innerHTML = "";
+            span_project.innerHTML = `${result.data.project_title_en}`;
+            span_status.innerHTML = "";
+            span_status.innerHTML = `${result.data.status}`;
+            span_issuer_mobile_number.innerHTML = "";
+            span_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
+        })
+        .catch(error => console.log('error', error));       // HIDE LOADER WILL BE IMPLEMENTED HERE
+
+
+
+
+        // // Fetch approach - 1
+        // var myHeaders = new Headers();
+        // myHeaders.append("Accept", "application/json, text/plain, */*");
+        // myHeaders.append("Authorization", `Bearer ${user_signin_token}`);
+        // myHeaders.append("Content-Type", "application/json");
+        // // myHeaders.append("Referer", `https://tms-test.celloscope.net/issue/admin-issue-list/${ticket_issue_oid}`);
+        // // myHeaders.append("Referer", `http://172.16.6.134/issue/admin-issue-list/${ticket_issue_oid}`);
+        // myHeaders.append("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 OPR/96.0.0.0");
+        // myHeaders.append("sec-ch-ua", "\"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"110\", \"Opera\";v=\"96\"");
+        // myHeaders.append("sec-ch-ua-mobile", "?0");
+        // myHeaders.append("sec-ch-ua-platform", "\"Linux\"");
+
+        // var raw = JSON.stringify({
+        //     "oid": `${ticket_issue_oid}`
+        //     // "oid": `64ecfb10-e036-418d-8bc0-eea566b28ca0`
+        //     // "oid": `f6b4aca6-43b7-49ef-a491-4c4684f058ed`
+        // });
+
+        // var requestOptions = {
+        //     method: 'POST',
+        //     headers: myHeaders,
+        //     body: raw,
+        //     redirect: 'follow'
+        // };
+
+        // // fetch("https://tms-test.celloscope.net/api/v1/issue-detail-by-oid", requestOptions)
+        // fetch("http://172.16.6.134/api/v1/issue-detail-by-oid", requestOptions)
+        // // .then(response => response.text())
+        // .then(response => response.json())
+        // .then(result => {
+        //     // HIDE LOADER WILL BE IMPLEMENTED HERE
+        //     grid_tms_issue_skeleton.style.display = "none";
+        //     // grid_tms_issue_skeleton.remove();
+        //     // grid_tms_issue_data.style.visibi = "block";
+        //     grid_tms_issue_data.removeAttribute('style');
+
+        //     // console.log(result);
+        //     span_issue_id.innerHTML = "";
+        //     span_issue_id.innerHTML = `${result.data.issue_id}`;
+        //     span_issue.innerHTML = "";
+        //     span_issue.innerHTML = `${result.data.category_title_en}`;
+        //     span_project.innerHTML = "";
+        //     span_project.innerHTML = `${result.data.project_title_en}`;
+        //     span_status.innerHTML = "";
+        //     span_status.innerHTML = `${result.data.status}`;
+        //     span_issuer_mobile_number.innerHTML = "";
+        //     span_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
+        // })
+        // .catch(error => console.log('error', error));       // HIDE LOADER WILL BE IMPLEMENTED HERE
+
+
+
+
+
     }
 
     window.onload = function() {
@@ -537,76 +584,123 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
         let modal_span_ticket_created_on = document.getElementById('modal_span_ticket_created_on');
         let modal_span_ticket_description = document.getElementById('modal_span_ticket_description');
 
-        var myHeaders = new Headers();
-        myHeaders.append("Accept", "application/json, text/plain, */*");
-        myHeaders.append("Authorization", `Bearer ${user_signin_token}`);
-        myHeaders.append("Content-Type", "application/json");
-        // myHeaders.append("Referer", `https://tms-test.celloscope.net/issue/admin-issue-list/${ticket_issue_oid}`);
-        // myHeaders.append("Referer", `http://172.16.6.134/issue/admin-issue-list/${ticket_issue_oid}`);
-        myHeaders.append("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 OPR/96.0.0.0");
-        myHeaders.append("sec-ch-ua", "\"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"110\", \"Opera\";v=\"96\"");
-        myHeaders.append("sec-ch-ua-mobile", "?0");
-        myHeaders.append("sec-ch-ua-platform", "\"Linux\"");
 
 
-        var raw = JSON.stringify({
-            "oid": `${ticket_issue_oid}`
-            // "oid": `64ecfb10-e036-418d-8bc0-eea566b28ca0`
-            // "oid": `20f90502-54a9-4e9b-954e-9c5502b1ceb7`
-            // "oid": `8414abc2-0de4-4c6b-9272-5581529f3e6d`
-        });
+        var get_tms_issue_detail_url = `http://${window.location.host}/staff/api/tms-issue/${ticket_issue_oid}/${user_signin_token}/`;
+        console.log("Fetch URL (GET):", get_tms_issue_detail_url);
+
 
         var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow',
-            // mode: 'no-cors', 
+            method: 'GET',
+            redirect: 'follow'
         };
 
-        // fetch("https://tms-test.celloscope.net/api/v1/issue-detail-by-oid", requestOptions)
-        fetch("http://172.16.6.134/api/v1/issue-detail-by-oid", requestOptions)
-            // .then(response => response.text())
-            .then(response => response.json())
-            .then(result => {
-                // HIDE LOADER WILL BE IMPLEMENTED HERE
+        // fetch(`http://${window.location.host}/staff/api/tms-issue/${ticket_issue_oid}/${user_signing_token_tms}/`, requestOptions)
+        fetch(`${get_tms_issue_detail_url}`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            // HIDE LOADER WILL BE IMPLEMENTED HERE
+            grid_tms_issue_skeleton.style.display = "none";
+            // grid_tms_issue_skeleton.remove();
+            // grid_tms_issue_data.style.visibi = "block";
+            grid_tms_issue_data.removeAttribute('style');
 
-                console.log(result);
-                // console.log(result.data);
-                // console.log(result.data.oid);
-                // console.log(result.data.issue_id);
-                // console.log(result.data.category_title_en);
-                // console.log(result.data.project_title_en);
-                // console.log(result.data.status);
-                // console.log(result.data.issuer_name_en);
-                // console.log(result.data.issuer_mobile_number);
-                // console.log(result.data.issuer_email);
-                // console.log(result.data.created_by_en);
-                // console.log(result.data.created_on);
-                // console.log(result.data.description);
+            // console.log(result);
+            modal_span_ticket_issue_id.innerHTML = "";
+            modal_span_ticket_issue_id.innerHTML = `${result.data.issue_id}`;
+            modal_span_ticket_issue.innerHTML = "";
+            modal_span_ticket_issue.innerHTML = `${result.data.category_title_en}`;
+            modal_span_ticket_project.innerHTML = "";
+            modal_span_ticket_project.innerHTML = `${result.data.project_title_en}`;
+            modal_span_ticket_status.innerHTML = "";
+            modal_span_ticket_status.innerHTML = `${result.data.status}`;
+            modal_span_ticket_issuer_name.innerHTML = "";
+            modal_span_ticket_issuer_name.innerHTML = `${result.data.issuer_name_en}`;
+            modal_span_ticket_issuer_mobile_number.innerHTML = "";
+            modal_span_ticket_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
+            modal_span_ticket_issuer_email.innerHTML = "";
+            modal_span_ticket_issuer_email.innerHTML = `${result.data.issuer_email}`;
+            modal_span_ticket_created_by.innerHTML = "";
+            modal_span_ticket_created_by.innerHTML = `${result.data.created_by_en}`;
+            modal_span_ticket_created_on.innerHTML = "";
+            modal_span_ticket_created_on.innerHTML = `${result.data.created_on}`;
+            modal_span_ticket_description.innerHTML = "";
+            modal_span_ticket_description.innerHTML = `${result.data.description}`;
+        })
+        .catch(error => console.log('error', error));       // HIDE LOADER WILL BE IMPLEMENTED HERE
 
-                modal_span_ticket_issue_id.innerHTML = "";
-                modal_span_ticket_issue_id.innerHTML = `${result.data.issue_id}`;
-                modal_span_ticket_issue.innerHTML = "";
-                modal_span_ticket_issue.innerHTML = `${result.data.category_title_en}`;
-                modal_span_ticket_project.innerHTML = "";
-                modal_span_ticket_project.innerHTML = `${result.data.project_title_en}`;
-                modal_span_ticket_status.innerHTML = "";
-                modal_span_ticket_status.innerHTML = `${result.data.status}`;
-                modal_span_ticket_issuer_name.innerHTML = "";
-                modal_span_ticket_issuer_name.innerHTML = `${result.data.issuer_name_en}`;
-                modal_span_ticket_issuer_mobile_number.innerHTML = "";
-                modal_span_ticket_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
-                modal_span_ticket_issuer_email.innerHTML = "";
-                modal_span_ticket_issuer_email.innerHTML = `${result.data.issuer_email}`;
-                modal_span_ticket_created_by.innerHTML = "";
-                modal_span_ticket_created_by.innerHTML = `${result.data.created_by_en}`;
-                modal_span_ticket_created_on.innerHTML = "";
-                modal_span_ticket_created_on.innerHTML = `${result.data.created_on}`;
-                modal_span_ticket_description.innerHTML = "";
-                modal_span_ticket_description.innerHTML = `${result.data.description}`;
-            })
-            .catch(error => console.log('error', error));       // HIDE LOADER WILL BE IMPLEMENTED HERE
+
+        
+        // var myHeaders = new Headers();
+        // myHeaders.append("Accept", "application/json, text/plain, */*");
+        // myHeaders.append("Authorization", `Bearer ${user_signin_token}`);
+        // myHeaders.append("Content-Type", "application/json");
+        // // myHeaders.append("Referer", `https://tms-test.celloscope.net/issue/admin-issue-list/${ticket_issue_oid}`);
+        // // myHeaders.append("Referer", `http://172.16.6.134/issue/admin-issue-list/${ticket_issue_oid}`);
+        // myHeaders.append("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 OPR/96.0.0.0");
+        // myHeaders.append("sec-ch-ua", "\"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"110\", \"Opera\";v=\"96\"");
+        // myHeaders.append("sec-ch-ua-mobile", "?0");
+        // myHeaders.append("sec-ch-ua-platform", "\"Linux\"");
+
+
+        // var raw = JSON.stringify({
+        //     "oid": `${ticket_issue_oid}`
+        //     // "oid": `64ecfb10-e036-418d-8bc0-eea566b28ca0`
+        //     // "oid": `20f90502-54a9-4e9b-954e-9c5502b1ceb7`
+        //     // "oid": `8414abc2-0de4-4c6b-9272-5581529f3e6d`
+        // });
+
+        // var requestOptions = {
+        //     method: 'POST',
+        //     headers: myHeaders,
+        //     body: raw,
+        //     redirect: 'follow',
+        //     // mode: 'no-cors', 
+        // };
+
+        // // fetch("https://tms-test.celloscope.net/api/v1/issue-detail-by-oid", requestOptions)
+        // fetch("http://172.16.6.134/api/v1/issue-detail-by-oid", requestOptions)
+        //     // .then(response => response.text())
+        //     .then(response => response.json())
+        //     .then(result => {
+        //         // HIDE LOADER WILL BE IMPLEMENTED HERE
+
+        //         console.log(result);
+        //         // console.log(result.data);
+        //         // console.log(result.data.oid);
+        //         // console.log(result.data.issue_id);
+        //         // console.log(result.data.category_title_en);
+        //         // console.log(result.data.project_title_en);
+        //         // console.log(result.data.status);
+        //         // console.log(result.data.issuer_name_en);
+        //         // console.log(result.data.issuer_mobile_number);
+        //         // console.log(result.data.issuer_email);
+        //         // console.log(result.data.created_by_en);
+        //         // console.log(result.data.created_on);
+        //         // console.log(result.data.description);
+
+        //         modal_span_ticket_issue_id.innerHTML = "";
+        //         modal_span_ticket_issue_id.innerHTML = `${result.data.issue_id}`;
+        //         modal_span_ticket_issue.innerHTML = "";
+        //         modal_span_ticket_issue.innerHTML = `${result.data.category_title_en}`;
+        //         modal_span_ticket_project.innerHTML = "";
+        //         modal_span_ticket_project.innerHTML = `${result.data.project_title_en}`;
+        //         modal_span_ticket_status.innerHTML = "";
+        //         modal_span_ticket_status.innerHTML = `${result.data.status}`;
+        //         modal_span_ticket_issuer_name.innerHTML = "";
+        //         modal_span_ticket_issuer_name.innerHTML = `${result.data.issuer_name_en}`;
+        //         modal_span_ticket_issuer_mobile_number.innerHTML = "";
+        //         modal_span_ticket_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
+        //         modal_span_ticket_issuer_email.innerHTML = "";
+        //         modal_span_ticket_issuer_email.innerHTML = `${result.data.issuer_email}`;
+        //         modal_span_ticket_created_by.innerHTML = "";
+        //         modal_span_ticket_created_by.innerHTML = `${result.data.created_by_en}`;
+        //         modal_span_ticket_created_on.innerHTML = "";
+        //         modal_span_ticket_created_on.innerHTML = `${result.data.created_on}`;
+        //         modal_span_ticket_description.innerHTML = "";
+        //         modal_span_ticket_description.innerHTML = `${result.data.description}`;
+        //     })
+        //     .catch(error => console.log('error', error));       // HIDE LOADER WILL BE IMPLEMENTED HERE
 
     }
 </script>

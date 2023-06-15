@@ -210,6 +210,11 @@
 
 <!-- Custom JS -->
 {% block js %}
+<!-- <script type="text/javascript" src="/test/wp-content/themes/child/script/jquery.jcarousel.min.js"></script> -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+<!-- get cookies -->
+<script src="{% static 'js/miscellaneous/helper_func/get_cookies.js' %}"></script>
+
 <!-- Fetch ticket issue from TMS -->
 <script>
     // msg_id -> message-request-id
@@ -231,76 +236,213 @@
         let span_created_on = document.getElementById('span_created_on');
         let span_description = document.getElementById('span_description');
 
-        var myHeaders = new Headers();
-        myHeaders.append("Accept", "application/json, text/plain, */*");
-        myHeaders.append("Authorization", `Bearer ${user_signing_token_tms}`);
-        myHeaders.append("Content-Type", "application/json");
-        // myHeaders.append("Referer", `https://tms-test.celloscope.net/issue/admin-issue-list/${ticket_issue_oid}`);
-        // myHeaders.append("Referer", `http://172.16.6.134/issue/admin-issue-list/${ticket_issue_oid}`);
-        myHeaders.append("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 OPR/96.0.0.0");
-        myHeaders.append("sec-ch-ua", "\"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"110\", \"Opera\";v=\"96\"");
-        myHeaders.append("sec-ch-ua-mobile", "?0");
-        myHeaders.append("sec-ch-ua-platform", "\"Linux\"");
 
+        // console.log("Hellow!");
+        // var csrf_token = getCookie("csrftoken");
+        // console.log(`Dynamic Window Host location: ${window.location.host}`);
+        // console.log(`Dynamic CSRF Token: ${getCookie("csrftoken")}`);
+        // console.log(`Dynamic CSRF Token: ${csrf_token}`);
+        // console.log(`Dynamic CSRF Token:`, getCookie("csrftoken"));
+        // console.log(`Dynamic CSRF Token:`, csrf_token);
+        // console.log(csrf_token);
+        // console.log("Browser Cookies:", document.cookie);
+        var get_tms_issue_detail_url = `http://${window.location.host}/staff/api/tms-issue/${ticket_issue_oid}/${user_signing_token_tms}/`;
+        console.log("Fetch URL (GET):", get_tms_issue_detail_url);
 
-        var raw = JSON.stringify({
-            "oid": `${ticket_issue_oid}`
-            // "oid": `64ecfb10-e036-418d-8bc0-eea566b28ca0`
-            // "oid": `20f90502-54a9-4e9b-954e-9c5502b1ceb7`
-            // "oid": `8414abc2-0de4-4c6b-9272-5581529f3e6d`
-        });
 
         var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow',
-            // mode: 'no-cors', 
+            method: 'GET',
+            redirect: 'follow'
         };
 
-        // fetch("https://tms-test.celloscope.net/api/v1/issue-detail-by-oid", requestOptions)
-        fetch("http://172.16.6.134/api/v1/issue-detail-by-oid", requestOptions)
-            // .then(response => response.text())
-            .then(response => response.json())
-            .then(result => {
-                // HIDE LOADER WILL BE IMPLEMENTED HERE
+        // fetch(`http://${window.location.host}/staff/api/tms-issue/${ticket_issue_oid}/${user_signing_token_tms}/`, requestOptions)
+        fetch(`${get_tms_issue_detail_url}`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            // HIDE LOADER WILL BE IMPLEMENTED HERE
 
-                console.log(result);
-                // console.log(result.data);
-                // console.log(result.data.oid);
-                // console.log(result.data.issue_id);
-                // console.log(result.data.category_title_en);
-                // console.log(result.data.project_title_en);
-                // console.log(result.data.status);
-                // console.log(result.data.issuer_name_en);
-                // console.log(result.data.issuer_mobile_number);
-                // console.log(result.data.issuer_email);
-                // console.log(result.data.created_by_en);
-                // console.log(result.data.created_on);
-                // console.log(result.data.description);
+            // console.log("THIS IS THE RESULT");
+            // console.log("THIS IS THE RESULT",result);
+            // console.log(result.data.oid);
+            // console.log(result.data.issue_id);
+            // console.log(result.data.category_title_en);
+            // console.log(result.data.project_title_en);
+            // console.log(result.data.status);
+            // console.log(result.data.issuer_name_en);
+            // console.log(result.data.issuer_mobile_number);
+            // console.log(result.data.issuer_email);
+            // console.log(result.data.created_by_en);
+            // console.log(result.data.created_on);
+            // console.log(result.data.description);
 
-                span_issue_id.innerHTML = "";
-                span_issue_id.innerHTML = `${result.data.issue_id}`;
-                span_issue.innerHTML = "";
-                span_issue.innerHTML = `${result.data.category_title_en}`;
-                span_project.innerHTML = "";
-                span_project.innerHTML = `${result.data.project_title_en}`;
-                span_status.innerHTML = "";
-                span_status.innerHTML = `${result.data.status}`;
-                span_issuer_name.innerHTML = "";
-                span_issuer_name.innerHTML = `${result.data.issuer_name_en}`;
-                span_issuer_mobile_number.innerHTML = "";
-                span_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
-                span_issuer_email.innerHTML = "";
-                span_issuer_email.innerHTML = `${result.data.issuer_email}`;
-                span_created_by.innerHTML = "";
-                span_created_by.innerHTML = `${result.data.created_by_en}`;
-                span_created_on.innerHTML = "";
-                span_created_on.innerHTML = `${result.data.created_on}`;
-                span_description.innerHTML = "";
-                span_description.innerHTML = `${result.data.description}`;
-            })
-            .catch(error => console.log('error', error));       // HIDE LOADER WILL BE IMPLEMENTED HERE
+            span_issue_id.innerHTML = "";
+            span_issue_id.innerHTML = `${result.data.issue_id}`;
+            span_issue.innerHTML = "";
+            span_issue.innerHTML = `${result.data.category_title_en}`;
+            span_project.innerHTML = "";
+            span_project.innerHTML = `${result.data.project_title_en}`;
+            span_status.innerHTML = "";
+            span_status.innerHTML = `${result.data.status}`;
+            span_issuer_name.innerHTML = "";
+            span_issuer_name.innerHTML = `${result.data.issuer_name_en}`;
+            span_issuer_mobile_number.innerHTML = "";
+            span_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
+            span_issuer_email.innerHTML = "";
+            span_issuer_email.innerHTML = `${result.data.issuer_email}`;
+            span_created_by.innerHTML = "";
+            span_created_by.innerHTML = `${result.data.created_by_en}`;
+            span_created_on.innerHTML = "";
+            span_created_on.innerHTML = `${result.data.created_on}`;
+            span_description.innerHTML = "";
+            span_description.innerHTML = `${result.data.description}`;
+        })
+        .catch(error => console.log('error', error));       // HIDE LOADER WILL BE IMPLEMENTED HERE
+
+        
+
+        // var myHeaders = new Headers();
+        // myHeaders.append("Content-Type", "application/json");
+        // myHeaders.append("X-CSRFToken", getCookie("csrftoken"));
+
+        // var raw = JSON.stringify({
+        //     "ticket_issue_oid": "251d3dbb-7e1b-421e-9ece-286917193ff6",
+        //     "user_signing_token_tms": `${user_signing_token_tms}`
+        // });
+
+        // var requestOptions = {
+        //     method: 'POST',
+        //     headers: myHeaders,
+        //     body: raw,
+        //     redirect: 'follow'
+        // };
+
+        // // fetch("http://127.0.0.1:8080/staff/api/tms-issue/", requestOptions)
+        // fetch(`http://${window.location.host}/staff/api/tms-issue/`, requestOptions)
+        // // .then(response => response.text())
+        // // .then(result => console.log(result))
+        // // .catch(error => console.log('error', error));
+        // .then(response => response.json())
+        // .then(result => {
+        //     // HIDE LOADER WILL BE IMPLEMENTED HERE
+
+        //     // console.log("THIS IS THE RESULT");
+        //     // console.log("THIS IS THE RESULT",result);
+        //     // console.log(result.data.oid);
+        //     // console.log(result.data.issue_id);
+        //     // console.log(result.data.category_title_en);
+        //     // console.log(result.data.project_title_en);
+        //     // console.log(result.data.status);
+        //     // console.log(result.data.issuer_name_en);
+        //     // console.log(result.data.issuer_mobile_number);
+        //     // console.log(result.data.issuer_email);
+        //     // console.log(result.data.created_by_en);
+        //     // console.log(result.data.created_on);
+        //     // console.log(result.data.description);
+
+        //     span_issue_id.innerHTML = "";
+        //     span_issue_id.innerHTML = `${result.data.issue_id}`;
+        //     span_issue.innerHTML = "";
+        //     span_issue.innerHTML = `${result.data.category_title_en}`;
+        //     span_project.innerHTML = "";
+        //     span_project.innerHTML = `${result.data.project_title_en}`;
+        //     span_status.innerHTML = "";
+        //     span_status.innerHTML = `${result.data.status}`;
+        //     span_issuer_name.innerHTML = "";
+        //     span_issuer_name.innerHTML = `${result.data.issuer_name_en}`;
+        //     span_issuer_mobile_number.innerHTML = "";
+        //     span_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
+        //     span_issuer_email.innerHTML = "";
+        //     span_issuer_email.innerHTML = `${result.data.issuer_email}`;
+        //     span_created_by.innerHTML = "";
+        //     span_created_by.innerHTML = `${result.data.created_by_en}`;
+        //     span_created_on.innerHTML = "";
+        //     span_created_on.innerHTML = `${result.data.created_on}`;
+        //     span_description.innerHTML = "";
+        //     span_description.innerHTML = `${result.data.description}`;
+        // })
+        // .catch(error => console.log('error', error));       // HIDE LOADER WILL BE IMPLEMENTED HERE
+
+
+        // var myHeaders = new Headers();
+        // myHeaders.append("Accept", "application/json, text/plain, */*");
+        // myHeaders.append("Authorization", `Bearer ${user_signing_token_tms}`);
+        // myHeaders.append("Content-Type", "application/json");
+        // // myHeaders.append("Referer", `https://tms-test.celloscope.net/issue/admin-issue-list/${ticket_issue_oid}`);
+        // // myHeaders.append("Referer", `http://172.16.6.134/issue/admin-issue-list/${ticket_issue_oid}`);
+        // myHeaders.append("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 OPR/96.0.0.0");
+        // myHeaders.append("sec-ch-ua", "\"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"110\", \"Opera\";v=\"96\"");
+        // myHeaders.append("sec-ch-ua-mobile", "?0");
+        // myHeaders.append("sec-ch-ua-platform", "\"Linux\"");
+        // // myHeaders.append("Origin", "https://tms-test.celloscope.net")
+
+
+        // var raw = JSON.stringify({
+        //     "oid": `${ticket_issue_oid}`
+        //     // "oid": `64ecfb10-e036-418d-8bc0-eea566b28ca0`
+        //     // "oid": `20f90502-54a9-4e9b-954e-9c5502b1ceb7`
+        //     // "oid": `8414abc2-0de4-4c6b-9272-5581529f3e6d`
+        // });
+
+        // var requestOptions = {
+        //     method: 'POST',
+        //     headers: myHeaders,
+        //     body: raw,
+        //     redirect: 'follow',
+        //     // mode: 'no-cors', 
+        // };
+
+        // // fetch("https://tms-test.celloscope.net/api/v1/issue-detail-by-oid", requestOptions)
+        // // fetch("http://tms-test.celloscope.net/api/v1/issue-detail-by-oid", requestOptions)
+        // fetch("http://172.16.6.134/api/v1/issue-detail-by-oid", requestOptions)
+        //     // .then(response => response.text())
+        //     .then(response => response.json())
+        //     .then(result => {
+        //         // HIDE LOADER WILL BE IMPLEMENTED HERE
+
+        //         console.log(result);
+        //         // console.log(result.data);
+        //         // console.log(result.data.oid);
+        //         // console.log(result.data.issue_id);
+        //         // console.log(result.data.category_title_en);
+        //         // console.log(result.data.project_title_en);
+        //         // console.log(result.data.status);
+        //         // console.log(result.data.issuer_name_en);
+        //         // console.log(result.data.issuer_mobile_number);
+        //         // console.log(result.data.issuer_email);
+        //         // console.log(result.data.created_by_en);
+        //         // console.log(result.data.created_on);
+        //         // console.log(result.data.description);
+
+        //         span_issue_id.innerHTML = "";
+        //         span_issue_id.innerHTML = `${result.data.issue_id}`;
+        //         span_issue.innerHTML = "";
+        //         span_issue.innerHTML = `${result.data.category_title_en}`;
+        //         span_project.innerHTML = "";
+        //         span_project.innerHTML = `${result.data.project_title_en}`;
+        //         span_status.innerHTML = "";
+        //         span_status.innerHTML = `${result.data.status}`;
+        //         span_issuer_name.innerHTML = "";
+        //         span_issuer_name.innerHTML = `${result.data.issuer_name_en}`;
+        //         span_issuer_mobile_number.innerHTML = "";
+        //         span_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
+        //         span_issuer_email.innerHTML = "";
+        //         span_issuer_email.innerHTML = `${result.data.issuer_email}`;
+        //         span_created_by.innerHTML = "";
+        //         span_created_by.innerHTML = `${result.data.created_by_en}`;
+        //         span_created_on.innerHTML = "";
+        //         span_created_on.innerHTML = `${result.data.created_on}`;
+        //         span_description.innerHTML = "";
+        //         span_description.innerHTML = `${result.data.description}`;
+        //     })
+        //     .catch(error => console.log('error', error));       // HIDE LOADER WILL BE IMPLEMENTED HERE
+
+
+
+
+
+
+
+
 
 
 
@@ -375,7 +517,8 @@
             let tbody = document.querySelector("#tbody");
             let newtr = '';
             let counter = 0;
-            let url = 'http://127.0.0.1:8080/customer-support';
+            // let url = 'http://127.0.0.1:8080/customer-support';
+            let url = `http://${window.location.host}/customer-support`;
             updated_reqs.forEach((req) => {
                 // console.log(req);
                 // newtr += `${req.client_ip} ----- ${req.room_slug}`;

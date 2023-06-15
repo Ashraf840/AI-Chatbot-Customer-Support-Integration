@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "staffApp.apps.StaffappConfig",
     'rest_framework',
     'corsheaders',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -71,7 +72,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8080",
     "http://127.0.0.1:5502",
     "http://127.0.0.1:5500",
-    "http://127.0.0.1:5501"
+    "http://127.0.0.1:5501",
+    "https://tms-test.celloscope.net",
 ]
 
 WSGI_APPLICATION = "schoolManagementSystem.wsgi.application"  # [use WSGI to run vannila-dj-app]
@@ -80,6 +82,14 @@ ASGI_APPLICATION = "schoolManagementSystem.asgi.application"
 # Assign the Custom User Model Configuration
 AUTH_USER_MODEL = "authenticationApp.User"
 
+CSRF_COOKIE_SECURE = True
+
+
+
+GRAPH_MODELS = {
+  'all_applications': True,
+  'group_models': True,
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases

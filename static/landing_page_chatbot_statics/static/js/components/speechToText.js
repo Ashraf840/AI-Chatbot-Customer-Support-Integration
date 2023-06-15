@@ -1,5 +1,7 @@
 let recorder = null;
-const uploadURL = "https://nlp.celloscope.net/nlp/dataset/v1/audio/speech-to-text";
+// const uploadURL = "https://nlp.celloscope.net/nlp/dataset/v1/audio/speech-to-text";
+// const uploadURL = "http://127.0.0.1:8080/home/api/stt-model/transcribe/";
+const uploadURL = "http://ibaschat.celloscope.net/home/api/stt-model/transcribe/";
 const startButton = document.getElementById("recordButton");
 startButton.disabled = false;
 
@@ -42,15 +44,51 @@ navigator.mediaDevices.getUserMedia(constraints)
             method: "POST",
             cache: "no-cache",
             body: formData
-        }).then(resp => {
-            if (resp.status === 200) {
-                return resp.json();
-            } else {
-                console.error("Error:", resp)
-            }
-        }).then(resp => {
-            const text = resp.text;
+        })
+        .then(response => response.json())
+        .then(result => {
+            console.log("Transcribes response:", result.transcription);
+            const text = result.transcription;
             console.log(" -- from server: " + text)
+
+            if (text === "" || $.trim(text) === "") {
+                e.preventDefault();
+                return false;
+            }
+            // destroy the existing chart
+            if (typeof chatChart !== "undefined") {
+                chatChart.destroy();
+            }
+
+            $(".chart-container").remove();
+            if (typeof modalChart !== "undefined") {
+                modalChart.destroy();
+            }
+
+            $(".suggestions").remove();
+            $("#paginated_cards").remove();
+            $(".quickReplies").remove();
+            $(".usrInput").blur();
+            $(".dropDownMsg").remove();
+            setUserResponse(text);
+            send(text);
+            e.preventDefault();
+            
+            return false;
+        })
+        // .then(resp => {
+        //     if (resp.status === 200) {
+        //         console.log(" if 200", resp)
+        //         return resp.json();
+        //     } else {
+        //         console.error("Error:", resp)
+        //     }
+        // })
+        .then(resp => {
+            const text = resp.transcription;
+            console.log(" -- from server: " + text)
+            console.log(" -- from server: " + resp.json)
+
 
             if (text === "" || $.trim(text) === "") {
                 e.preventDefault();

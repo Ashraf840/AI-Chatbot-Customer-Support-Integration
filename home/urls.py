@@ -13,5 +13,5 @@ urlpatterns = [
     path("customer-support-request/", hmvs.CustomerSupportReq.as_view(), name="CustomerSupportRequest"),
     path("customer-support/<str:room_slug>/", hmvs.CustomerSupportRoom.as_view(), name="CustomerSupportRoom"),
     # User API
-    path("home/api/", include(('home.api.api_urls', 'app_name'), namespace="HomeAPI")),
+    path("home/api/", include(('home.api.api_urls', 'app_name'), namespace="HomeAppAPI")),
 ]

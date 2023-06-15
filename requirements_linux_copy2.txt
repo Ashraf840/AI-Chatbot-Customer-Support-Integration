@@ -13,7 +13,9 @@ cryptography==40.0.2
 daphne==4.0.0
 Django==4.2
 django-cors-headers==3.14.0
+django-extensions==3.2.3
 djangorestframework==3.14.0
+ffmpeg==1.4
 hyperlink==21.0.0
 idna==3.4
 incremental==22.10.0
@@ -23,12 +25,16 @@ psycopg2==2.9.6
 pyasn1==0.5.0
 pyasn1-modules==0.3.0
 pycparser==2.21
+pydot==1.4.2
+pygraphviz==1.11
 pyOpenSSL==23.1.1
+pyparsing==3.0.9
 pytz==2023.3
 redis==4.5.4
 requests==2.29.0
 service-identity==21.1.0
 six==1.16.0
+SpeechRecognition==3.10.0
 sqlparse==0.4.4
 Twisted==22.10.0
 txaio==23.1.1
