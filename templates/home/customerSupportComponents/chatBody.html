@@ -9,18 +9,21 @@
             <div class="col-md-10 col-lg-10 col-xl-12" style="height: 100%; margin: 0; padding: 0;">
 
                 <div class="card" id="chat2" style="height: 100%;">
-                    
-                    <div class="card-header p-4" style="background-color: #344767;">
+                    <div class="card-header px-4" 
+                        {% if request.user.is_user %}
+                        style="background-color: #F7F7F7; color: #000000;"
+                        {% endif %}
+                        style="background-color: #344767; color: #ffffff;">
                         <div class="row">
                             <div class="col d-flex justify-content-start align-items-center">
-                                <h2 class="text-light">Chatbox</h2>
+                                <h3 style="margin-top: .3rem;">Chatbox</h3>
                             </div>
                             <div class="col d-flex justify-content-end align-items-center">
                                 {% if request.user.is_user %}
                                         {% if not conversationInfo.is_resolved %}
-                                        <button type="button" class="btn btn-danger btn-md" id="cancel-chat-btn" data-mdb-ripple-color="dark" style="width: 8rem;">Cancel Chat</button>
+                                        <button type="button" class="btn btn-danger" id="cancel-chat-btn" data-mdb-ripple-color="dark" style="width: 8rem;">Cancel Chat</button>
                                         {% else %}
-                                        <button type="button" class="btn btn-secondary btn-md text-dark" data-mdb-ripple-color="dark" style="width: 8rem;">Resolved</button>
+                                        <button type="button" class="btn btn-secondary text-dark" data-mdb-ripple-color="dark" style="width: 8rem;">Resolved</button>
                                         {% endif %}
                                 {% endif %}
 
@@ -153,7 +156,7 @@
                             {% if m.user_identity == 'cso' %}
                                 <div class="d-flex flex-row justify-content-start">
                                     <img src="{{ cso_user_profile_pic.url }}"
-                                        alt="avatar 1" style="width: 45px; height: 45px;">
+                                        alt="avatar 1" style="width: 45px; height: 45px;" class="rounded-circle">
                                     <div>
                                         <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">{{ m.message }}</p>
                                         <p class="small ms-3 mb-3 rounded-3 text-muted">23:58</p>
@@ -166,7 +169,7 @@
                                         <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">00:06</p>
                                     </div>
                                     <img src="{{ registered_user_profile_pic.url }}"
-                                        alt="avatar 1" style="width: 45px; height: 45px;">
+                                        alt="avatar 1" style="width: 45px; height: 45px;" class="rounded-circle">
                                 </div>
                             {% endif %}
                         {% endfor %}
@@ -187,6 +190,11 @@
                         <!-- <a class="ms-3 text-muted" href="#!"><i class="fas fa-smile"></i></a> -->
                         <a class="mx-3" id="chat-message-send-btn" 
                             style="cursor: pointer;"><i class="fas fa-paper-plane fa-2x" style="color: #344767;"></i></a>
+                        <!-- <a class="mx-3" id="chat-msg-mic-btn" 
+                        style="cursor: pointer;"><i class="fa-solid fa-microphone fa-2x"  style="color: #344767;"></i></i></a> -->
+                        <div id="recordButton" class="ms-1 me-3" aria-disabled="true">
+                            <i id="microphone" class="fa fa-microphone fa-2x" style="color: #344767;"></i>
+                        </div>
                         {% endif %}
                     </div>
                 </div>
@@ -196,3 +204,4 @@
 
     </div>
 </section>
+

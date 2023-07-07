@@ -75,7 +75,7 @@
             {% endif %}
 
             {% if request.user.is_user %}
-            <div class="row p-3 rounded shadow" style="background-color: #344767;">
+            <div class="row p-3 rounded shadow" style="background-color: #ffffff;">
             {% endif %}
                 <div class="row">
 
@@ -108,12 +108,12 @@
                     </div>
 
                     <!-- User/CSO Information -->
-                    <div class="col text-white">
+                    <div class="col">
                         <div class="row" style="margin-top: .5rem;">
                             <div class="col">
                                 <!-- user-end -->
                                 {% if request.user.is_user %}
-                                <h1 class="text-start">CSO Information</h1>
+                                <h3 class="text-start">Help Desk Officer</h3>
                                     <!-- TEMPORARY -->
                                     {% comment %}
                                     <small><b>User Chat end</b></small>
@@ -122,7 +122,7 @@
                                     {% endif %}
                                     <!-- CSO-end -->
                                 {% if request.user.is_cso %}
-                                    <h1 class="text-start">User Information</h1>
+                                    <h3 class="text-start text-white">User Information</h3>
                                     <!-- TEMPORARY -->
                                     {% comment %}
                                     <small><b>CSO Chat end</b></small>
@@ -131,8 +131,9 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="row" style="margin-top: 1rem;">
+                        
                             {% if request.user.is_user %}
+                            <div class="row" style="margin-top: 1rem;">
                                 <!-- Display CSO info, since it's user-end part -->
                                 <div class="row my-2">
                                     <div class="col-3"><h5>Name: </h5></div>
@@ -146,8 +147,9 @@
                                     <div class="col-3"><h5>Phone: </h5></div>
                                     <div class="col text-start"><h5><span class="user_cso_info">{{ cso_user_phone }}</span></h5></div>
                                 </div>
-                                {% endif %}
-                                {% if request.user.is_cso %}
+                            {% endif %}
+                            {% if request.user.is_cso %}
+                            <div class="row text-white" style="margin-top: 1rem;">
                                 <!-- Display user info, since it's CSO-end part -->
                                 <div class="row my-2">
                                     <div class="col-3"><h5>Name: </h5></div>
@@ -219,11 +221,16 @@
 
             </div>
 
-            <!-- Ticket Issue -->
-            <div class="row mt-4 p-2 rounded shadow text-white" style="background-color: #344767;">
+            <!-- Issue Detail -->
+            <div class="row mt-4 p-2 rounded shadow" 
+                {% if request.user.is_cso %}
+                style="background-color: #344767; color: #ffffff;"
+                {% endif %}
+                style="background-color: #ffffff;"
+            >
                 <div class="row position-relative">
                     <div class="row text-center mt-3 mb-3 position-absolute" style="margin: 0 auto;">
-                        <h2>Ticket Issue</h2>
+                        <h3>Issue Detail</h3>
                         <div class="d-flex justify-content-center"><hr class="bg-dark border-2 border-top border-dark" style="width: 15rem;"></div>
                     </div>
                     {% if request.user.is_cso %}
@@ -318,7 +325,7 @@
                             <!-- Resolve/Remarks modal trigger button -->
                             {% if not conversationInfo.is_resolved %}
                                 <!-- <button class="btn btn-lg bg-success mx-1" id="is-resolved">Is resolved</button> -->
-                                <button type="button" class="btn btn-lg bg-light text-dark mx-2" data-bs-toggle="modal" data-bs-target="#remarkModal">
+                                <button type="button" class="btn bg-light text-dark mx-2" data-bs-toggle="modal" data-bs-target="#remarkModal">
                                     Resolve
                                 </button>
                                 <!-- <input type="text" id="cso-dashboard-url" value='{% url "staffApplication:CsoWorkload:SupportDashboard" request.user.email  %}' readonly disabled hidden> -->
@@ -339,12 +346,12 @@
                             
 
                             <!-- Dismiss issue confirmation modal trigger button -->
-                            <button type="button" class="btn btn-lg bg-danger text-dark mx-2" data-bs-toggle="modal" data-bs-target="#dismissIssueConfirmationModal">
+                            <button type="button" class="btn bg-danger text-dark mx-2" data-bs-toggle="modal" data-bs-target="#dismissIssueConfirmationModal">
                                 Dismiss
                             </button>
 
                             <!-- Ticket Detail View modal trigger button -->
-                            <button type="button" class="btn btn-lg bg-light text-dark mx-2 ticketDetailModal" data-id="ISBN-001122"
+                            <button type="button" class="btn bg-light text-dark mx-2 ticketDetailModal" data-id="ISBN-001122"
                                 onclick="dispTicketDetail(ticket_issue_oid='{{ tms_issue_by_oid }}', user_signin_token='{{ user_signing_token_tms }}')"
                                 data-bs-toggle="modal" data-bs-target="#ticketDetailModal" style="display: none;">
                                 View Detail
@@ -356,9 +363,9 @@
                     {% if request.user.is_user %}
                     <div class="row" style="margin: 2rem 0 1rem 0;">
                         <div class="col d-flex flex-row-reverse">
-                            <button type="button" class="btn btn-lg bg-light text-dark mx-2 ticketDetailModal" data-id="ISBN-001122"
+                            <button type="button" class="btn text-light mx-2 ticketDetailModal" data-id="ISBN-001122"
                             onclick="dispTicketDetail(ticket_issue_oid='{{ tms_issue_by_oid }}', user_signin_token='{{ user_signing_token_tms }}')"
-                                data-bs-toggle="modal" data-bs-target="#ticketDetailModal" style="display: none;">
+                                data-bs-toggle="modal" data-bs-target="#ticketDetailModal" style="display: none; background: #344767;">
                                 View Detail
                             </button>
                         </div>
@@ -380,6 +387,8 @@
         </div>
     </div>
 
+    
+
 
     {% if request.user.is_cso %}
     <!-- Remarks/Resolve Modal -->
@@ -392,12 +401,22 @@
     {% include 'home/customerSupportComponents/modals/ticketDetailModal.html' %}
     
     {% if request.user.is_user %}
-    <!-- User Issue Unresolved Information Modal -->
+    <!-- User Issue resolved Information Modal -->
     {% include 'home/customerSupportComponents/modals/userIssueResolvedInformationModal.html' %}
-    <!-- Dismiss Issue Information Modal -->
+    <!-- Dismiss/Unresolved Issue Information Modal -->
     {% include 'home/customerSupportComponents/modals/dismissIssueInformationModal.html' %}
     {% endif %}
 </div>
+
+<footer class="footer py-4 bg-light">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-lg-3 text-lg-start">Copyright &copy; 
+                <b><a href="http://www.doer.com.bd">Doer Services Ltd.</a></b>
+            </div>
+        </div>
+    </div>
+</footer>
 
 
 
@@ -437,7 +456,10 @@
 Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
 -->
 
+<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
 <script src="{% static 'js/home/customerSupportChat/tmsIssueUpdate.js' %}"></script>
+<script src="{% static 'js/home/customerSupportChat/speechToText.js' %}"></script>
+<script src="{% static 'js/miscellaneous/helper_func/get_cookies.js' %}"></script>
 
 <script>
     let grid_tms_issue_skeleton = document.querySelector('.grid-tms-issue-skeleton');
@@ -724,10 +746,18 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
     console.log(ChatSupportURL);
     const chat_send_btn = document.querySelector('#chat-message-send-btn');
     const chat_msg_input_field = document.querySelector("#chat-message-input");
-    var cso_email = `{{request.user.is_cso}}`;
-    var reg_user = `{{request.user.is_user}}`;
-    console.log(`CSO: ${cso_email}`);
+    let cso_email = `{{request.user.is_cso}}`;  // "True/False" as string in JS
+    var reg_user = `{{request.user.is_user}}`
+    console.log(`CSO (bool): ${cso_email}`);
+    console.log(`CSO email is not empty: ${cso_email !== ''}`);
     console.log(`Registered User: ${reg_user}`);
+
+
+    // let userIssueResolvedInformationModal = document.querySelector("#userIssueResolvedInformationModal");
+    // let countDownSpan_userIssueResolvedInformationModal = document.getElementsByClassName("countDownSpan_userIssueUnresolvedInformation");
+    // let countDown_userIssueResolvedInformationModal = 10;
+    // let userIssueResolvedInformationModalOKButton = document.querySelector("#userIssueResolvedInformationModalOKButton");
+    // $('#userIssueResolvedInformationModal').modal('show');
 
 
     // WEBSOCKET OBJECT
@@ -737,6 +767,7 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
     // WEBSOCKET Open function
     ChatSupportSocket.onopen = function (e) {
         console.log('Frontend Websocket: Connection Established!');
+        console.log(`CSO (bool): ${cso_email}`);
         
         if (reg_user === 'True') {
             // FOR USER
@@ -747,7 +778,7 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
                 var user_email = `{{request.user.email}}`;
                 var cso_email_backend = `{{ cso_user_email }}`;
                 console.log(`cancel-chat-btn button is clicked by the user; email: ${user_email}`);
-                console.log(`CSO email: ${cso_email_backend}`);
+                console.log(`CSO email backend: ${cso_email_backend}`);
                 ChatSupportSocket.send(JSON.stringify({
                     'cso_user_convo_cancelled': 'User has cancelled the chat!',
                     'cso_email': cso_email_backend,
@@ -764,22 +795,22 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
             
             if (dismiss_issue_confirmation_btn !== null) {
                 dismiss_issue_confirmation_btn.onclick = function (e) {
-                    console.log(`Chat conversation is dimissed by CSO!`);
                     var common_registered_user_email = `{{ common_registered_user_email }}`;
                     var common_cso_email = `{{ common_cso_email }}`;
                     var remark_input_dismiss = document.querySelector("#remark-input-dismiss");
                     var remark_input_dismiss_value = remark_input_dismiss.value;
-                    console.log(`cso_email:`, common_cso_email);
-                    console.log(`reg_user_email:`, common_registered_user_email);
-                    console.log(`roomslug:`, roomSlug);
-                    console.log(`remark_input_dismiss_value:`, remark_input_dismiss_value);
+                    // console.log(`Chat conversation is dimissed by CSO!`);
+                    // console.log(`cso_email:`, common_cso_email);
+                    // console.log(`reg_user_email:`, common_registered_user_email);
+                    // console.log(`roomslug:`, roomSlug);
+                    // console.log(`remark_input_dismiss_value:`, remark_input_dismiss_value);
 
-                    // Update TMS for the issue as "Ready to assign"
-                    console.log(`TMS issue update: Ready to assign!`);
-                    console.log(`User signin token (TMS): ${user_signin_token}`);
-                    console.log(`Ticket issue oid (TMS): ${ticket_issue_oid}`);
+                    // // Update TMS for the issue as "Ready to assign"
+                    // console.log(`TMS issue update: Ready to assign!`);
+                    // console.log(`User signin token (TMS): ${user_signin_token}`);
+                    // console.log(`Ticket issue oid (TMS): ${ticket_issue_oid}`);
 
-                    tmsIssueUpdate_unresolve(user_signin_token=user_signin_token, 
+                    tmsIssueUpdate_unresolve(user_signing_token_tms=user_signin_token, 
                         remark_input_dismiss_value=remark_input_dismiss_value, 
                         ticket_issue_oid=ticket_issue_oid, 
                         common_cso_email=common_cso_email, 
@@ -796,12 +827,16 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
         const data = JSON.parse(e.data);
         const cso_dashboard_url = document.querySelector("#cso-dashboard-url");
 
+        console.log('Frontend Websocket: onmessage!');
+        console.log(`CSO (bool): ${cso_email}`);
+
         console.log(data);  // comment it later
         // Chat message
         if (data.message) {
             // console.log(
             //     (data.user_identity === 'cso')? 'message from cso': 'message from visitor'
             // );
+            console.log(`CSO (bool) [data.message]: ${cso_email}`);
 
             if (data.user_identity === 'cso') { console.log(`message from cso`); }
             if (data.user_identity === 'reg_user') { console.log(`message from registered user`); }
@@ -809,7 +844,7 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
             if (data.user_identity === 'cso') {
                 var chatHTML = `<div class="d-flex flex-row justify-content-start mb-4">
                             <img src="{{ cso_user_profile_pic.url }}"
-                                alt="avatar 1" style="width: 45px; height: 45px;">
+                                alt="avatar 1" style="width: 45px; height: 45px;" class="rounded-circle">
                             <div>
                                 <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">${data.message}</p>
                                 <p class="small ms-3 mb-3 rounded-3 text-muted">00:07</p>
@@ -822,7 +857,7 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
                                 <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">00:09</p>
                             </div>
                             <img src="{{ registered_user_profile_pic.url }}"
-                                alt="avatar 1" style="width: 45px; height: 45px;">
+                                alt="avatar 1" style="width: 45px; height: 45px;" class="rounded-circle">
                         </div>`;
             }
             document.querySelector('.chat-messages-box').innerHTML += chatHTML;
@@ -847,6 +882,7 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
         // Redirect the CSO & visitor/user accordingly to his/her CSO-dashboard & homepage (after 10s), since the corresponding CSO marked the current convo as resolved.
         if (data.support_is_resolved) {
             console.log(`The support is resolved! Redirect the cso to it's dashboard & the user to the homepage (after 10s)!`);
+            console.log(`CSO email (data.support_is_resolved):`, cso_email);
             if (cso_email == 'True') {
                 console.log(`CSO email:`, cso_email);
                 // console.log(`CSO dashboard url:`, cso_dashboard_url.value);
@@ -1021,15 +1057,16 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
         const is_resolved = document.querySelector("#is-resolved");
 
         console.log(`is_resolved_button,`, is_resolved);
+        // alert("testing!");
 
         if (is_resolved !== null) {
             is_resolved.onclick = function (e) {
-                var cso_email = `{{request.user.email}}`;
+                var hdo_email_resolve_opt = `{{request.user.email}}`;
                 var registered_user_email = `{{ registered_user_email }}`;
                 var remark_input_resolve = document.querySelector("#remark-input-resolve");
                 var remark_input_resolve_value = remark_input_resolve.value;
                 console.log(`is_resolved button is clicked!`);
-                console.log(`is_resolved button is clicked by the CSO; email: ${cso_email}`);
+                console.log(`is_resolved button is clicked by the CSO; email: ${hdo_email_resolve_opt}`);
                 console.log(`registered user email: ${registered_user_email}`);
                 console.log(`Remark Input value: ${remark_input_resolve_value}`);
                 console.log(`User signin token: ${user_signin_token}`);
@@ -1040,13 +1077,11 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
                 tmsIssueUpdate_resolve(user_signin_token=user_signin_token, 
                     remark_input_resolve_value=remark_input_resolve_value, 
                     ticket_issue_oid=ticket_issue_oid, 
-                    cso_email=cso_email, 
+                    hdo_email_resolve_opt=hdo_email_resolve_opt, 
                     registered_user_email=registered_user_email, 
                     roomSlugParam=roomSlug);
-                }
+            }
         }
-
-        
-}
+    }
 </script>
 {% endblock %}

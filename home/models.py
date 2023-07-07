@@ -3,6 +3,7 @@ from django.db import models
 # from djongo import models as djongo_models    # [ Djongo-type models - not using since the entire existing models need to be build using djongo-type-model lib, otherwise it'll not incorporate with typical-django-models lib ]
 
 
+
 class ChatbotVisitorMessage(models.Model):
     client_ip = models.CharField(max_length=20, blank=True, null=True)
     visitors_msg = models.CharField(max_length=255)
@@ -13,13 +14,16 @@ class ChatbotVisitorMessage(models.Model):
         verbose_name_plural = "Chatbot Visitor Message"
 
 
+
 class CustomerSupportRequest(models.Model):
     client_ip = models.CharField(max_length=20, blank=True, null=True)
     room_slug = models.SlugField(unique=True)
     visitor_session_uuid = models.CharField(max_length=36, blank=True, null=True)   # uuid4 generated a string length of 36 chars
     registered_user_email_normalized = models.CharField(verbose_name='User Email (normalized)', max_length=60, blank=True, null=True)   # uuid4 generated a string length of 36 chars
     assigned_cso = models.CharField(max_length=60, blank=True, null=True)
-    is_resolved = models.BooleanField(default=False, help_text="Marked as resolved if the CSO marked the coordinating convoInfo as resolved")
+    is_resolved = models.BooleanField(verbose_name="Resolved", default=False, help_text="Mark as resolved if the CSO marked the coordinating convoInfo as resolved")
+    is_dismissed = models.BooleanField(verbose_name="Dismissed", default=False, help_text="Mark as dismissed if the CSO marked the coordinating convoInfo as dismissed")
+    is_detached = models.BooleanField(verbose_name="Detached", default=False, help_text="Mark as detached if the CSO mark the 'CustomerSupportRequest' as resolved or dismissed")
     issue_by_oid = models.CharField(max_length=60, blank=True, null=True, default='6f8b28a3-0e2e-4f06-b3eb-6f7b4e2da5ac', help_text='Remove the default oid later (when the bot will create the issue & get the response)')
     created_at = models.DateTimeField(verbose_name="Created at", auto_now=True)
 
@@ -29,12 +33,18 @@ class CustomerSupportRequest(models.Model):
     @staticmethod
     def get_customer_support_reqs():
         """
-        This method is used in the signals.py file's "customer_support_request_signal_post_save" func, so that whenever a record is created, the signal can use this func to get all the records (updated) from the table
+        This method is used in the signals.py file's "customer_support_request_signal_post_save" func, so that whenever a record is created, the signal can use this func to get all the records (updated) from the table which are not detached yet (is_detached=False).
         """
         # instances = CustomerSupportRequest.objects.all()
         # instances = list(CustomerSupportRequest.objects.values('client_ip', 'room_slug', 'visitor_session_uuid', 'registered_user_email_normalized', 'is_resolved', 'issue_by_oid', 'assigned_cso'))   # Solution: https://stackoverflow.com/a/7811582
-        instances = list(CustomerSupportRequest.objects.values('client_ip', 'room_slug', 'registered_user_email_normalized', 'is_resolved', 'issue_by_oid', 'assigned_cso'))   # NB: currently not necessary to display visitor's-session-uuid
-        instances = [x for x in instances if not x['is_resolved']]
+        instances = list(CustomerSupportRequest.objects.values('client_ip', 'room_slug', 'registered_user_email_normalized', 'is_resolved', 'is_dismissed', 'is_detached', 'issue_by_oid', 'assigned_cso'))   # NB: currently not necessary to display visitor's-session-uuid
+        # instances = [x for x in instances if not x['is_resolved']]
+        # instances = [x for x in instances if not x['is_resolved'] or not x['is_dismissed']]     # pick issue-reqs that aren't resolved nor dismissed
+        instances = [x for x in instances if not x['is_detached']]     # pick issue-reqs that aren't detached yet due to mark as resolved/dismissed
+        # instances = list(map(lambda x: not x['is_resolved'] or not x['is_dismissed']))
+        # instances = [x for x in instances if not x.get('is_resolved') or not x.get('is_dismissed')]
+        # letters = list(map(lambda x: x, 'human'))
+        # x = list(map(lambda x: not x['is_resolved'] or not x['is_dismissed'], instances))
         return instances
 
     @staticmethod
@@ -54,22 +64,43 @@ class CustomerSupportRequest(models.Model):
         This method is also used for getting curated message-requests according to the cso_emails if provided while invoking the method.
         """
         # instances = CustomerSupportRequest.objects.all()
-        instances = CustomerSupportRequest.objects.values('client_ip', 'room_slug', 'visitor_session_uuid', 'registered_user_email_normalized', 'assigned_cso', 'issue_by_oid', 'is_resolved', 'created_at').order_by('-id')
+        instances = CustomerSupportRequest.objects.values(
+            'client_ip', 'room_slug', 'visitor_session_uuid', 
+            'registered_user_email_normalized', 'assigned_cso', 
+            'issue_by_oid', 'is_detached', 'created_at').order_by('-id')
         print(f"message-req-instances: {instances}")
         result = []
         if cso_email is None:
             for i in instances:
-                if i['assigned_cso'] is not None and not i['is_resolved']:
+                # if i['assigned_cso'] is not None and not i['is_resolved']:
+                if i['assigned_cso'] is not None and not i['is_detached']:
                     result.append(i)
         else:
             for i in instances:
-                if i['assigned_cso'] == cso_email and not i['is_resolved']:
+                # if i['assigned_cso'] == cso_email and not i['is_resolved']:
+                if i['assigned_cso'] == cso_email and not i['is_detached']:
                     result.append(i)
+        print("get_reqs_with_assigned_cso.appendedInstances:", result)
+        print("get_reqs_with_assigned_cso.appendedInstances length:", len(result))
         return result
 
     # https://stackoverflow.com/questions/53461830/send-message-using-django-channels-from-outside-consumer-class
 
     # group-send about all the support-request-query from this model's signal (post_save) to "CSODashboardConsumer" consumer.
+
+    def save(self, *args, **kwargs):
+        # Check if the record is previously detached or not
+        if not self.is_detached:
+            # For both resolve/dismiss, the req will be detached
+            if self.is_resolved or self.is_dismissed:
+                print("Mark the request as 'is_detached=True'!")
+                self.is_detached = True
+        # TODO: Remove the "else-code-block". [Explanation] Because it causes problem: if admin wants to re-mark an issue as dismissed which is already resolved, then this else-code-block again mark the issue as "detached=False" along with "dismissed=True". Vice-Versa scenario is applicable.
+        # else:
+        #     if not self.is_resolved or not self.is_dismissed:
+        #         print("Mark the request as 'is_detached=False'!")
+        #         self.is_detached = False
+        super(CustomerSupportRequest, self).save(*args, **kwargs)
 
 
 # Store each message of both a CSO & a visitor
@@ -83,6 +114,7 @@ class CSOVisitorMessage(models.Model):
         verbose_name_plural = "CSO Visitor Messages"
 
 
+
 class CSOVisitorConvoInfo(models.Model):
     """
     This class model stores conversations of both CSO-visitor & CSO-user. 
@@ -93,7 +125,7 @@ class CSOVisitorConvoInfo(models.Model):
     registered_user_email = models.CharField(verbose_name='User Email', max_length=60, blank=True, null=True)
     is_resolved = models.BooleanField(default=False, help_text="CSO marks the issue as resolved, displays boolean values")
     is_dismissed = models.BooleanField(default=False, help_text="CSO marks the issue as dismissed, displays boolean values")
-    is_connected = models.BooleanField(verbose_name='Is CSO connected?', default=False, help_text="The CSO has marked this conversation as resolved if it's displayed 'False'")
+    is_connected = models.BooleanField(verbose_name='Is CSO connected?', default=False, help_text="The CSO has marked this conversation as resolved/dismissed if it's displayed 'False'")
     issue_by_oid = models.CharField(max_length=60, blank=True, null=True, default='6f8b28a3-0e2e-4f06-b3eb-6f7b4e2da5ac', help_text='Remove the default oid later (when the bot will create the issue & add value from "CustomerSupportRequest()" model)')
     is_cancelled = models.BooleanField(verbose_name='Chat cancelled', default=False, help_text="The user cancelled the chat-conversation, thus the associate msg-req will be removed form the CSR list")
     is_cleared = models.BooleanField(verbose_name='Associate msg-req is removed', default=False, help_text="The CSO removed/cleared the associate msg-req from the CSR List, thus the conversation will be marked as cleared")
@@ -117,9 +149,6 @@ class CSOVisitorConvoInfo(models.Model):
 
 
 
-
-
-
 class UserChatbotSocket(models.Model):
     """
     This class model stores user-email along with the chatbot's unique socket-id. 
@@ -129,3 +158,12 @@ class UserChatbotSocket(models.Model):
     registered_user_session_uuid = models.CharField(max_length=60, verbose_name='Registered User Session UUID')
     created_at = models.DateTimeField(verbose_name="Chatbot Socket Record Created At", auto_now_add=True)    #Add date-time automaticate when a record is created into this table
 
+
+
+class RemarkResolution(models.Model):
+    """
+    This class model stores remarks & resolution of each CSO-User Conversation
+    """
+    cso_user_convo = models.ForeignKey(CSOVisitorConvoInfo, on_delete=models.DO_NOTHING)
+    remarks = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(verbose_name="Created remarks after providing solution", auto_now_add=True)

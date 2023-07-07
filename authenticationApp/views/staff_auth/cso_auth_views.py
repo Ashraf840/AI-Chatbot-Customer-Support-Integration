@@ -41,7 +41,7 @@ class CSOLoginPageView(View):
     template_name = 'authenticationApp/cso_login.html'
     form_class = UserLoginForm
     context={
-        'title': 'CSO Login', 
+        'title': 'Help Desk Login', 
     }
     
     def get(self, request):

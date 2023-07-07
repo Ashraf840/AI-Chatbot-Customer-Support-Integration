@@ -3,12 +3,19 @@ from django.dispatch import receiver
 from .cso_connectivity_models import CSOOnline
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from authenticationApp.utils.userDetail import UserDetail
 
 
 @receiver(post_save, sender=CSOOnline)
 def cso_online_signal(sender, instance, created, **kwargs):
     # print(f"Instance type: {type(instance)}")
     # record = instance
+
+    # # Fetch user profile detail of HDO
+    # usr_detail = UserDetail(user_email=instance.cso_email)
+    # usr_profile = usr_detail.user_profile_detail()
+    # user_organization, user_location, user_district, user_division = usr_profile.user_organization, usr_profile.location, usr_profile.district, usr_profile.division
+    
     if created:
         print("[from 'cso_online_signal*()' func] New online activity of a CSO created!")
         print(f"New instance: {instance}")

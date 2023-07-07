@@ -50,9 +50,12 @@ class UserAdmin(BaseUserAdmin):
 
 
 class User_ProfileAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user_email', 'user_name_bn', 'user_father_name', 'user_mother_name', 'user_NID_no']
-    list_display_links = ['id']
+    list_display = ['id', 'user_email', 'user_name_bn', 'user_father_name', 
+                    'user_mother_name', 'user_NID_no', 'user_organization', 
+                    'location', 'district', 'division']
+    list_display_links = ['user_email']
     search_fields = list_display
+    list_filter = list_display[-2:]
     list_per_page = 15
     ordering = ['-id']
 

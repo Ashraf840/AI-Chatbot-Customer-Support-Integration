@@ -78,6 +78,11 @@ class User_Profile(models.Model):
     user_father_name = models.CharField(verbose_name='Father Name', max_length=255, blank=True, null=True)
     user_mother_name = models.CharField(verbose_name='Mother Name', max_length=255, blank=True, null=True)
     user_NID_no = models.CharField(verbose_name='NID no.', max_length=255, blank=True, null=True)
+    # User Organization & Static Geographic location
+    user_organization = models.CharField(verbose_name='Organization', max_length=100, blank=True, null=True)
+    location = models.CharField(verbose_name='Location', max_length=100, blank=True, null=True)
+    district = models.CharField(verbose_name='District', max_length=100, blank=True, null=True)
+    division = models.CharField(verbose_name='Division', max_length=100, blank=True, null=True)
 
     class Meta:
         verbose_name_plural = "User Profile"

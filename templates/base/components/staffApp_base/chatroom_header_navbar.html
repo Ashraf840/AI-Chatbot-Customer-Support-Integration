@@ -9,24 +9,26 @@
         <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
         <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Dashboard</li>
       </ol>
-      {% endcomment %}
       {% if request.user.is_cso %}
       <a class="navbar-brand m-0" href="{% url 'staffApplication:CsoWorkload:CsoDashboard' %}">
       {% endif %}
       {% if request.user.is_user %}
       <a class="navbar-brand m-0" href="{% url 'homeApplication:LangingPage' %}">
       {% endif %}
+      {% endcomment %}
+      <span class="navbar-brand m-0">
         <div class="row">
           <div class="col">
-              <img src="{% static 'images/logo/ibas_logo.png' %}" class="navbar-brand-img" height="90", width="90" alt="main_logo">
+              <img src="{% static 'images/logo/ibas_logo.png' %}" class="navbar-brand-img" height="50", width="50" alt="main_logo">
           </div>
           <div class="col d-flex align-items-center justify-content-center">
-              <h3 class="font-weight-bolder">iBAS++ | Customer Support Chatroom
-                <!-- <small>({{request.user.email}})</small> -->
-              </h3>
+            <span>
+              iBAS++ | Help Desk Chatroom
+            </span>
             </div>
           </div>
-        </a>
+      </span>
+        <!-- </a> -->
     </nav>
 
     <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
@@ -41,7 +43,7 @@
       <ul class="navbar-nav  justify-content-end">
         <li class="nav-item d-flex align-items-center">
           <a href="{% url 'authenticationApplication:CsoAuth:CSOLogoutView' %}" class="nav-link text-body font-weight-bold px-0">
-            <i class="fa fa-user me-sm-1 fa-2x"></i>
+            <i class="fa fa-user me-sm-1"></i>
             <span class="d-sm-inline d-none fs-5 justify-content-center align-items-center">Logout</span>
           </a>
         </li>

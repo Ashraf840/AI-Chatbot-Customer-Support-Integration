@@ -3,7 +3,14 @@ let recorder = null;
 const uploadURL = "http://127.0.0.1:8080/home/api/stt-model/transcribe/";
 // const uploadURL = "http://ibaschat.celloscope.net/home/api/stt-model/transcribe/";
 const startButton = document.getElementById("recordButton");
+// var startButton = document.querySelector("#chat-msg-mic-btn");
+const chat_msg_input = document.getElementById("chat-message-input");
+
 startButton.disabled = false;
+
+
+
+console.log("Customer support sppech-to-text:", startButton);
 
 if (!navigator.mediaDevices) {
     console.error("getUserMedia not supported.")
@@ -49,75 +56,13 @@ navigator.mediaDevices.getUserMedia(constraints)
         .then(result => {
             console.log("Transcribes response:", result.transcription);
             const text = result.transcription;
-            console.log(" -- from server: " + text)
-
-            if (text === "" || $.trim(text) === "") {
-                e.preventDefault();
-                return false;
-            }
-            // destroy the existing chart
-            if (typeof chatChart !== "undefined") {
-                chatChart.destroy();
-            }
-
-            $(".chart-container").remove();
-            if (typeof modalChart !== "undefined") {
-                modalChart.destroy();
-            }
-
-            $(".suggestions").remove();
-            $("#paginated_cards").remove();
-            $(".quickReplies").remove();
-            $(".usrInput").blur();
-            $(".dropDownMsg").remove();
-            setUserResponse(text);
-            send(text);
-            e.preventDefault();
-            
-            return false;
+            console.log(" -- from server: " + text);
+            chat_msg_input.value = text;
         })
-        // .then(resp => {
-        //     if (resp.status === 200) {
-        //         console.log(" if 200", resp)
-        //         return resp.json();
-        //     } else {
-        //         console.error("Error:", resp)
-        //     }
-        // })
-        .then(resp => {
-            const text = resp.transcription;
-            console.log(" -- from server: " + text)
-            console.log(" -- from server: " + resp.json)
-
-
-            if (text === "" || $.trim(text) === "") {
-                e.preventDefault();
-                return false;
-            }
-            // destroy the existing chart
-            if (typeof chatChart !== "undefined") {
-                chatChart.destroy();
-            }
-
-            $(".chart-container").remove();
-            if (typeof modalChart !== "undefined") {
-                modalChart.destroy();
-            }
-
-            $(".suggestions").remove();
-            $("#paginated_cards").remove();
-            $(".quickReplies").remove();
-            $(".usrInput").blur();
-            $(".dropDownMsg").remove();
-            setUserResponse(text);
-            send(text);
-            e.preventDefault();
-            
-            return false;
-            
-        }).catch(err => {
+        .catch(err => {
             console.error(err);
         });
+        
     };
 
 
@@ -141,42 +86,42 @@ navigator.mediaDevices.getUserMedia(constraints)
 
 
 
-function sendTextForDemo() {
-    const text = $(".usrInput").val();
-    if (text === "" || $.trim(text) === "") {
-        e.preventDefault();
-        return false;
-    }
-    // destroy the existing chart
-    if (typeof chatChart !== "undefined") {
-        chatChart.destroy();
-    }
+// function sendTextForDemo(e) {
+//     const text = $(".usrInput").val();
+//     if (text === "" || $.trim(text) === "") {
+//         e.preventDefault();
+//         return false;
+//     }
+//     // destroy the existing chart
+//     if (typeof chatChart !== "undefined") {
+//         chatChart.destroy();
+//     }
 
-    $(".chart-container").remove();
-    if (typeof modalChart !== "undefined") {
-        modalChart.destroy();
-    }
+//     $(".chart-container").remove();
+//     if (typeof modalChart !== "undefined") {
+//         modalChart.destroy();
+//     }
 
-    $(".suggestions").remove();
-    $("#paginated_cards").remove();
-    $(".quickReplies").remove();
-    $(".usrInput").blur();
-    $(".dropDownMsg").remove();
-    setUserResponse(text);
-    send(text);
-    e.preventDefault();
-    return false;
-}
+//     $(".suggestions").remove();
+//     $("#paginated_cards").remove();
+//     $(".quickReplies").remove();
+//     $(".usrInput").blur();
+//     $(".dropDownMsg").remove();
+//     setUserResponse(text);
+//     send(text);
+//     e.preventDefault();
+//     return false;
+// }
 
 
 
 $("#recordButton").unbind('click').click( (e) => {
 
-    if ($(".usrInput").val() !== ""){
-        sendTextForDemo();
-    }
+    // if ($(".usrInput").val() !== ""){
+    //     sendTextForDemo(e);
+    // }
 
-    else {
+    // else {
         // start recorder
         if (!startButton.disabled){
             recorder.start();
@@ -187,7 +132,7 @@ $("#recordButton").unbind('click').click( (e) => {
             recorder.stop();
             document.getElementById('microphone').style = null;
         }
-    }
+    // }
     
 });
 
@@ -203,7 +148,7 @@ $("#recordButton").unbind('click').click( (e) => {
 
 
 
-
+// -----------------------------------------------------------------------------------------------------------------------------------
 
 
 

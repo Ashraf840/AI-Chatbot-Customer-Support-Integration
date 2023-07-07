@@ -1,4 +1,4 @@
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, post_delete, pre_delete
 from django.dispatch import receiver
 from .models import CustomerSupportRequest, CSOVisitorConvoInfo
 from channels.layers import get_channel_layer
@@ -227,23 +227,46 @@ def customer_support_request_signal_post_save(sender, instance, created, **kwarg
 
         instance_room_slug = instance.room_slug
         instance_resolved = instance.is_resolved
+        instance_dismissed = instance.is_dismissed
+        instance_detached = instance.is_detached
+        print("instance_resolved (not created):", instance_resolved)
+        print("instance_dismissed (not created):", instance_dismissed)
+        print("instance_detached (not created):", instance_detached)
+
+        result_r_d = "Resolve Socket" if instance_resolved else "Dismiss Socket" if instance_dismissed else True
+        print(f"Resolve/Dismiss Result: {result_r_d}")
+
         instance_cso_email = instance.assigned_cso
         room_name_normalized="".join(ch for ch in instance_cso_email if ch.isalnum())
         # Get all the message reqs of the individual CSO
-        data = CustomerSupportRequest.get_unresolved_customer_support_reqs()
+        # data = CustomerSupportRequest.get_unresolved_customer_support_reqs()
+        data = CustomerSupportRequest.get_customer_support_reqs()
         # Get the length of total current reqs
         total_current_reqs = len(data)
         print("Total current req", total_current_reqs)
         print("Total current req (type)", type(total_current_reqs))
-        async_to_sync(channel_layer.group_send)(
-            f'chat_dashboard_{room_name_normalized}',
-            {
-                'type': 'old_support_req_resolved', 
-                'instance_room_slug': instance_room_slug,
-                'instance_resolved': instance_resolved,
-                'total_current_reqs': total_current_reqs,
-            }
-        )
+
+        if instance_resolved:
+            async_to_sync(channel_layer.group_send)(
+                f'chat_dashboard_{room_name_normalized}',
+                {
+                    'type': 'old_support_req_resolved', 
+                    'instance_room_slug': instance_room_slug,
+                    'instance_resolved': instance_resolved,
+                    'total_current_reqs': total_current_reqs,
+                }
+            )
+        
+        if instance_dismissed:
+            async_to_sync(channel_layer.group_send)(
+                f'chat_dashboard_{room_name_normalized}',
+                {
+                    'type': 'old_support_req_dismissed', 
+                    'instance_room_slug': instance_room_slug,
+                    'instance_dismissed': instance_dismissed,
+                    'total_current_reqs': total_current_reqs,
+                }
+            )
         print('+'*50)
         print('\n'*3)
 

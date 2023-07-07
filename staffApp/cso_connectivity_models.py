@@ -8,12 +8,21 @@ class CSOOnline(models.Model):
     is_active = models.BooleanField(verbose_name='CSO active', default=True)
     joined_at = models.DateTimeField(verbose_name="Joined at", auto_now_add=True)
     last_update = models.DateTimeField(verbose_name="Last activity", auto_now=True)
+    # User Organization & Static Geographic location
+    user_organization = models.CharField(verbose_name='Organization', max_length=100, blank=True, null=True)
+    location = models.CharField(verbose_name='Location', max_length=100, blank=True, null=True)
+    district = models.CharField(verbose_name='District', max_length=100, blank=True, null=True)
+    division = models.CharField(verbose_name='Division', max_length=100, blank=True, null=True)
 
     class Meta:
         verbose_name_plural = "CSO Online (inside System)"
 
     @staticmethod
-    def get_cso_online():
+    def get_cso_online(
+            user_organization, 
+            location, 
+            district, 
+            division):
         """
         This method is used to return all the records of currently online/offline CSO.
         """
@@ -21,12 +30,20 @@ class CSOOnline(models.Model):
         return instances
 
     @staticmethod
-    def get_active_cso():
+    def get_active_cso(
+            user_organization=None, 
+            location=None, 
+            district=None, 
+            division=None):
         """
         This method is used to return all the records of currently online CSO. This approach is taken because the database of this project is used as mongodb, 
         since mongodb is not supported native django-filtering.
         """
-        instances = CSOOnline.get_cso_online()
+        instances = CSOOnline.get_cso_online(
+            user_organization=user_organization,
+            location=location,
+            district=district,
+            division=division)
         active_cso = []
         for i in instances:
             if i['is_active']:

@@ -3,7 +3,8 @@ from django.views import View
 from ..forms import CustomerSupportRequestForm
 from django.urls.base import reverse
 from ..models import CustomerSupportRequest, CSOVisitorMessage, CSOVisitorConvoInfo
-from authenticationApp.models import User
+from authenticationApp.models import User, User_Profile     # [NOT NECESSARY LATER, SINCE THERE IS A CLASS "UserDetail" defined below]
+from authenticationApp.utils.userDetail import UserDetail
 from datetime import date
 import datetime
 import uuid
@@ -47,6 +48,17 @@ class LangingPage(LoginRequiredMixin, View):
         else:
             print(f"User Id: {request.user.id}")
             usremail_normalized="".join(uemail for uemail in request.user.email if uemail.isalnum())
+
+            # Get user profile detail
+            usr_detail = UserDetail(user_email=request.user.email)
+            usr_profile = usr_detail.user_profile_detail()
+            # usr_profile = User_Profile.objects.get(user_email=request.user.email)
+            user_organization, user_location, user_district, user_division = usr_profile.user_organization, usr_profile.location, usr_profile.district, usr_profile.division
+            self.context['user_organization'] = user_organization
+            self.context['user_location'] = user_location
+            self.context['user_district'] = user_district
+            self.context['user_division'] = user_division
+
             self.context['user_email'] = request.user.email
             self.context['user_email_normalized'] = usremail_normalized
             request.session['registered_user_session_uuid'] = str(uuid.uuid4())
@@ -64,7 +76,7 @@ class CustomerSupportRoom(View):
     login_url = 'authenticationApplication:UserAuth:UserLoginPageView'
     template_name = 'home/customerSupport.html'
     context = {
-        'title': 'Customer Support ChatRoom',
+        'title': 'Help Desk Chatroom',
     }
 
     def get(self, request, *args, **kwargs):
@@ -330,6 +342,7 @@ class CustomerSupportReq(View):
             #     pass
             client_ip, room_slug, ticketIssuerOid = request.POST['clientIP'], request.POST['roomSlug'], request.POST['ticketIssuerOid']
             # TODO: ADD ISSUE OID WHILE RECORD CREATION WHICH IS GET FROM ZUBAIR VAI'S CHATBOT
+            # NB: [Heavy Computation] Hits the signal which executes the msg-distribution algorithm
             CustomerSupportRequest.objects.create(
                 client_ip=client_ip,
                 registered_user_email_normalized=request.POST['user_email_normalized'],

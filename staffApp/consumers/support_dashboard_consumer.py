@@ -4,6 +4,7 @@ import json
 from home.models import CustomerSupportRequest
 from channels.layers import get_channel_layer
 from ..cso_connectivity_models import CSOOnline, CSOConnectedChannels
+from authenticationApp.utils.userDetail import UserDetail
 
 
 def create_channel_conn(room_slug, channel_name, cso_email):
@@ -36,38 +37,98 @@ def remove_channel_conn(room_slug, channel_name, cso_email):
         print('No such active channel exists!')
 
 # Can make a common function (used in "home/consumers/cso_visitor_chat_consumer.py")
-def make_user_online(user):
+def make_user_online(
+        user,
+        user_organization,
+        user_location,
+        user_district,
+        user_division
+    ):
+    print('*'*10, "make_user_online() func is called")
+    # print("user_organization", user_organization)
+    # print("user_location:", user_location)
+    # print("user_district:", user_district)
+    # print("user_division:", user_division)
+
+    print("CSO-Online - user_organization", user.user_organization)
+    print("CSO-Online - user_location:", user.location)
+    print("CSO-Online - user_district:", user.district)
+    print("CSO-Online - user_division:", user.division)
+    # TODO: Append org-name, location, district, division if any of that is missing while making the CSO Online [same for offline functionality]
+    # if any of that missing, then check the value-appending functionality
+    if user.user_organization is None \
+        or user.location is None \
+        or user.district is None \
+        or user.division is None:
+        # print("user organization, location, district or division any of this None")
+        
+        if user.user_organization is None:
+            print("user.user_organization is None")
+        if user.location is None:
+            print("user.location is None")
+        if user.district is None:
+            print("user.district is None")
+        if user.division is None:
+            print("user.division is None")
+
+    # else make the user only active
+
     # Check if the user's active; otherwise change it to True
     if not user.is_active:
         user.is_active = True
         user.save()
 
 def make_user_offline(user):
+    # TODO: Append org-name, location, district, division if any of that is missing while making the CSO offline [same for online functionality]
+
     # Check if the user's active; then change it to False
     if user.is_active:
         user.is_active = False
         user.save()
 
-def active_user_online(room_slug, channel_name, cso_email):
+def active_user_online(
+        room_slug, channel_name, cso_email,
+        user_organization,
+        user_location,
+        user_district,
+        user_division):
     """
     This func is responsible for creating new record in the "CSOOnline" model if no record found of the CSO based on certain condition.
     """
-    print('*'*10, "active_user_online() func is called")
-    print("cso email:", cso_email)
-    print("room slug:", room_slug)
-    print("channel name:", channel_name)
+    # print('*'*10, "active_user_online() func is called")
+    # print("cso email:", cso_email)
+    # print("room slug:", room_slug)
+    # print("channel name:", channel_name)
+
+    # print("user_organization", user_organization)
+    # print("user_location:", user_location)
+    # print("user_district:", user_district)
+    # print("user_division:", user_division)
 
     try:
         # Check if the CSO is already online in the system
         cso_online_obj = CSOOnline.objects.get(cso_email=cso_email, room_slug=room_slug)
         print('Found active cso record!', cso_online_obj)
         # Make the CSO online if s/he is not online by passing the "cso_online_obj" entirely
-        make_user_online(cso_online_obj)
+        make_user_online(
+            cso_online_obj,
+            user_organization,
+            user_location,
+            user_district,
+            user_division
+        )
         # Create multiple channels of the same CSO to track that cso's-online-status regardless of creating duplicate multiple tabs.
         create_channel_conn(room_slug=room_slug, channel_name=channel_name, cso_email=cso_email)
     except CSOOnline.DoesNotExist:
         # Create CSO online record
-        cso_online_obj = CSOOnline.objects.create(cso_email=cso_email, room_slug=room_slug)
+        cso_online_obj = CSOOnline.objects.create(
+            cso_email=cso_email, 
+            room_slug=room_slug,
+            user_organization=user_location,
+            location=user_location,
+            district=user_district,
+            division=user_division
+        )
         print('Created a active cso record!', cso_online_obj)
         create_channel_conn(room_slug=room_slug, channel_name=channel_name, cso_email=cso_email)
 
@@ -129,7 +190,22 @@ class SupportDashboardConsumer(WebsocketConsumer):
         # print(f"Newly Connected (username): {self.user_obj.username}")
         print(f'Channel name: {self.channel_name}')
 
-        async_to_sync(active_user_online(cso_email=self.user_obj.email, room_slug=self.room_name_normalized, channel_name=self.channel_name))
+        # Query of the HDO's user profile
+        usr_detail = UserDetail(user_email=self.room_name)
+        usr_profile = usr_detail.user_profile_detail()
+        user_organization, user_location, user_district, user_division = usr_profile.user_organization, usr_profile.location, usr_profile.district, usr_profile.division
+        # print(f"user_organization: {user_organization} --- location: {user_location} --- district: {user_district} --- division: {user_division}")
+
+        async_to_sync(active_user_online(
+            cso_email=self.user_obj.email, 
+            room_slug=self.room_name_normalized, 
+            channel_name=self.channel_name,
+            
+            user_organization=user_organization,
+            user_location=user_location,
+            user_district=user_district,
+            user_division=user_division,
+            ))
 
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,
@@ -180,6 +256,22 @@ class SupportDashboardConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps({
             'old_supprt_req_roomSlug': old_supprt_req_roomSlug,
             'old_supprt_req_isResolved': old_supprt_req_isResolved,
+            'total_current_reqs': total_current_reqs,
+        }))
+    
+    # Custom method: send the old support req which is marked as resolved, to the frontend of the specific CSO's email.
+    def old_support_req_dismissed(self, event):
+        old_supprt_req_roomSlug = event['instance_room_slug']
+        old_supprt_req_isDismissed = event['instance_dismissed']
+        total_current_reqs = event['total_current_reqs']
+        print('\n'*3)
+        print('+'*50)
+        print('Old support request is dismissed (from SupportDashboardConsumer consumer)!')
+        print('+'*50)
+        print('\n'*3)
+        self.send(text_data=json.dumps({
+            'old_supprt_req_roomSlug': old_supprt_req_roomSlug,
+            'old_supprt_req_isDismissed': old_supprt_req_isDismissed,
             'total_current_reqs': total_current_reqs,
         }))
     

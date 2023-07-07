@@ -17,7 +17,7 @@
     <div class="row d-flex justify-content-center mt-4">
         <div class="col">
             <div class="row mt-4">
-                <h4 class="ps-4">CSO Name: {{ request.user.first_name }} {{ request.user.last_name }} </h4>
+                <h4 class="ps-4">Help Desk Officer Name: {{ request.user.first_name }} {{ request.user.last_name }} </h4>
             </div>
         </div>
         <div class="col">
@@ -26,6 +26,13 @@
                     <span id="support_req_nums">{{ support_req_nums }}</span>
                 </h4>
             </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col"><p>Organization: <b>{{ user_organization }}</b></p></div>
+            <div class="col"><p>Location: <b>{{ user_location }}</b></p></div>
+            <div class="col"><p>District: <b>{{ user_district }}</b></p></div>
+            <div class="col"><p>Division: <b>{{ user_division }}</b></p></div>
         </div>
     </div>
 
@@ -557,16 +564,24 @@
             tbody.innerHTML = newtr;
         }
 
-        // Old Cust-Support Request is resolved
+        // Old Cust-Support Request is resolved/dismissed
         if (data.old_supprt_req_roomSlug) {
             let old_supprt_req_roomSlug = data.old_supprt_req_roomSlug;
-            // let old_supprt_req_isResolved = data.old_supprt_req_isResolved;
             let total_current_reqs = data.total_current_reqs;
-            console.log(`An old message request is resolved!`);
             console.log(`Total current reqs: `, total_current_reqs);
             cso_request_numsDOM.innerHTML = total_current_reqs;
-            let msg_req_row_resolved = document.getElementById(`Row_msg_req_${data.old_supprt_req_roomSlug}`);
-            msg_req_row_resolved.remove();   // remove the msg-req-row which is currently marked as "Resolved" by the CSO
+            if (data.old_supprt_req_isResolved) {
+                console.log(`An old message request is resolved!`);
+                let old_supprt_req_isResolved = data.old_supprt_req_isResolved;
+                let msg_req_row_resolved = document.getElementById(`Row_msg_req_${data.old_supprt_req_roomSlug}`);
+                msg_req_row_resolved.remove();   // remove the msg-req-row which is currently marked as "Resolved" by the CSO
+            }
+            if (data.old_supprt_req_isDismissed) {
+                console.log(`An old message request is dismissed!`);
+                let old_supprt_req_isDismissed = data.old_supprt_req_isDismissed;
+                let msg_req_row_dismissed = document.getElementById(`Row_msg_req_${data.old_supprt_req_roomSlug}`);
+                msg_req_row_dismissed.remove();   // remove the msg-req-row which is currently marked as "Dismissed" by the CSO
+            }
         }
 
         // Chat-convo is cancelled by the user; remove the msg-req from the CST list in real-time

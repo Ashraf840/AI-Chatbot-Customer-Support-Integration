@@ -5,6 +5,7 @@ from home.models import CustomerSupportRequest
 from authenticationApp.models import User, User_signin_token_tms
 from ...cso_connectivity_models import CSOOnline
 from django.urls.base import reverse
+from authenticationApp.utils.userDetail import UserDetail
 
 
 # TODO: [Done] Create cso dashboard class
@@ -12,7 +13,7 @@ class CsoDashboard(LoginRequiredMixin, View):
     # Solution Ref: https://stackoverflow.com/a/68433938
     login_url = 'authenticationApplication:CsoAuth:CSOLoginPageView'
     context = {
-        'title': 'CSO Dashboard',
+        'title': 'Help Desk Dashboard',
     }
 
     def get(self, request):
@@ -34,7 +35,7 @@ class SupportDashboard(LoginRequiredMixin, View):
 
         try:
             user_signing_token_tms = User_signin_token_tms.objects.get(user_email=email)
-            self.context['user_signing_token_tms'] = user_signing_token_tms.user_token;
+            self.context['user_signing_token_tms'] = user_signing_token_tms.user_token
         except User_signin_token_tms.DoesNotExist:
             # TODO: Logout the user & prompt the CSO to login into the system again
             # TODO: Provide a flash-msg afterwards the CSO is logged out & redirected to the login page. ("TMS authentication-token is expired")
@@ -52,6 +53,16 @@ class SupportDashboard(LoginRequiredMixin, View):
         self.context['support_req_nums'] = len(customer_support_requests)
         self.context['customer_support_requests'] = customer_support_requests
         self.context['cso_email'] = request.user.email
+
+        # Get user profile detail
+        usr_detail = UserDetail(user_email=request.user.email)
+        usr_profile = usr_detail.user_profile_detail()
+        # usr_profile = User_Profile.objects.get(user_email=request.user.email)
+        user_organization, user_location, user_district, user_division = usr_profile.user_organization, usr_profile.location, usr_profile.district, usr_profile.division
+        self.context['user_organization'] = user_organization
+        self.context['user_location'] = user_location
+        self.context['user_district'] = user_district
+        self.context['user_division'] = user_division
         # --------------------------------------------------------------------------------
         return render(request, 'staffApp/cso/support_dashboard.html', self.context)
     

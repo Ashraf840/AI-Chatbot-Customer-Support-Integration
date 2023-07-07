@@ -120,9 +120,9 @@ GRAPH_MODELS = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'drmc_db',
-        'USER': 'ai_chatbot_chat_system',
-        'PASSWORD': 'hD937!dXJ6tI',
+        'NAME': 'test_db',
+        'USER': 'test',
+        'PASSWORD': 'L10w$ShRU021',
         'HOST': 'localhost',
         'PORT': '5432',
     }
