@@ -5,6 +5,7 @@ from home.models import CustomerSupportRequest
 from channels.layers import get_channel_layer
 from ..cso_connectivity_models import CSOOnline, CSOConnectedChannels
 from authenticationApp.utils.userDetail import UserDetail
+from .utils.appendLocationBasedData import AppendLocationBasedData
 
 
 def create_channel_conn(room_slug, channel_name, cso_email):
@@ -36,15 +37,37 @@ def remove_channel_conn(room_slug, channel_name, cso_email):
     except CSOConnectedChannels.DoesNotExist:
         print('No such active channel exists!')
 
+# def user_appended_data():
+def append_loc_based_data(
+        user:object,
+        user_organization:str,
+        user_location:str,
+        user_district:str,
+        user_division:str,
+    ):
+    """
+    This void function will append user's organization name, location, district, division accordingly.
+    """
+    AppendLocationBasedData(user, user_organization, user_location, user_district, user_division)
+
+    # >>>>>>>>>>>>>> SHIFTED INSIDE A METHOD "check_execute" OF "AppendLocationBasedData" CLASS <<<<<<<<<<<<<<
+    # if user.user_organization is None:
+    # ...................................
+    #     # print("user.division is None")
+
 # Can make a common function (used in "home/consumers/cso_visitor_chat_consumer.py")
 def make_user_online(
-        user,
-        user_organization,
-        user_location,
-        user_district,
-        user_division
+        user: object,
+        user_organization: str,
+        user_location: str,
+        user_district: str,
+        user_division: str
     ):
+    """
+    This void function is used to make the user online while checking if his/her organization, location, district, division is null ot not.
+    """
     print('*'*10, "make_user_online() func is called")
+    # PASSED THE VALUES FROM THE PARENT FUNCTION
     # print("user_organization", user_organization)
     # print("user_location:", user_location)
     # print("user_district:", user_district)
@@ -54,33 +77,49 @@ def make_user_online(
     print("CSO-Online - user_location:", user.location)
     print("CSO-Online - user_district:", user.district)
     print("CSO-Online - user_division:", user.division)
-    # TODO: Append org-name, location, district, division if any of that is missing while making the CSO Online [same for offline functionality]
-    # if any of that missing, then check the value-appending functionality
+    
+    # TODO: Append {org-name, location, district, division} value if any of these 4 values are missing while making the CSO Online [same for offline functionality]
     if user.user_organization is None \
         or user.location is None \
         or user.district is None \
         or user.division is None:
         # print("user organization, location, district or division any of this None")
+
+        append_loc_based_data(
+            user, 
+            user_organization,
+            user_location,
+            user_district,
+            user_division,
+        )
         
-        if user.user_organization is None:
-            print("user.user_organization is None")
-        if user.location is None:
-            print("user.location is None")
-        if user.district is None:
-            print("user.district is None")
-        if user.division is None:
-            print("user.division is None")
-
-    # else make the user only active
-
     # Check if the user's active; otherwise change it to True
     if not user.is_active:
         user.is_active = True
         user.save()
 
-def make_user_offline(user):
+def make_user_offline(
+        user: object,
+        user_organization: str,
+        user_location: str,
+        user_district: str,
+        user_division: str
+    ):
     # TODO: Append org-name, location, district, division if any of that is missing while making the CSO offline [same for online functionality]
+    if user.user_organization is None \
+        or user.location is None \
+        or user.district is None \
+        or user.division is None:
+        # print("user organization, location, district or division any of this None")
 
+        append_loc_based_data(
+            user, 
+            user_organization,
+            user_location,
+            user_district,
+            user_division,
+        )
+    
     # Check if the user's active; then change it to False
     if user.is_active:
         user.is_active = False
@@ -88,10 +127,10 @@ def make_user_offline(user):
 
 def active_user_online(
         room_slug, channel_name, cso_email,
-        user_organization,
-        user_location,
-        user_district,
-        user_division):
+        user_organization: str,
+        user_location:str,
+        user_district:str,
+        user_division:str):
     """
     This func is responsible for creating new record in the "CSOOnline" model if no record found of the CSO based on certain condition.
     """
@@ -140,7 +179,12 @@ def count_active_channel(room_slug, cso_email):
         room_slug=room_slug
     )
 
-def deactive_user_online(room_slug, channel_name, cso_email):
+def deactive_user_online(
+        room_slug, channel_name, cso_email,
+        user_organization: str,
+        user_location:str,
+        user_district:str,
+        user_division:str):
     """
     This func is responsible for deactivating the old user in the "CSOOnline" model based on certain condition.
     """
@@ -159,7 +203,13 @@ def deactive_user_online(room_slug, channel_name, cso_email):
         # [INITIAL-STEP, later firstly check if the total opened channel(s) of that individual CSO is 0 before making the CSO's status offline] 
         if len(total_active_channel) == 0:
             # Make the user offline if it's online by passing the "user_online_obj" entirely, so that the follwing func doesn't require to query the "ChatSupportUserOnline" model before making the user offline.
-            make_user_offline(cso_online_obj)
+            make_user_offline(
+                cso_online_obj,
+                user_organization,
+                user_location,
+                user_district,
+                user_division
+            )
             CSOConnectedChannels.objects.filter(cso_email=cso_email).delete()
     except CSOOnline.DoesNotExist:
         print('CSO doesn\'t exist to make the CSO offline!')
@@ -204,8 +254,8 @@ class SupportDashboardConsumer(WebsocketConsumer):
             user_organization=user_organization,
             user_location=user_location,
             user_district=user_district,
-            user_division=user_division,
-            ))
+            user_division=user_division
+        ))
 
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,
@@ -296,7 +346,21 @@ class SupportDashboardConsumer(WebsocketConsumer):
     def disconnect(self, *args, **kwargs):
         print("#"*50)
         # call the deactive_user_online() func
-        async_to_sync(deactive_user_online(cso_email=self.user_obj.email, room_slug=self.room_name_normalized, channel_name=self.channel_name))
+        # Query of the HDO's user profile
+        usr_detail = UserDetail(user_email=self.room_name)
+        usr_profile = usr_detail.user_profile_detail()
+        user_organization, user_location, user_district, user_division = usr_profile.user_organization, usr_profile.location, usr_profile.district, usr_profile.division
+
+        async_to_sync(deactive_user_online(
+            cso_email=self.user_obj.email, 
+            room_slug=self.room_name_normalized, 
+            channel_name=self.channel_name,
+
+            user_organization=user_organization,
+            user_location=user_location,
+            user_district=user_district,
+            user_division=user_division
+        ))
         
         async_to_sync (self.channel_layer.group_discard)(
             self.room_group_name,

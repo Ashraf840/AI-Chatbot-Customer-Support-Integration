@@ -11,7 +11,8 @@ def cso_online_signal(sender, instance, created, **kwargs):
     # print(f"Instance type: {type(instance)}")
     # record = instance
 
-    # # Fetch user profile detail of HDO
+    # EXPLANATION: not using this commented code-block of fetching & storing the user-profile-detail due to passing the specified values as args to the params of "get_active_cso" static-method were not mandatory anymore ["get_active_cso" method's params default value=None].
+    # Fetch user profile detail of HDO.
     # usr_detail = UserDetail(user_email=instance.cso_email)
     # usr_profile = usr_detail.user_profile_detail()
     # user_organization, user_location, user_district, user_division = usr_profile.user_organization, usr_profile.location, usr_profile.district, usr_profile.division
