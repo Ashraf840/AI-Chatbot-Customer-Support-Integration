@@ -41,7 +41,7 @@ class UserLoginPageView(View):
                     login(request, user)
                     return redirect('homeApplication:LangingPage')
                 elif user.is_cso:
-                    msg = 'Login using the CSO login system!'
+                    msg = 'Login using the HDO login system!'
                     messages.info(request, '%s' % msg)
                     return redirect('authenticationApplication:CsoAuth:CSOLoginPageView')
                 else:

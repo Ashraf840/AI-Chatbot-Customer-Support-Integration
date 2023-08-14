@@ -39,13 +39,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     # Extend Roles & Permissions
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    is_cso = models.BooleanField(default=False)
+    is_cso = models.BooleanField(verbose_name='is_hdo', default=False)
     is_user = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
     class Meta:
-        verbose_name_plural = "User (Staff, CSO, Admin, User, Superuser)"
+        # verbose_name_plural = "User (Staff, CSO, Admin, User, Superuser)"
+        verbose_name_plural = "User (Staff, HDO, Admin, User, Superuser)"
 
     objects = UserManager()
 
@@ -94,7 +95,7 @@ class User_signin_token_tms(models.Model):
     user_id = models.CharField(verbose_name='User id (TMS)', max_length=200, blank=True, null=True,
                                help_text="TMS 'user_id' is the 'uesrname' of the COS",)
     user_token = models.CharField(verbose_name='Access Token', max_length=300, blank=True, null=True)
-    token_type = models.EmailField(verbose_name='Token Type', max_length=10, blank=True, null=True)
+    token_type = models.CharField(verbose_name='Token Type', max_length=10, blank=True, null=True)
 
     class Meta:
         verbose_name_plural = "User Signin Token (TMS)"

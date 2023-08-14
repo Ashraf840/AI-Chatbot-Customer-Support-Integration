@@ -7,13 +7,6 @@ class AppendLocationBasedData:
         self.user_district = user_district
         self.user_division = user_division
 
-        # if data==None check may be completed by dictionary.get(<dynamicDictKey>) function where in the value, the class methods will be called accordingly.
-        # info_dict = {
-        #     "phone": "Handheld communication device",
-        #     "car": "Self-propelled ground vehicle",
-        #     "dinosaur": "Extinct lizard"
-        # }
-
         self.check_execute()
 
     def add_organization(self):

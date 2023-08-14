@@ -42,20 +42,26 @@ class ChatRoomCreateAPISocket(APIView):
                     user_organization=user_organization,
                     location=location,
                     district=district,
-                    division=division
+                    division=division,
+                    loc_support_confirmation=True
                 )
+                print(f"Length of active_cso (chat_room_create_api): {len(active_cso)}")
                 if len(active_cso) == 0:
                     return Response("No CSO is currently available!")
                 if len(active_cso) == 1:
-                    # print(f'Active cso: {active_cso[0]["cso_email"]}')
+                    print(f'Active cso (ChatRoomCreateAPISocket - API): {active_cso[0]["cso_email"]}')
+                    print(f'Active cso (ChatRoomCreateAPISocket - API): {active_cso}')
+                    # TODO: Only a single HDO (CSO) is available, thus gets the msg-reqs of the particular HDO.
                     total_msg = CustomerSupportRequest.get_reqs_with_assigned_cso(cso_email=active_cso[0]["cso_email"])
                     if len(total_msg) >= 5:
+                        print(f'The HDO {active_cso[0]["cso_email"]} is occupied with max support-request')
                         return Response("No CSO is currently available!")
                     else:
                         # return JsonResponse({
                         #     'msg': 'Single CSO is avaiable!',
                         #     'cso_email': active_cso
                         # })
+                        print(f'Sending a message request to {active_cso[0]["cso_email"]}')
                         channel_layer = get_channel_layer()
                         email_normalized="".join(ch for ch in user_email if ch.isalnum())
                         async_to_sync(channel_layer.group_send)(
@@ -69,13 +75,31 @@ class ChatRoomCreateAPISocket(APIView):
                         )
                 if len(active_cso) > 1:
                     print("len(active_cso) > 1")
+                    channel_layer = get_channel_layer()
+                    email_normalized="".join(ch for ch in user_email if ch.isalnum())
+                    async_to_sync(channel_layer.group_send)(
+                            f'user_chatbot_socket_{email_normalized}',
+                            {
+                                'type': 'auto_create_chatroom', 
+                                'user_email': user_chatbot_socket[0].user_email,
+                                'chatbot_socket_id': user_chatbot_socket[0].chatbot_socket_id,
+                                'issuerOid': issuerOid,
+                            }
+                        )
+                    return Response("CSO is avaiable!")
+
+
+
+                    # Currently NOT USING THIS CODE-BLOCK [UNNECESSARY]
                     total_msg = CustomerSupportRequest.get_reqs_with_assigned_cso()
                     msg_req = []
                     print("total_msg:", total_msg)
                     print("total_msg length:", len(total_msg))
                     # print("msg_req length:", len(msg_req))
-                    if len(msg_req) == 0:
-                        print("len(msg_req) == 0")
+                    # if len(msg_req) == 0:
+                        # print("len(msg_req) == 0")
+                    if len(total_msg) == 0:
+                        print("len(total_msg) == 0")
                         # active_cso_emails = [ac['cso_email'] for ac in active_cso]
                         # selected_active_cso_email = random.choice(active_cso_emails)
                         channel_layer = get_channel_layer()
@@ -90,8 +114,10 @@ class ChatRoomCreateAPISocket(APIView):
                             }
                         )
                         return Response("CSO is avaiable!")
-                    if len(msg_req) > 0:
-                        print("len(msg_req) > 0")
+                    # if len(msg_req) > 0:
+                        # print("len(msg_req) > 0")
+                    if len(total_msg) > 0:
+                        print("len(total_msg) > 0")
                         for msg in total_msg:
                             msg_req.append(msg['assigned_cso'])
                         msg_req_set = set(msg_req)
@@ -100,11 +126,11 @@ class ChatRoomCreateAPISocket(APIView):
                         for i in msg_req_list:
                             msg_count.append(msg_req.count(i))
                         msg_req_list = msg_req_list
-                        print("msg_req_list:", msg_req_list)
+                        print("msg_req_list (ChatRoomCreateAPISocket):", msg_req_list)
                         for x in msg_count:
+                            channel_layer = get_channel_layer()
+                            email_normalized="".join(ch for ch in user_email if ch.isalnum())
                             if x < 5:   # if there is any cso whose handling less than 5 chats at the current moment
-                                channel_layer = get_channel_layer()
-                                email_normalized="".join(ch for ch in user_email if ch.isalnum())
                                 async_to_sync(channel_layer.group_send)(
                                     f'user_chatbot_socket_{email_normalized}',
                                     {
@@ -115,6 +141,22 @@ class ChatRoomCreateAPISocket(APIView):
                                     }
                                 )
                                 return Response("CSO is avaiable!")
+                            
+                            
+                            else:
+                                active_cso = CSOOnline.get_active_cso()
+                                if len(active_cso) > 1:
+                                    async_to_sync(channel_layer.group_send)(
+                                        f'user_chatbot_socket_{email_normalized}',
+                                        {
+                                            'type': 'auto_create_chatroom', 
+                                            'user_email': user_chatbot_socket[0].user_email,
+                                            'chatbot_socket_id': user_chatbot_socket[0].chatbot_socket_id,
+                                            'issuerOid': issuerOid,
+                                        }
+                                    )
+                                    return Response("CSO is avaiable!")
+
                             return Response("No CSO is currently available!")
 
 
@@ -129,7 +171,7 @@ class ChatRoomCreateAPISocket(APIView):
                 #         'chatbot_socket_id': user_chatbot_socket[0].chatbot_socket_id,
                 #     }
                 # )
-                pass
+                
             print("Hitting the 'ChatRoomCreateAPISocket()' class API")
             return Response("Hitting the 'ChatRoomCreateAPISocket()' class API")
         return Response("Please send valid 'user_email' & 'chatbot_socket_id' in a JSON format.")

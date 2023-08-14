@@ -340,16 +340,18 @@ class CustomerSupportReq(View):
             #     room_slug = user_support_req.room_slug
             # else:
             #     pass
-            client_ip, room_slug, ticketIssuerOid = request.POST['clientIP'], request.POST['roomSlug'], request.POST['ticketIssuerOid']
+            client_ip, room_slug, ticketIssuerOid, user_email = request.POST['clientIP'], request.POST['roomSlug'], request.POST['ticketIssuerOid'], request.POST['user_email']
             # TODO: ADD ISSUE OID WHILE RECORD CREATION WHICH IS GET FROM ZUBAIR VAI'S CHATBOT
             # NB: [Heavy Computation] Hits the signal which executes the msg-distribution algorithm
             CustomerSupportRequest.objects.create(
                 client_ip=client_ip,
+                registered_user_email=user_email,
                 registered_user_email_normalized=request.POST['user_email_normalized'],
                 room_slug=room_slug,
                 issue_by_oid=ticketIssuerOid,
             )
-
+        # return HttpResponse("User will be redirected to chatroom soon!")
+    
         return redirect(reverse(
             'homeApplication:CustomerSupportRoom', 
             kwargs={"room_slug": room_slug}

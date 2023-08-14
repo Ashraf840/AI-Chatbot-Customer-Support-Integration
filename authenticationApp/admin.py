@@ -62,7 +62,7 @@ class User_ProfileAdmin(admin.ModelAdmin):
 
 class User_signin_token_tmsAdmin(admin.ModelAdmin):
     list_display = ['id', 'user_email', 'user_id', 'user_token', 'token_type']
-    list_display_links = ['id']
+    list_display_links = ['user_email']
     search_fields = list_display
     list_per_page = 15
     ordering = ['-id']

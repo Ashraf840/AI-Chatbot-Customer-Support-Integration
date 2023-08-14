@@ -163,7 +163,7 @@ def active_user_online(
         cso_online_obj = CSOOnline.objects.create(
             cso_email=cso_email, 
             room_slug=room_slug,
-            user_organization=user_location,
+            user_organization=user_organization,
             location=user_location,
             district=user_district,
             division=user_division
@@ -289,6 +289,7 @@ class SupportDashboardConsumer(WebsocketConsumer):
     # Custom method: send all new support-req from the db-signal's (home.signals.customer_support_request_signal_post_save) channel-group-send method.
     def new_support_req(self, event):
         new_supprt_reqst = event['new_support_request']
+        new_supprt_reqst_test = new_supprt_reqst
         self.send(text_data=json.dumps({
             'new_supprt_reqst': new_supprt_reqst,
         }))
