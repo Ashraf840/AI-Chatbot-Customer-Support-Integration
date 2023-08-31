@@ -373,6 +373,23 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
             #         }
             #     )
 
+            if 'feedback' in data:
+                feedback = data['feedback']
+                roomslug = data['roomslug']
+                # print(f'feedback: {feedback}')
+                # print(f'roomslug: {roomslug}')
+
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    # pass a dictionary with custom key-value pairs
+                    {
+                        'type': 'human_feedback',  # will be used to call as a method
+                        'feedback': feedback,
+                        'roomslug': roomslug,
+                    }
+                )
+
+
             print("[recieve() method] Recieved data to backend consumer class: CSOVisitorChatSuppportConsumer")
             print("#"*50)
         else:
@@ -530,6 +547,19 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
             'common_cso_email': common_cso_email,
             'common_registered_user_email': common_registered_user_email,
             'roomSlugParam': roomSlugParam,
+        }))
+
+    # Human feedback post to frontend method
+    def human_feedback(self, event):
+        feedback = event['feedback']
+        roomslug = event['roomslug']
+        print(f'feedback (human_feedback): {feedback}')
+        print(f'roomslug (human_feedback): {roomslug}')
+
+        self.send(text_data=json.dumps({
+            'feedback': True,
+            'human_feedback': feedback,
+            'roomslug': roomslug,
         }))
 
 

@@ -265,7 +265,7 @@ class SupportDashboardConsumer(WebsocketConsumer):
 
         # get all the customer-support-requests using the staticmethod of "CustomerSupportRequest" model
         all_support_reqs = CustomerSupportRequest.get_customer_support_reqs()
-        print(f"All support reqs: {all_support_reqs}")
+        # print(f"All support reqs: {all_support_reqs}")
 
         # what is get_channel_layer?????
         channel_layer_var = get_channel_layer()

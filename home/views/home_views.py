@@ -235,7 +235,8 @@ class CustomerSupportRoom(View):
 
         
         # Get all the messages of that room_slug from the db
-        messages = CSOVisitorMessage.objects.filter(room_slug=self.context['room_slug'])[:25]   # fetch the first 25 rows
+        # messages = CSOVisitorMessage.objects.filter(room_slug=self.context['room_slug'])[:25]   # fetch the first 25 rows
+        messages = CSOVisitorMessage.objects.filter(room_slug=self.context['room_slug'])   # fetch all rows
         # for m in messages:
         #     print(m.user_identity)
         self.context['chat_messages'] = messages

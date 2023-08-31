@@ -5,3 +5,32 @@ hr {
     border: 0;
     /* opacity: 0.75; */
 }
+
+
+/* Human feedback remove animation */
+/* Solution: https://stackoverflow.com/a/61931093 */
+.hf-fade-out {
+    animation: fade .3s;
+    -webkit-animation: fade .3s;
+    -moz-animation: fade .3s;
+}
+
+.hf-hr {
+    border: 1px solid rgb(0, 0, 0);
+    margin-top: .75rem;
+}
+  
+/* Animate opacity */
+@keyframes fade {
+    from { opacity: 1 }
+    to { opacity: 0 }
+}
+@-moz-keyframes fade {
+    from { opacity: 1 }
+    to { opacity: 0 }
+}
+@-webkit-keyframes fade {
+    from { opacity: 1 }
+    to { opacity: 0 }
+}
+/* Human feedback remove animation */

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-{% extends 'base/chatroom_base.html' %}
-{% load static %}
+{% extends 'base/chatroom_base.html' %} {% load static %}
 
 <!-- Title -->
 {% block title %} {{ title }} | iBAS++ {% endblock %}
@@ -8,1080 +7,1608 @@
 <!-- Custom CSS -->
 {% block css %}
 <!-- Fontawesome CDN -->
-<script src="https://kit.fontawesome.com/272e010829.js" crossorigin="anonymous"></script>
+<script
+  src="https://kit.fontawesome.com/272e010829.js"
+  crossorigin="anonymous"
+></script>
 <!-- Skeleton Loading CSS -->
-<link rel="stylesheet" href="{% static 'css/home/customerSupport/skeletonLoading.css' %}">
+<link
+  rel="stylesheet"
+  href="{% static 'css/home/customerSupport/skeletonLoading.css' %}"
+/>
 <!-- Miscellaneous CSS -->
-<link rel="stylesheet" href="{% static 'css/home/customerSupport/miscellaneous.css' %}">
+<link
+  rel="stylesheet"
+  href="{% static 'css/home/customerSupport/miscellaneous.css' %}"
+/>
 <!-- CSO User Detail CSS -->
-<link rel="stylesheet" href="{% static 'css/home/customerSupport/csoUserDetail.css' %}">
+<link
+  rel="stylesheet"
+  href="{% static 'css/home/customerSupport/csoUserDetail.css' %}"
+/>
 <!-- Ticket Issue Detail CSS -->
-<link rel="stylesheet" href="{% static 'css/home/customerSupport/ticketIssueDetail.css' %}">
+<link
+  rel="stylesheet"
+  href="{% static 'css/home/customerSupport/ticketIssueDetail.css' %}"
+/>
 {% endblock %}
 
 <!-- Content Body -->
-{% block content %}
-
-
-{% comment %}
+{% block content %} {% comment %}
 <h1>Customer Support Page - (Real-time Chat)</h1>
 <p>Room Slug: {{ room_slug }}</p>
 {% if request.user.username != '' %}
-    <h4>CSO Username: {{ request.user.username }} </h4>
-    {% if request.user.is_cso %}
-        <div class="row">
-            <div class="col">
-                <p>
-                    <a class="btn btn-primary btn-xl text-uppercase" href="{% url 'staffApplication:CsoWorkload:CsoDashboard' %}">CSO
-                        Dashboard</a>
-                </p>
-            </div>
-            <div class="col text-end">
-                {% if not conversationInfo.is_resolved %}
-                <!-- <button class="btn btn-success btn-xl text-uppercase" id="is-resolved">Is resolved</button> -->
-                <!-- Fill up the input field with the cso dashboard-url -->
-                <!-- <input type="text" id="cso-dashboard-url" value='{% url "staffApplication:CsoWorkload:SupportDashboard" request.user.email  %}' readonly disabled hidden> -->
-                <!-- <form action="{% url 'homeApplication:CustomerSupportRoom' room_slug %}" method="POST">
+<h4>CSO Username: {{ request.user.username }}</h4>
+{% if request.user.is_cso %}
+<div class="row">
+  <div class="col">
+    <p>
+      <a
+        class="btn btn-primary btn-xl text-uppercase"
+        href="{% url 'staffApplication:CsoWorkload:CsoDashboard' %}"
+        >CSO Dashboard</a
+      >
+    </p>
+  </div>
+  <div class="col text-end">
+    {% if not conversationInfo.is_resolved %}
+    <!-- <button class="btn btn-success btn-xl text-uppercase" id="is-resolved">Is resolved</button> -->
+    <!-- Fill up the input field with the cso dashboard-url -->
+    <!-- <input type="text" id="cso-dashboard-url" value='{% url "staffApplication:CsoWorkload:SupportDashboard" request.user.email  %}' readonly disabled hidden> -->
+    <!-- <form action="{% url 'homeApplication:CustomerSupportRoom' room_slug %}" method="POST">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-success btn-xl text-uppercase">Is resolved</button>
                 </form> -->
-                {% else %}
-                <button class="btn btn-secondary btn-xl text-uppercase" readonly>resolved</button>
-                {% endif %}
-            </div>
-        </div>
     {% else %}
-        <p>
-            <a class="btn btn-primary btn-xl text-uppercase" href="{% url 'homeApplication:LangingPage' %}">Quit</a>
-        </p>
+    <button class="btn btn-secondary btn-xl text-uppercase" readonly>
+      resolved
+    </button>
     {% endif %}
+  </div>
+</div>
 {% else %}
-    <h4> Anonymous User </h4>
-    <p>
-        <a class="btn btn-primary btn-xl text-uppercase" href="{% url 'homeApplication:LangingPage' %}">Quit</a>
-    </p>
-{% endif %}
-{% endcomment %}
-
-
+<p>
+  <a
+    class="btn btn-primary btn-xl text-uppercase"
+    href="{% url 'homeApplication:LangingPage' %}"
+    >Quit</a
+  >
+</p>
+{% endif %} {% else %}
+<h4>Anonymous User</h4>
+<p>
+  <a
+    class="btn btn-primary btn-xl text-uppercase"
+    href="{% url 'homeApplication:LangingPage' %}"
+    >Quit</a
+  >
+</p>
+{% endif %} {% endcomment %}
 
 <!-- New UI for chatbox -->
 <div class="container-fluid my-4">
-    <div class="row">
-        <div class="col">
-            <!-- User Info Row -->
-            {% if request.user.is_cso %}
-            <div class="row p-2 rounded shadow" style="background-color: #344767;">
-            {% endif %}
-
-            {% if request.user.is_user %}
-            <div class="row p-3 rounded shadow" style="background-color: #ffffff;">
-            {% endif %}
-                <div class="row">
-
-                    <!-- Profile Picture Row -->
-                    <div class="col-5 d-flex align-items-center">
-                        <!-- <ellipse cx="140" cy="125" rx="120" ry="120"
+  <div class="row">
+    <div class="col">
+      <!-- User Info Row -->
+      {% if request.user.is_cso %}
+      <div class="row p-2 rounded shadow" style="background-color: #344767">
+        {% endif %} {% if request.user.is_user %}
+        <div class="row p-3 rounded shadow" style="background-color: #ffffff">
+          {% endif %}
+          <div class="row">
+            <!-- Profile Picture Row -->
+            <div class="col-5 d-flex align-items-center">
+              <!-- <ellipse cx="140" cy="125" rx="120" ry="120"
                         style="fill:yellow;stroke:purple;stroke-width:2" /> -->
-                        {% if request.user.is_user %}
-                            {% if cso_user_profile_pic %}
-                                <img src="{{ cso_user_profile_pic.url }}" 
-                                        id="user_profile_image"
-                                        alt="Avatar"
-                                        style="z-index: 1;
-                                            width: 15rem;
-                                            height: 15rem;"
-                                        class="rounded mx-start">
-                            {% else %}
-                                <h1>No Profile Picture</h1>
-                            {% endif %}
-                        {% endif %}
-                        {% if request.user.is_cso %}
-                            <img src="{{ registered_user_profile_pic.url }}" 
-                            id="cso_profile_image"
-                            alt="Avatar"
-                            style="z-index: 1;
-                                width: 15rem;
-                                height: 15rem;"
-                                class="rounded mx-start"> 
-                        {% endif %}
-                    </div>
-
-                    <!-- User/CSO Information -->
-                    <div class="col">
-                        <div class="row" style="margin-top: .5rem;">
-                            <div class="col">
-                                <!-- user-end -->
-                                {% if request.user.is_user %}
-                                <h3 class="text-start">Help Desk Officer</h3>
-                                    <!-- TEMPORARY -->
-                                    {% comment %}
-                                    <small><b>User Chat end</b></small>
-                                    <p>{{ request.user.email }}</p>
-                                    {% endcomment %}
-                                    {% endif %}
-                                    <!-- CSO-end -->
-                                {% if request.user.is_cso %}
-                                    <h3 class="text-start text-white">User Information</h3>
-                                    <!-- TEMPORARY -->
-                                    {% comment %}
-                                    <small><b>CSO Chat end</b></small>
-                                    <p>{{ request.user.email }}</p>
-                                    {% endcomment %}
-                                {% endif %}
-                            </div>
-                        </div>
-                        
-                            {% if request.user.is_user %}
-                            <div class="row" style="margin-top: 1rem;">
-                                <!-- Display CSO info, since it's user-end part -->
-                                <div class="row my-2">
-                                    <div class="col-3"><h5>Name: </h5></div>
-                                    <div class="col text-start"><h5><span class="user_cso_info">{{ cso_user_fullname }}</span></h5></div>
-                                </div>
-                                <div class="row my-2">
-                                    <div class="col-3"><h5>Email: </h5></div>
-                                    <div class="col text-start"><h5><span class="user_cso_info">{{ cso_user_email }}</span></h5></div>
-                                </div>
-                                <div class="row my-2">
-                                    <div class="col-3"><h5>Phone: </h5></div>
-                                    <div class="col text-start"><h5><span class="user_cso_info">{{ cso_user_phone }}</span></h5></div>
-                                </div>
-                            {% endif %}
-                            {% if request.user.is_cso %}
-                            <div class="row text-white" style="margin-top: 1rem;">
-                                <!-- Display user info, since it's CSO-end part -->
-                                <div class="row my-2">
-                                    <div class="col-3"><h5>Name: </h5></div>
-                                    <div class="col text-start"><h5><span class="user_cso_info">{{ registered_user_fullname }}</span></h5></div>
-                                </div>
-                                <div class="row my-2">
-                                    <div class="col-3"><h5>Email: </h5></div>
-                                    <div class="col text-start"><h5><span class="user_cso_info">{{ registered_user_email }}</span></h5></div>
-                                </div>
-                                <div class="row my-2">
-                                    <div class="col-3"><h5>Phone: </h5></div>
-                                    <div class="col text-start"><h5><span class="user_cso_info">{{ registered_user_phone }}</span></h5></div>
-                                </div>
-                                {% if userName_bn != 'null' %}
-                                    <div class="row my-2">
-                                        <div class="col-3"><h5 style="font-weight: bold;">নাম:</h5></div>
-                                        <div class="col text-start"><h5><span class="user_cso_info">{{ userName_bn }}</span></h5></div>
-                                    </div>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                    </div>
-
-                </div>
-    
-
-                {% comment %}
-                {% if request.user.is_user %}
-                <!-- Display CSO information -->
-                <div class="row" style="margin-top: 5rem;">
-                    <div class="col">
-                        {% if request.user.is_user %}
-                            <div class="row"><h5>Name: {{ cso_user_fullname }}</h5></div>
-                        {% endif %}
-                        {% if request.user.is_cso %}
-                            <div class="row"><h5>Name: {{ registered_user_fullname }}</h5></div>
-                            {% if userName_bn != 'null' %}
-                            <div class="row" style="margin-top: 1rem;"><h5>নাম: {{ userName_bn }}</h5></div>
-                            {% endif %}
-                        {% endif %}
-                    </div>
-                    <!-- <div class="col-3 position-relative">
-                        <button class="btn btn-lg bg-secondary position-absolute bottom-0 end-0">View Detail</button>
-                    </div> -->
-                </div>
-                {% endif %}
-                {% if request.user.is_cso %}
-                <!-- Display user information -->
-                <div class="row" style="margin-top: 3rem;">
-                    <div class="col">
-                        {% if request.user.is_user %}
-                            <div class="row"><h5>Name: {{ cso_user_fullname }}</h5></div>
-                        {% endif %}
-                        {% if request.user.is_cso %}
-                            <div class="row"><h5>Name: {{ registered_user_fullname }}</h5></div>
-                            {% if userName_bn != 'null' %}
-                            <div class="row" style="margin-top: 1rem;"><h5 style="font-weight: bold;">নাম: {{ userName_bn }}</h5></div>
-                            {% endif %}
-                        {% endif %}
-                    </div>
-                    <!-- <div class="col-3 position-relative">
-                        <button class="btn btn-lg bg-secondary position-absolute bottom-0 end-0">View Detail</button>
-                    </div> -->
-                </div>
-                {% endif %}
-                {% endcomment %}
-
-
-
+              {% if request.user.is_user %} {% if cso_user_profile_pic %}
+              <img
+                src="{{ cso_user_profile_pic.url }}"
+                id="user_profile_image"
+                alt="Avatar"
+                style="z-index: 1; width: 15rem; height: 15rem"
+                class="rounded mx-start"
+              />
+              {% else %}
+              <h1>No Profile Picture</h1>
+              {% endif %} {% endif %} {% if request.user.is_cso %}
+              <img
+                src="{{ registered_user_profile_pic.url }}"
+                id="cso_profile_image"
+                alt="Avatar"
+                style="z-index: 1; width: 15rem; height: 15rem"
+                class="rounded mx-start"
+              />
+              {% endif %}
             </div>
 
-            <!-- Issue Detail -->
-            <div class="row mt-4 p-2 rounded shadow" 
+            <!-- User/CSO Information -->
+            <div class="col">
+              <div class="row" style="margin-top: 0.5rem">
+                <div class="col">
+                  <!-- user-end -->
+                  {% if request.user.is_user %}
+                  <h3 class="text-start">Help Desk Officer</h3>
+                  <!-- TEMPORARY -->
+                  {% comment %}
+                  <small><b>User Chat end</b></small>
+                  <p>{{ request.user.email }}</p>
+                  {% endcomment %} {% endif %}
+                  <!-- CSO-end -->
+                  {% if request.user.is_cso %}
+                  <h3 class="text-start text-white">User Information</h3>
+                  <!-- TEMPORARY -->
+                  {% comment %}
+                  <small><b>CSO Chat end</b></small>
+                  <p>{{ request.user.email }}</p>
+                  {% endcomment %} {% endif %}
+                </div>
+              </div>
+
+              {% if request.user.is_user %}
+              <div class="row" style="margin-top: 1rem">
+                <!-- Display CSO info, since it's user-end part -->
+                <div class="row my-2">
+                  <div class="col-3"><h5>Name:</h5></div>
+                  <div class="col text-start">
+                    <h5>
+                      <span class="user_cso_info">{{ cso_user_fullname }}</span>
+                    </h5>
+                  </div>
+                </div>
+                <div class="row my-2">
+                  <div class="col-3"><h5>Email:</h5></div>
+                  <div class="col text-start">
+                    <h5>
+                      <span class="user_cso_info">{{ cso_user_email }}</span>
+                    </h5>
+                  </div>
+                </div>
+                <div class="row my-2">
+                  <div class="col-3"><h5>Phone:</h5></div>
+                  <div class="col text-start">
+                    <h5>
+                      <span class="user_cso_info">{{ cso_user_phone }}</span>
+                    </h5>
+                  </div>
+                </div>
+                {% endif %} {% if request.user.is_cso %}
+                <div class="row text-white" style="margin-top: 1rem">
+                  <!-- Display user info, since it's CSO-end part -->
+                  <div class="row my-2">
+                    <div class="col-3"><h5>Name:</h5></div>
+                    <div class="col text-start">
+                      <h5>
+                        <span class="user_cso_info"
+                          >{{ registered_user_fullname }}</span
+                        >
+                      </h5>
+                    </div>
+                  </div>
+                  <div class="row my-2">
+                    <div class="col-3"><h5>Email:</h5></div>
+                    <div class="col text-start">
+                      <h5>
+                        <span class="user_cso_info"
+                          >{{ registered_user_email }}</span
+                        >
+                      </h5>
+                    </div>
+                  </div>
+                  <div class="row my-2">
+                    <div class="col-3"><h5>Phone:</h5></div>
+                    <div class="col text-start">
+                      <h5>
+                        <span class="user_cso_info"
+                          >{{ registered_user_phone }}</span
+                        >
+                      </h5>
+                    </div>
+                  </div>
+                  {% if userName_bn != 'null' %}
+                  <div class="row my-2">
+                    <div class="col-3">
+                      <h5 style="font-weight: bold">নাম:</h5>
+                    </div>
+                    <div class="col text-start">
+                      <h5>
+                        <span class="user_cso_info">{{ userName_bn }}</span>
+                      </h5>
+                    </div>
+                  </div>
+                  {% endif %} {% endif %}
+                </div>
+              </div>
+            </div>
+
+            {% comment %} {% if request.user.is_user %}
+            <!-- Display CSO information -->
+            <div class="row" style="margin-top: 5rem">
+              <div class="col">
+                {% if request.user.is_user %}
+                <div class="row"><h5>Name: {{ cso_user_fullname }}</h5></div>
+                {% endif %} {% if request.user.is_cso %}
+                <div class="row">
+                  <h5>Name: {{ registered_user_fullname }}</h5>
+                </div>
+                {% if userName_bn != 'null' %}
+                <div class="row" style="margin-top: 1rem">
+                  <h5>নাম: {{ userName_bn }}</h5>
+                </div>
+                {% endif %} {% endif %}
+              </div>
+              <!-- <div class="col-3 position-relative">
+                        <button class="btn btn-lg bg-secondary position-absolute bottom-0 end-0">View Detail</button>
+                    </div> -->
+            </div>
+            {% endif %} {% if request.user.is_cso %}
+            <!-- Display user information -->
+            <div class="row" style="margin-top: 3rem">
+              <div class="col">
+                {% if request.user.is_user %}
+                <div class="row"><h5>Name: {{ cso_user_fullname }}</h5></div>
+                {% endif %} {% if request.user.is_cso %}
+                <div class="row">
+                  <h5>Name: {{ registered_user_fullname }}</h5>
+                </div>
+                {% if userName_bn != 'null' %}
+                <div class="row" style="margin-top: 1rem">
+                  <h5 style="font-weight: bold">নাম: {{ userName_bn }}</h5>
+                </div>
+                {% endif %} {% endif %}
+              </div>
+              <!-- <div class="col-3 position-relative">
+                        <button class="btn btn-lg bg-secondary position-absolute bottom-0 end-0">View Detail</button>
+                    </div> -->
+            </div>
+            {% endif %} {% endcomment %}
+          </div>
+
+          <!-- Issue Detail -->
+          <div
+            class="row mt-4 p-2 rounded shadow"
+            {%
+            if
+            request.user.is_cso
+            %}
+            style="background-color: #344767; color: #ffffff"
+            {%
+            endif
+            %}
+            style="background-color: #ffffff"
+          >
+            <div class="row position-relative">
+              <div
+                class="row text-center mt-3 mb-3 position-absolute"
+                style="margin: 0 auto"
+              >
+                <h3>Issue Detail</h3>
+                <div class="d-flex justify-content-center">
+                  <hr
+                    class="bg-dark border-2 border-top border-dark"
+                    style="width: 15rem"
+                  />
+                </div>
+              </div>
+              {% if request.user.is_cso %}
+              <div
+                class="row container-fluid"
+                style="margin-top: 6rem; margin-bottom: 0.8rem"
+              >
+                {% endif %} {% if request.user.is_user %}
+                <div class="row container-fluid" style="margin-top: 6.5rem">
+                  {% endif %}
+                  <div class="col grid-tms-issue-skeleton">
+                    <div class="row my-2">
+                      <h5>
+                        Issue ID:
+                        <div class="skeleton skeleton-text"></div>
+                      </h5>
+                    </div>
+                    <div class="row my-2">
+                      <h5>
+                        Issue:
+                        <div class="skeleton skeleton-text"></div>
+                      </h5>
+                    </div>
+                    <div class="row my-2">
+                      <h5>
+                        Project:
+                        <div class="skeleton skeleton-text"></div>
+                      </h5>
+                    </div>
+                    <div class="row my-2">
+                      <h5>
+                        Issuer Mobile Number:
+                        <div class="skeleton skeleton-text"></div>
+                      </h5>
+                    </div>
+                    <div class="row my-2">
+                      <h5>
+                        Issue Status:
+                        <div class="skeleton skeleton-text"></div>
+                      </h5>
+                    </div>
+                  </div>
+
+                  <div
+                    class="col grid-tms-issue-data p-0 m-0"
+                    style="display: none"
+                  >
+                    {% if request.user.is_cso %}
+                    <div class="row my-2">
+                      <div class="col"><h5 class="ms-4">Issue ID:</h5></div>
+                      <div class="col">
+                        <h5>
+                          <span
+                            id="div_issue_id"
+                            class="ms-3 ticket_detail_value_span"
+                            >-</span
+                          >
+                        </h5>
+                      </div>
+                    </div>
+                    <hr class="bg-dark border-2 border-top border-dark" />
+                    <div class="row my-2">
+                      <div class="col"><h5 class="ms-4">Issue:</h5></div>
+                      <div class="col">
+                        <h5>
+                          <span
+                            id="div_issue"
+                            class="ms-3 ticket_detail_value_span"
+                            >-</span
+                          >
+                        </h5>
+                      </div>
+                    </div>
+                    <hr class="bg-dark border-2 border-top border-dark" />
+                    <div class="row my-2">
+                      <div class="col"><h5 class="ms-4">Project:</h5></div>
+                      <div class="col">
+                        <h5>
+                          <span
+                            id="div_project"
+                            class="ms-3 ticket_detail_value_span"
+                            >-</span
+                          >
+                        </h5>
+                      </div>
+                    </div>
+                    <hr class="bg-dark border-2 border-top border-dark" />
+                    <div class="row my-2">
+                      <div class="col">
+                        <h5 class="ms-4">Issuer Mobile Number:</h5>
+                      </div>
+                      <div class="col">
+                        <h5>
+                          <span
+                            id="div_issuer_mobile_number"
+                            class="ms-3 ticket_detail_value_span"
+                            >-</span
+                          >
+                        </h5>
+                      </div>
+                    </div>
+                    <hr class="bg-dark border-2 border-top border-dark" />
+                    <div class="row my-2">
+                      <div class="col"><h5 class="ms-4">Issue Status:</h5></div>
+                      <div class="col">
+                        <h5>
+                          <span
+                            id="div_status"
+                            class="ms-3 ticket_detail_value_span"
+                            >-</span
+                          >
+                        </h5>
+                      </div>
+                    </div>
+                    <hr class="bg-dark border-2 border-top border-dark" />
+                    {% endif %} {% if request.user.is_user %}
+                    <div class="row user_ticket_row">
+                      <div class="col"><h5 class="ms-4">Issue ID:</h5></div>
+                      <div class="col">
+                        <h5>
+                          <span
+                            id="div_issue_id"
+                            class="ms-3 ticket_detail_value_span"
+                            >-</span
+                          >
+                        </h5>
+                      </div>
+                    </div>
+                    <hr class="bg-dark border-2 border-top border-dark" />
+                    <div class="row user_ticket_row">
+                      <div class="col"><h5 class="ms-4">Issue:</h5></div>
+                      <div class="col">
+                        <h5>
+                          <span
+                            id="div_issue"
+                            class="ms-3 ticket_detail_value_span"
+                            >-</span
+                          >
+                        </h5>
+                      </div>
+                    </div>
+                    <hr class="bg-dark border-2 border-top border-dark" />
+                    <div class="row user_ticket_row">
+                      <div class="col"><h5 class="ms-4">Project:</h5></div>
+                      <div class="col">
+                        <h5>
+                          <span
+                            id="div_project"
+                            class="ms-3 ticket_detail_value_span"
+                            >-</span
+                          >
+                        </h5>
+                      </div>
+                    </div>
+                    <hr class="bg-dark border-2 border-top border-dark" />
+                    <div class="row user_ticket_row">
+                      <div class="col">
+                        <h5 class="ms-4">Issuer Mobile Number:</h5>
+                      </div>
+                      <div class="col">
+                        <h5>
+                          <span
+                            id="div_issuer_mobile_number"
+                            class="ms-3 ticket_detail_value_span"
+                            >-</span
+                          >
+                        </h5>
+                      </div>
+                    </div>
+                    <hr class="bg-dark border-2 border-top border-dark" />
+                    <div class="row user_ticket_row">
+                      <div class="col"><h5 class="ms-4">Issue Status:</h5></div>
+                      <div class="col">
+                        <h5>
+                          <span
+                            id="div_status"
+                            class="ms-3 ticket_detail_value_span"
+                            >-</span
+                          >
+                        </h5>
+                      </div>
+                    </div>
+                    <hr class="bg-dark border-2 border-top border-dark" />
+                    {% endif %}
+                  </div>
+                </div>
+
+                <!-- Buttons in the "Ticket Issue" section -->
                 {% if request.user.is_cso %}
-                style="background-color: #344767; color: #ffffff;"
-                {% endif %}
-                style="background-color: #ffffff;"
-            >
-                <div class="row position-relative">
-                    <div class="row text-center mt-3 mb-3 position-absolute" style="margin: 0 auto;">
-                        <h3>Issue Detail</h3>
-                        <div class="d-flex justify-content-center"><hr class="bg-dark border-2 border-top border-dark" style="width: 15rem;"></div>
-                    </div>
-                    {% if request.user.is_cso %}
-                    <div class="row container-fluid" style="margin-top: 6rem; margin-bottom: .8rem;">
-                    {% endif %}
-                    {% if request.user.is_user %}
-                    <div class="row container-fluid" style="margin-top: 6.5rem;">
-                    {% endif %}
-                        <div class="col grid-tms-issue-skeleton">
-                            <div class="row my-2"><h5>Issue ID: <div class="skeleton skeleton-text"></div></h5></div>
-                            <div class="row my-2"><h5>Issue: <div class="skeleton skeleton-text"></div></h5></div>
-                            <div class="row my-2"><h5>Project: <div class="skeleton skeleton-text"></div></h5></div>
-                            <div class="row my-2"><h5>Issuer Mobile Number: <div class="skeleton skeleton-text"></div></h5></div>
-                            <div class="row my-2"><h5>Issue Status: <div class="skeleton skeleton-text"></div></h5></div>
-                        </div>
+                <div class="row" style="margin: 2rem 0 1rem 0">
+                  <div class="col d-flex flex-row-reverse">
+                    {% comment %}
+                    <!-- NOT USING THIS APPRAOCH -->
+                    <form method="POST" id="form_is_resolved">
+                      {% csrf_token %}
+                      <input
+                        type="text"
+                        name="resolved"
+                        id="inpt_is_resolved"
+                      />
+                      <button
+                        class="btn btn-lg bg-success mx-1"
+                        id="btn_is_resolved"
+                        onclick="isResolved()"
+                      >
+                        Resolved
+                      </button>
+                    </form>
+                    {% endcomment %}
 
-                        <div class="col grid-tms-issue-data p-0 m-0" style="display: none">
-                        {% if request.user.is_cso %}
-                            <div class="row my-2">
-                                <div class="col"><h5 class="ms-4">Issue ID: </h5></div>
-                                <div class="col"><h5><span id="div_issue_id" class="ms-3 ticket_detail_value_span">-</span></h5></div>
-                            </div>
-                            <hr class="bg-dark border-2 border-top border-dark">
-                            <div class="row my-2">
-                                <div class="col"><h5 class="ms-4">Issue: </h5></div>
-                                <div class="col"><h5><span id="div_issue" class="ms-3 ticket_detail_value_span">-</span></h5></div>
-                            </div>
-                            <hr class="bg-dark border-2 border-top border-dark">
-                            <div class="row my-2">
-                                <div class="col"><h5 class="ms-4">Project: </h5></div>
-                                <div class="col"><h5><span id="div_project" class="ms-3 ticket_detail_value_span">-</span></h5></div>
-                            </div>
-                            <hr class="bg-dark border-2 border-top border-dark">
-                            <div class="row my-2">
-                                <div class="col"><h5 class="ms-4">Issuer Mobile Number: </h5></div>
-                                <div class="col"><h5><span id="div_issuer_mobile_number" class="ms-3 ticket_detail_value_span">-</span></h5></div>
-                            </div>
-                            <hr class="bg-dark border-2 border-top border-dark">
-                            <div class="row my-2">
-                                <div class="col"><h5 class="ms-4">Issue Status: </h5></div>
-                                <div class="col"><h5><span id="div_status" class="ms-3 ticket_detail_value_span">-</span></h5></div>
-                            </div>
-                            <hr class="bg-dark border-2 border-top border-dark">
-                        {% endif %}
+                    <input
+                      type="text"
+                      id="cso-dashboard-url"
+                      value='{% url "staffApplication:CsoWorkload:SupportDashboard" request.user.email  %}'
+                      readonly
+                      disabled
+                      hidden
+                    />
 
-                        {% if request.user.is_user %}
-                            <div class="row user_ticket_row">
-                                <div class="col"><h5 class="ms-4">Issue ID: </h5></div>
-                                <div class="col"><h5><span id="div_issue_id" class="ms-3 ticket_detail_value_span">-</span></h5></div>
-                            </div>
-                            <hr class="bg-dark border-2 border-top border-dark">
-                            <div class="row user_ticket_row">
-                                <div class="col"><h5 class="ms-4">Issue: </h5></div>
-                                <div class="col"><h5><span id="div_issue" class="ms-3 ticket_detail_value_span">-</span></h5></div>
-                            </div>
-                            <hr class="bg-dark border-2 border-top border-dark">
-                            <div class="row user_ticket_row">
-                                <div class="col"><h5 class="ms-4">Project: </h5></div>
-                                <div class="col"><h5><span id="div_project" class="ms-3 ticket_detail_value_span">-</span></h5></div>
-                            </div>
-                            <hr class="bg-dark border-2 border-top border-dark">
-                            <div class="row user_ticket_row">
-                                <div class="col"><h5 class="ms-4">Issuer Mobile Number: </h5></div>
-                                <div class="col"><h5><span id="div_issuer_mobile_number" class="ms-3 ticket_detail_value_span">-</span></h5></div>
-                            </div>
-                            <hr class="bg-dark border-2 border-top border-dark">
-                            <div class="row user_ticket_row">
-                                <div class="col"><h5 class="ms-4">Issue Status: </h5></div>
-                                <div class="col"><h5><span id="div_status" class="ms-3 ticket_detail_value_span">-</span></h5></div>
-                            </div>
-                            <hr class="bg-dark border-2 border-top border-dark">
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <!-- Buttons in the "Ticket Issue" section -->
-                    {% if request.user.is_cso %}
-                    <div class="row" style="margin: 2rem 0 1rem 0;">
-                        <div class="col d-flex flex-row-reverse">
-
-                            {% comment %}
-                            <!-- NOT USING THIS APPRAOCH -->
-                            <form method="POST" id="form_is_resolved">
-                                {% csrf_token %}
-                                <input type="text" name="resolved" id="inpt_is_resolved">
-                                <button class="btn btn-lg bg-success mx-1" id="btn_is_resolved" onclick="isResolved()">Resolved</button>
-                            </form>
-                            {% endcomment %}
-
-                            <input type="text" id="cso-dashboard-url" value='{% url "staffApplication:CsoWorkload:SupportDashboard" request.user.email  %}' readonly disabled hidden>
-                            
-                            <!-- Resolve/Remarks modal trigger button -->
-                            {% if not conversationInfo.is_resolved %}
-                                <!-- <button class="btn btn-lg bg-success mx-1" id="is-resolved">Is resolved</button> -->
-                                <button type="button" class="btn bg-light text-dark mx-2" data-bs-toggle="modal" data-bs-target="#remarkModal">
-                                    Resolve
-                                </button>
-                                <!-- <input type="text" id="cso-dashboard-url" value='{% url "staffApplication:CsoWorkload:SupportDashboard" request.user.email  %}' readonly disabled hidden> -->
-                                <!-- Fill up the input field with the cso dashboard-url -->
-                                <!-- <form action="{% url 'homeApplication:CustomerSupportRoom' room_slug %}" method="POST">
+                    <!-- Resolve/Remarks modal trigger button -->
+                    {% if not conversationInfo.is_resolved %}
+                    <!-- <button class="btn btn-lg bg-success mx-1" id="is-resolved">Is resolved</button> -->
+                    <button
+                      type="button"
+                      class="btn bg-light text-dark mx-2"
+                      data-bs-toggle="modal"
+                      data-bs-target="#remarkModal"
+                    >
+                      Resolve
+                    </button>
+                    <!-- <input type="text" id="cso-dashboard-url" value='{% url "staffApplication:CsoWorkload:SupportDashboard" request.user.email  %}' readonly disabled hidden> -->
+                    <!-- Fill up the input field with the cso dashboard-url -->
+                    <!-- <form action="{% url 'homeApplication:CustomerSupportRoom' room_slug %}" method="POST">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-success btn-xl text-uppercase">Is resolved</button>
                                 </form> -->
-                            {% else %}
-                                <button class="btn btn-lg btn-secondary mx-2 text-dark" readonly>Resolved</button>
-                            {% endif %}
-                            <!-- <button class="btn btn-lg bg-danger text-dark mx-1">Invalid</button> -->
-                            <!-- <button class="btn btn-lg bg-light text-dark mx-1">Unsolved</button> -->
-                            <!-- <button class="btn btn-lg bg-light text-dark mx-1">Transferred</button> -->
-                            <!-- <div class="col-3 position-relative mx-1">
+                    {% else %}
+                    <button
+                      class="btn btn-lg btn-secondary mx-2 text-dark"
+                      readonly
+                    >
+                      Resolved
+                    </button>
+                    {% endif %}
+                    <!-- <button class="btn btn-lg bg-danger text-dark mx-1">Invalid</button> -->
+                    <!-- <button class="btn btn-lg bg-light text-dark mx-1">Unsolved</button> -->
+                    <!-- <button class="btn btn-lg bg-light text-dark mx-1">Transferred</button> -->
+                    <!-- <div class="col-3 position-relative mx-1">
                                 <button class="btn btn-lg bg-light text-dark position-absolute bottom-0 end-0">View Detail</button>
                             </div> -->
-                            
 
-                            <!-- Dismiss issue confirmation modal trigger button -->
-                            <button type="button" class="btn bg-danger text-dark mx-2" data-bs-toggle="modal" data-bs-target="#dismissIssueConfirmationModal">
-                                Dismiss
-                            </button>
+                    <!-- Dismiss issue confirmation modal trigger button -->
+                    <button
+                      type="button"
+                      class="btn bg-danger text-dark mx-2"
+                      data-bs-toggle="modal"
+                      data-bs-target="#dismissIssueConfirmationModal"
+                    >
+                      Dismiss
+                    </button>
 
-                            <!-- Ticket Detail View modal trigger button -->
-                            <button type="button" class="btn bg-light text-dark mx-2 ticketDetailModal" data-id="ISBN-001122"
-                                onclick="dispTicketDetail(ticket_issue_oid='{{ tms_issue_by_oid }}', user_signin_token='{{ user_signing_token_tms }}')"
-                                data-bs-toggle="modal" data-bs-target="#ticketDetailModal" style="display: none;">
-                                View Detail
-                            </button>
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    {% if request.user.is_user %}
-                    <div class="row" style="margin: 2rem 0 1rem 0;">
-                        <div class="col d-flex flex-row-reverse">
-                            <button type="button" class="btn text-light mx-2 ticketDetailModal" data-id="ISBN-001122"
-                            onclick="dispTicketDetail(ticket_issue_oid='{{ tms_issue_by_oid }}', user_signin_token='{{ user_signing_token_tms }}')"
-                                data-bs-toggle="modal" data-bs-target="#ticketDetailModal" style="display: none; background: #344767;">
-                                View Detail
-                            </button>
-                        </div>
-                    </div>
-                    {% endif %}
+                    <!-- Ticket Detail View modal trigger button -->
+                    <button
+                      type="button"
+                      class="btn bg-light text-dark mx-2 ticketDetailModal"
+                      data-id="ISBN-001122"
+                      onclick="dispTicketDetail(ticket_issue_oid='{{ tms_issue_by_oid }}', user_signin_token='{{ user_signing_token_tms }}')"
+                      data-bs-toggle="modal"
+                      data-bs-target="#ticketDetailModal"
+                      style="display: none"
+                    >
+                      View Detail
+                    </button>
+                  </div>
                 </div>
+                {% endif %} {% if request.user.is_user %}
+                <div class="row" style="margin: 2rem 0 1rem 0">
+                  <div class="col d-flex flex-row-reverse">
+                    <button
+                      type="button"
+                      class="btn text-light mx-2 ticketDetailModal"
+                      data-id="ISBN-001122"
+                      onclick="dispTicketDetail(ticket_issue_oid='{{ tms_issue_by_oid }}', user_signin_token='{{ user_signing_token_tms }}')"
+                      data-bs-toggle="modal"
+                      data-bs-target="#ticketDetailModal"
+                      style="display: none; background: #344767"
+                    >
+                      View Detail
+                    </button>
+                  </div>
+                </div>
+                {% endif %}
+              </div>
             </div>
-        </div>
-        <div class="col-7 bg-light ms-3 rounded shadow">
-
+          </div>
+          <div id="chatbox-container" class="col-7 bg-light ms-3 rounded shadow">
             {% if request.user.is_cso %}
-            <div class="row" style="height: 82.8vh;">
-            {% endif %}
+              <div class="row" style="height: 82.8vh">
+            {% endif %} 
             {% if request.user.is_user %}
-            <div class="row" style="height: 80.6vh;">
-            {% endif %}
-                {% include 'home/customerSupportComponents/chatBody.html' %}
+              <div class="row" style="height: 80.6vh">
+            {% endif %} 
+            {% include 'home/customerSupportComponents/chatBody.html' %}
+              </div>
             </div>
+          </div>
+
+          {% if request.user.is_cso %}
+          <!-- Remarks/Resolve Modal -->
+          {% include 'home/customerSupportComponents/modals/resolveIssueModal.html' %}
+          <!-- Dismiss Issue Confirmation Modal -->
+          {% include 'home/customerSupportComponents/modals/dismissIssueConfirmationModal.html' %} 
+          {% endif %}
+
+          <!-- View Ticket Detail Modal -->
+          {% include 'home/customerSupportComponents/modals/ticketDetailModal.html' %} 
+          {% if request.user.is_user %}
+          <!-- User Issue resolved Information Modal -->
+          {% include 'home/customerSupportComponents/modals/userIssueResolvedInformationModal.html' %}
+          <!-- Dismiss/Unresolved Issue Information Modal -->
+          {% include 'home/customerSupportComponents/modals/dismissIssueInformationModal.html' %} 
+          {% endif %}
         </div>
-    </div>
 
-    
-
-
-    {% if request.user.is_cso %}
-    <!-- Remarks/Resolve Modal -->
-    {% include 'home/customerSupportComponents/modals/resolveIssueModal.html' %}
-    <!-- Dismiss Issue Confirmation Modal -->
-    {% include 'home/customerSupportComponents/modals/dismissIssueConfirmationModal.html' %}
-    {% endif %}
-    
-    <!-- View Ticket Detail Modal -->
-    {% include 'home/customerSupportComponents/modals/ticketDetailModal.html' %}
-    
-    {% if request.user.is_user %}
-    <!-- User Issue resolved Information Modal -->
-    {% include 'home/customerSupportComponents/modals/userIssueResolvedInformationModal.html' %}
-    <!-- Dismiss/Unresolved Issue Information Modal -->
-    {% include 'home/customerSupportComponents/modals/dismissIssueInformationModal.html' %}
-    {% endif %}
-</div>
-
-<footer class="footer py-4 bg-light">
-    <div class="container-fluid">
-        <div class="row justify-content-center">
-            <div class="col-lg-3 text-lg-start">Copyright &copy; 
+        <footer class="footer py-4 bg-light">
+          <div class="container-fluid">
+            <div class="row justify-content-center">
+              <div class="col-lg-3 text-lg-start">
+                Copyright &copy;
                 <b><a href="http://www.doer.com.bd">Doer Services Ltd.</a></b>
+              </div>
             </div>
+          </div>
+        </footer>
+
+        {% comment %}
+        <div class="row h-100 bg-primary">
+          <div class="col"></div>
+          <!-- Template copied from:  https://mdbootstrap.com/docs/standard/extended/chat/ -->
+          <div class="col-8">
+            {% include 'home/customerSupportComponents/chatBody.html' %}
+          </div>
+          <div class="col"></div>
         </div>
-    </div>
-</footer>
+        {% endcomment %}
 
+        <!-- JQuery -->
+        <script
+          src="https://code.jquery.com/jquery-3.6.4.slim.min.js"
+          integrity="sha256-a2yjHM4jnF9f54xUQakjZGaqYs/V1CYvWpoqZzC2/Bw="
+          crossorigin="anonymous"
+        ></script>
+        {% endblock %}
 
+        <!-- Custom JS -->
+        {% block js %}
+        <!-- Miscellaneaous JS: Resolve, Unsolved, Transferred, Invalid button trigger -->
+        <script>
+          // function isResolved() {
+          //     let inpt_is_resolved = document.querySelector('#inpt_is_resolved');
+          //     let form_is_resolved = document.querySelector('#form_is_resolved');
+          //     inpt_is_resolved.value = "is_resolved";
+          //     form_is_resolved.submit();
+          // }
+        </script>
 
-
-
-{% comment %}
-<div class="row h-100 bg-primary">
-    <div class="col"></div>
-    <!-- Template copied from:  https://mdbootstrap.com/docs/standard/extended/chat/ -->
-    <div class="col-8">
-        {% include 'home/customerSupportComponents/chatBody.html' %}
-    </div>
-    <div class="col"></div>
-</div>
-{% endcomment %}
-
-
-<!-- JQuery -->
-<script src="https://code.jquery.com/jquery-3.6.4.slim.min.js" integrity="sha256-a2yjHM4jnF9f54xUQakjZGaqYs/V1CYvWpoqZzC2/Bw=" crossorigin="anonymous"></script>
-{% endblock %}
-
-
-
-<!-- Custom JS -->
-{% block js %}
-<!-- Miscellaneaous JS: Resolve, Unsolved, Transferred, Invalid button trigger -->
-<script>
-    // function isResolved() {
-    //     let inpt_is_resolved = document.querySelector('#inpt_is_resolved');
-    //     let form_is_resolved = document.querySelector('#form_is_resolved');
-    //     inpt_is_resolved.value = "is_resolved";
-    //     form_is_resolved.submit();
-    // }
-</script>
-
-<!-- Miscellaneaous JS: TMS Issue Fetch Load (Skeleton Loader) 
+        <!-- Miscellaneaous JS: TMS Issue Fetch Load (Skeleton Loader) 
 Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
 -->
 
-<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
-<script src="{% static 'js/home/customerSupportChat/tmsIssueUpdate.js' %}"></script>
-<script src="{% static 'js/home/customerSupportChat/speechToText.js' %}"></script>
-<script src="{% static 'js/miscellaneous/helper_func/get_cookies.js' %}"></script>
+        <script
+          src="https://code.jquery.com/jquery-3.7.0.min.js"
+          integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+          crossorigin="anonymous"
+        ></script>
+        <script src="{% static 'js/home/customerSupportChat/tmsIssueUpdate.js' %}"></script>
+        <script src="{% static 'js/home/customerSupportChat/speechToText.js' %}"></script>
+        <script src="{% static 'js/miscellaneous/helper_func/get_cookies.js' %}"></script>
 
-<script>
-    let grid_tms_issue_skeleton = document.querySelector('.grid-tms-issue-skeleton');
-    let grid_tms_issue_data = document.querySelector('.grid-tms-issue-data');
-    
-    function disp(ticket_issue_oid=1, user_signin_token=2) {
-        console.log(`Ticket Issue Id (from 'disp()' function): ${ticket_issue_oid}`);
-        // let user_signing_token_tms = "{{ user_signing_token_tms }}";
-        console.log(`User signin token (from 'disp()' function): ${user_signin_token}`);
+        <script>
+          let grid_tms_issue_skeleton = document.querySelector(
+            ".grid-tms-issue-skeleton"
+          );
+          let grid_tms_issue_data = document.querySelector(
+            ".grid-tms-issue-data"
+          );
 
-        let span_issue_id = document.getElementById('div_issue_id');
-        let span_issue = document.getElementById('div_issue');
-        let span_project = document.getElementById('div_project');
-        let span_issuer_mobile_number = document.getElementById('div_issuer_mobile_number');
-        let span_status = document.getElementById('div_status');
+          function disp(ticket_issue_oid = 1, user_signin_token = 2) {
+            console.log(
+              `Ticket Issue Id (from 'disp()' function): ${ticket_issue_oid}`
+            );
+            // let user_signing_token_tms = "{{ user_signing_token_tms }}";
+            console.log(
+              `User signin token (from 'disp()' function): ${user_signin_token}`
+            );
 
+            let span_issue_id = document.getElementById("div_issue_id");
+            let span_issue = document.getElementById("div_issue");
+            let span_project = document.getElementById("div_project");
+            let span_issuer_mobile_number = document.getElementById(
+              "div_issuer_mobile_number"
+            );
+            let span_status = document.getElementById("div_status");
 
+            // Fetch approach - 2
+            var get_tms_issue_detail_url = `http://${window.location.host}/staff/api/tms-issue/${ticket_issue_oid}/${user_signin_token}/`;
+            console.log("Fetch URL (GET):", get_tms_issue_detail_url);
 
+            var requestOptions = {
+              method: "GET",
+              redirect: "follow",
+            };
 
+            // fetch(`http://${window.location.host}/staff/api/tms-issue/${ticket_issue_oid}/${user_signing_token_tms}/`, requestOptions)
+            fetch(`${get_tms_issue_detail_url}`, requestOptions)
+              .then((response) => response.json())
+              .then((result) => {
+                // HIDE LOADER WILL BE IMPLEMENTED HERE
+                grid_tms_issue_skeleton.style.display = "none";
+                // grid_tms_issue_skeleton.remove();
+                // grid_tms_issue_data.style.visibi = "block";
+                grid_tms_issue_data.removeAttribute("style");
 
-        // Fetch approach - 2
-        var get_tms_issue_detail_url = `http://${window.location.host}/staff/api/tms-issue/${ticket_issue_oid}/${user_signin_token}/`;
-        console.log("Fetch URL (GET):", get_tms_issue_detail_url);
+                // console.log(result);
+                span_issue_id.innerHTML = "";
+                span_issue_id.innerHTML = `${result.data.issue_id}`;
+                span_issue.innerHTML = "";
+                span_issue.innerHTML = `${result.data.category_title_en}`;
+                span_project.innerHTML = "";
+                span_project.innerHTML = `${result.data.project_title_en}`;
+                span_status.innerHTML = "";
+                span_status.innerHTML = `${result.data.status}`;
+                span_issuer_mobile_number.innerHTML = "";
+                span_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
+              })
+              .catch((error) => console.log("error", error)); // HIDE LOADER WILL BE IMPLEMENTED HERE
 
+            // // Fetch approach - 1
+            // var myHeaders = new Headers();
+            // myHeaders.append("Accept", "application/json, text/plain, */*");
+            // myHeaders.append("Authorization", `Bearer ${user_signin_token}`);
+            // myHeaders.append("Content-Type", "application/json");
+            // // myHeaders.append("Referer", `https://tms-test.celloscope.net/issue/admin-issue-list/${ticket_issue_oid}`);
+            // // myHeaders.append("Referer", `http://172.16.6.134/issue/admin-issue-list/${ticket_issue_oid}`);
+            // myHeaders.append("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 OPR/96.0.0.0");
+            // myHeaders.append("sec-ch-ua", "\"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"110\", \"Opera\";v=\"96\"");
+            // myHeaders.append("sec-ch-ua-mobile", "?0");
+            // myHeaders.append("sec-ch-ua-platform", "\"Linux\"");
 
-        var requestOptions = {
-            method: 'GET',
-            redirect: 'follow'
-        };
+            // var raw = JSON.stringify({
+            //     "oid": `${ticket_issue_oid}`
+            //     // "oid": `64ecfb10-e036-418d-8bc0-eea566b28ca0`
+            //     // "oid": `f6b4aca6-43b7-49ef-a491-4c4684f058ed`
+            // });
 
-        // fetch(`http://${window.location.host}/staff/api/tms-issue/${ticket_issue_oid}/${user_signing_token_tms}/`, requestOptions)
-        fetch(`${get_tms_issue_detail_url}`, requestOptions)
-        .then(response => response.json())
-        .then(result => {
-            // HIDE LOADER WILL BE IMPLEMENTED HERE
-            grid_tms_issue_skeleton.style.display = "none";
-            // grid_tms_issue_skeleton.remove();
-            // grid_tms_issue_data.style.visibi = "block";
-            grid_tms_issue_data.removeAttribute('style');
+            // var requestOptions = {
+            //     method: 'POST',
+            //     headers: myHeaders,
+            //     body: raw,
+            //     redirect: 'follow'
+            // };
 
-            // console.log(result);
-            span_issue_id.innerHTML = "";
-            span_issue_id.innerHTML = `${result.data.issue_id}`;
-            span_issue.innerHTML = "";
-            span_issue.innerHTML = `${result.data.category_title_en}`;
-            span_project.innerHTML = "";
-            span_project.innerHTML = `${result.data.project_title_en}`;
-            span_status.innerHTML = "";
-            span_status.innerHTML = `${result.data.status}`;
-            span_issuer_mobile_number.innerHTML = "";
-            span_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
-        })
-        .catch(error => console.log('error', error));       // HIDE LOADER WILL BE IMPLEMENTED HERE
+            // // fetch("https://tms-test.celloscope.net/api/v1/issue-detail-by-oid", requestOptions)
+            // fetch("http://172.16.6.134/api/v1/issue-detail-by-oid", requestOptions)
+            // // .then(response => response.text())
+            // .then(response => response.json())
+            // .then(result => {
+            //     // HIDE LOADER WILL BE IMPLEMENTED HERE
+            //     grid_tms_issue_skeleton.style.display = "none";
+            //     // grid_tms_issue_skeleton.remove();
+            //     // grid_tms_issue_data.style.visibi = "block";
+            //     grid_tms_issue_data.removeAttribute('style');
 
+            //     // console.log(result);
+            //     span_issue_id.innerHTML = "";
+            //     span_issue_id.innerHTML = `${result.data.issue_id}`;
+            //     span_issue.innerHTML = "";
+            //     span_issue.innerHTML = `${result.data.category_title_en}`;
+            //     span_project.innerHTML = "";
+            //     span_project.innerHTML = `${result.data.project_title_en}`;
+            //     span_status.innerHTML = "";
+            //     span_status.innerHTML = `${result.data.status}`;
+            //     span_issuer_mobile_number.innerHTML = "";
+            //     span_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
+            // })
+            // .catch(error => console.log('error', error));       // HIDE LOADER WILL BE IMPLEMENTED HERE
+          }
 
+          window.onload = function () {
+            // yourFunction(param1, param2);
+            console.log(`Window is fully laoded!`);
+            tms_issue_oid = "{{ tms_issue_by_oid }}";
+            console.log(`TSM Issue OID: ${tms_issue_oid}`);
+            let user_signing_token_tms = "{{ user_signing_token_tms }}";
+            // console.log(`User signin token: ${user_signing_token_tms}`);
+            disp(
+              (ticket_issue_oid = tms_issue_oid),
+              (user_signin_token = user_signing_token_tms)
+            );
+            let ticketDetailModalBtn =
+              document.querySelector(".ticketDetailModal");
+            ticketDetailModalBtn.style.display = "block";
+          };
+        </script>
 
+        <!-- Fetch Ticket Issue Detail on "View Detail" btn click -->
+        <script>
+          // function dispTicketDetail(msg_id = 1, ticket_issue_oid = 2) {
+          function dispTicketDetail(
+            ticket_issue_oid = 1,
+            user_signin_token = 2
+          ) {
+            console.log(`clicked "dispTicketDetail()" function!`);
+            console.log(`Ticket Issue Id: ${ticket_issue_oid}`);
+            console.log(`User signin token TMS: ${user_signin_token}`);
 
-        // // Fetch approach - 1
-        // var myHeaders = new Headers();
-        // myHeaders.append("Accept", "application/json, text/plain, */*");
-        // myHeaders.append("Authorization", `Bearer ${user_signin_token}`);
-        // myHeaders.append("Content-Type", "application/json");
-        // // myHeaders.append("Referer", `https://tms-test.celloscope.net/issue/admin-issue-list/${ticket_issue_oid}`);
-        // // myHeaders.append("Referer", `http://172.16.6.134/issue/admin-issue-list/${ticket_issue_oid}`);
-        // myHeaders.append("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 OPR/96.0.0.0");
-        // myHeaders.append("sec-ch-ua", "\"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"110\", \"Opera\";v=\"96\"");
-        // myHeaders.append("sec-ch-ua-mobile", "?0");
-        // myHeaders.append("sec-ch-ua-platform", "\"Linux\"");
+            let modal_span_ticket_issue_id = document.getElementById(
+              "modal_span_ticket_issue_id"
+            );
+            let modal_span_ticket_issue = document.getElementById(
+              "modal_span_ticket_issue"
+            );
+            let modal_span_ticket_project = document.getElementById(
+              "modal_span_ticket_project"
+            );
+            let modal_span_ticket_status = document.getElementById(
+              "modal_span_ticket_status"
+            );
+            let modal_span_ticket_issuer_name = document.getElementById(
+              "modal_span_ticket_issuer_name"
+            );
+            let modal_span_ticket_issuer_mobile_number =
+              document.getElementById("modal_span_ticket_issuer_mobile_number");
+            let modal_span_ticket_issuer_email = document.getElementById(
+              "modal_span_ticket_issuer_email"
+            );
+            let modal_span_ticket_created_by = document.getElementById(
+              "modal_span_ticket_created_by"
+            );
+            let modal_span_ticket_created_on = document.getElementById(
+              "modal_span_ticket_created_on"
+            );
+            let modal_span_ticket_description = document.getElementById(
+              "modal_span_ticket_description"
+            );
 
-        // var raw = JSON.stringify({
-        //     "oid": `${ticket_issue_oid}`
-        //     // "oid": `64ecfb10-e036-418d-8bc0-eea566b28ca0`
-        //     // "oid": `f6b4aca6-43b7-49ef-a491-4c4684f058ed`
-        // });
+            var get_tms_issue_detail_url = `http://${window.location.host}/staff/api/tms-issue/${ticket_issue_oid}/${user_signin_token}/`;
+            console.log("Fetch URL (GET):", get_tms_issue_detail_url);
 
-        // var requestOptions = {
-        //     method: 'POST',
-        //     headers: myHeaders,
-        //     body: raw,
-        //     redirect: 'follow'
-        // };
+            var requestOptions = {
+              method: "GET",
+              redirect: "follow",
+            };
 
-        // // fetch("https://tms-test.celloscope.net/api/v1/issue-detail-by-oid", requestOptions)
-        // fetch("http://172.16.6.134/api/v1/issue-detail-by-oid", requestOptions)
-        // // .then(response => response.text())
-        // .then(response => response.json())
-        // .then(result => {
-        //     // HIDE LOADER WILL BE IMPLEMENTED HERE
-        //     grid_tms_issue_skeleton.style.display = "none";
-        //     // grid_tms_issue_skeleton.remove();
-        //     // grid_tms_issue_data.style.visibi = "block";
-        //     grid_tms_issue_data.removeAttribute('style');
+            // fetch(`http://${window.location.host}/staff/api/tms-issue/${ticket_issue_oid}/${user_signing_token_tms}/`, requestOptions)
+            fetch(`${get_tms_issue_detail_url}`, requestOptions)
+              .then((response) => response.json())
+              .then((result) => {
+                // HIDE LOADER WILL BE IMPLEMENTED HERE
+                grid_tms_issue_skeleton.style.display = "none";
+                // grid_tms_issue_skeleton.remove();
+                // grid_tms_issue_data.style.visibi = "block";
+                grid_tms_issue_data.removeAttribute("style");
 
-        //     // console.log(result);
-        //     span_issue_id.innerHTML = "";
-        //     span_issue_id.innerHTML = `${result.data.issue_id}`;
-        //     span_issue.innerHTML = "";
-        //     span_issue.innerHTML = `${result.data.category_title_en}`;
-        //     span_project.innerHTML = "";
-        //     span_project.innerHTML = `${result.data.project_title_en}`;
-        //     span_status.innerHTML = "";
-        //     span_status.innerHTML = `${result.data.status}`;
-        //     span_issuer_mobile_number.innerHTML = "";
-        //     span_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
-        // })
-        // .catch(error => console.log('error', error));       // HIDE LOADER WILL BE IMPLEMENTED HERE
+                // console.log(result);
+                modal_span_ticket_issue_id.innerHTML = "";
+                modal_span_ticket_issue_id.innerHTML = `${result.data.issue_id}`;
+                modal_span_ticket_issue.innerHTML = "";
+                modal_span_ticket_issue.innerHTML = `${result.data.category_title_en}`;
+                modal_span_ticket_project.innerHTML = "";
+                modal_span_ticket_project.innerHTML = `${result.data.project_title_en}`;
+                modal_span_ticket_status.innerHTML = "";
+                modal_span_ticket_status.innerHTML = `${result.data.status}`;
+                modal_span_ticket_issuer_name.innerHTML = "";
+                modal_span_ticket_issuer_name.innerHTML = `${result.data.issuer_name_en}`;
+                modal_span_ticket_issuer_mobile_number.innerHTML = "";
+                modal_span_ticket_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
+                modal_span_ticket_issuer_email.innerHTML = "";
+                modal_span_ticket_issuer_email.innerHTML = `${result.data.issuer_email}`;
+                modal_span_ticket_created_by.innerHTML = "";
+                modal_span_ticket_created_by.innerHTML = `${result.data.created_by_en}`;
+                modal_span_ticket_created_on.innerHTML = "";
+                modal_span_ticket_created_on.innerHTML = `${result.data.created_on}`;
+                modal_span_ticket_description.innerHTML = "";
+                modal_span_ticket_description.innerHTML = `${result.data.description}`;
+              })
+              .catch((error) => console.log("error", error)); // HIDE LOADER WILL BE IMPLEMENTED HERE
 
+            // var myHeaders = new Headers();
+            // myHeaders.append("Accept", "application/json, text/plain, */*");
+            // myHeaders.append("Authorization", `Bearer ${user_signin_token}`);
+            // myHeaders.append("Content-Type", "application/json");
+            // // myHeaders.append("Referer", `https://tms-test.celloscope.net/issue/admin-issue-list/${ticket_issue_oid}`);
+            // // myHeaders.append("Referer", `http://172.16.6.134/issue/admin-issue-list/${ticket_issue_oid}`);
+            // myHeaders.append("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 OPR/96.0.0.0");
+            // myHeaders.append("sec-ch-ua", "\"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"110\", \"Opera\";v=\"96\"");
+            // myHeaders.append("sec-ch-ua-mobile", "?0");
+            // myHeaders.append("sec-ch-ua-platform", "\"Linux\"");
 
+            // var raw = JSON.stringify({
+            //     "oid": `${ticket_issue_oid}`
+            //     // "oid": `64ecfb10-e036-418d-8bc0-eea566b28ca0`
+            //     // "oid": `20f90502-54a9-4e9b-954e-9c5502b1ceb7`
+            //     // "oid": `8414abc2-0de4-4c6b-9272-5581529f3e6d`
+            // });
 
+            // var requestOptions = {
+            //     method: 'POST',
+            //     headers: myHeaders,
+            //     body: raw,
+            //     redirect: 'follow',
+            //     // mode: 'no-cors',
+            // };
 
+            // // fetch("https://tms-test.celloscope.net/api/v1/issue-detail-by-oid", requestOptions)
+            // fetch("http://172.16.6.134/api/v1/issue-detail-by-oid", requestOptions)
+            //     // .then(response => response.text())
+            //     .then(response => response.json())
+            //     .then(result => {
+            //         // HIDE LOADER WILL BE IMPLEMENTED HERE
 
-    }
+            //         console.log(result);
+            //         // console.log(result.data);
+            //         // console.log(result.data.oid);
+            //         // console.log(result.data.issue_id);
+            //         // console.log(result.data.category_title_en);
+            //         // console.log(result.data.project_title_en);
+            //         // console.log(result.data.status);
+            //         // console.log(result.data.issuer_name_en);
+            //         // console.log(result.data.issuer_mobile_number);
+            //         // console.log(result.data.issuer_email);
+            //         // console.log(result.data.created_by_en);
+            //         // console.log(result.data.created_on);
+            //         // console.log(result.data.description);
 
-    window.onload = function() {
-        // yourFunction(param1, param2);
-        console.log(`Window is fully laoded!`);
-        tms_issue_oid = "{{ tms_issue_by_oid }}";
-        console.log(`TSM Issue OID: ${tms_issue_oid}`);
-        let user_signing_token_tms = "{{ user_signing_token_tms }}";
-        // console.log(`User signin token: ${user_signing_token_tms}`);
-        disp(ticket_issue_oid=tms_issue_oid, user_signin_token=user_signing_token_tms);
-        let ticketDetailModalBtn = document.querySelector(".ticketDetailModal");
-        ticketDetailModalBtn.style.display = 'block';
-    };
-</script>
+            //         modal_span_ticket_issue_id.innerHTML = "";
+            //         modal_span_ticket_issue_id.innerHTML = `${result.data.issue_id}`;
+            //         modal_span_ticket_issue.innerHTML = "";
+            //         modal_span_ticket_issue.innerHTML = `${result.data.category_title_en}`;
+            //         modal_span_ticket_project.innerHTML = "";
+            //         modal_span_ticket_project.innerHTML = `${result.data.project_title_en}`;
+            //         modal_span_ticket_status.innerHTML = "";
+            //         modal_span_ticket_status.innerHTML = `${result.data.status}`;
+            //         modal_span_ticket_issuer_name.innerHTML = "";
+            //         modal_span_ticket_issuer_name.innerHTML = `${result.data.issuer_name_en}`;
+            //         modal_span_ticket_issuer_mobile_number.innerHTML = "";
+            //         modal_span_ticket_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
+            //         modal_span_ticket_issuer_email.innerHTML = "";
+            //         modal_span_ticket_issuer_email.innerHTML = `${result.data.issuer_email}`;
+            //         modal_span_ticket_created_by.innerHTML = "";
+            //         modal_span_ticket_created_by.innerHTML = `${result.data.created_by_en}`;
+            //         modal_span_ticket_created_on.innerHTML = "";
+            //         modal_span_ticket_created_on.innerHTML = `${result.data.created_on}`;
+            //         modal_span_ticket_description.innerHTML = "";
+            //         modal_span_ticket_description.innerHTML = `${result.data.description}`;
+            //     })
+            //     .catch(error => console.log('error', error));       // HIDE LOADER WILL BE IMPLEMENTED HERE
+          }
+        </script>
 
+        <!-- Miscellaneaous JS: Chat-body scroller -->
+        <script>
+          // Scroll down the chatbody div after window loads
+          var divElement = document.getElementById("chatbody-scroller");
+          divElement.scroll({
+            top: divElement.scrollHeight, //scroll to the bottom of the element
+            behavior: "smooth", //auto, smooth, initial, inherit
+          });
+        </script>
 
-<!-- Fetch Ticket Issue Detail on "View Detail" btn click -->
-<script>
-    // function dispTicketDetail(msg_id = 1, ticket_issue_oid = 2) {
-    function dispTicketDetail(ticket_issue_oid=1, user_signin_token=2) {
-        console.log(`clicked "dispTicketDetail()" function!`);
-        console.log(`Ticket Issue Id: ${ticket_issue_oid}`);
-        console.log(`User signin token TMS: ${user_signin_token}`);
+        <!-- WebSocket Script -->
+        <script>
+          // VARIABLES
+          const roomSlug = `{{ room_slug }}`;
+          const ChatSupportURL = `ws://${window.location.host}/ws/cso-visitor/chat-support/${roomSlug}/`; // [PRODUCTION - working]construct the websocket url
+          console.log(ChatSupportURL);
+          const chat_send_btn = document.querySelector(
+            "#chat-message-send-btn"
+          );
+          const chat_msg_input_field = document.querySelector(
+            "#chat-message-input"
+          );
+          let cso_email = `{{request.user.is_cso}}`; // "True/False" as string in JS
+          var reg_user = `{{request.user.is_user}}`;
+          console.log(`CSO (bool): ${cso_email}`);
+          console.log(`CSO email is not empty: ${cso_email !== ""}`);
+          console.log(`Registered User (bool): ${reg_user}`);
 
-        let modal_span_ticket_issue_id = document.getElementById('modal_span_ticket_issue_id');
-        let modal_span_ticket_issue = document.getElementById('modal_span_ticket_issue');
-        let modal_span_ticket_project = document.getElementById('modal_span_ticket_project');
-        let modal_span_ticket_status = document.getElementById('modal_span_ticket_status');
-        let modal_span_ticket_issuer_name = document.getElementById('modal_span_ticket_issuer_name');
-        let modal_span_ticket_issuer_mobile_number = document.getElementById('modal_span_ticket_issuer_mobile_number');
-        let modal_span_ticket_issuer_email = document.getElementById('modal_span_ticket_issuer_email');
-        let modal_span_ticket_created_by = document.getElementById('modal_span_ticket_created_by');
-        let modal_span_ticket_created_on = document.getElementById('modal_span_ticket_created_on');
-        let modal_span_ticket_description = document.getElementById('modal_span_ticket_description');
+          // let userIssueResolvedInformationModal = document.querySelector("#userIssueResolvedInformationModal");
+          // let countDownSpan_userIssueResolvedInformationModal = document.getElementsByClassName("countDownSpan_userIssueUnresolvedInformation");
+          // let countDown_userIssueResolvedInformationModal = 10;
+          // let userIssueResolvedInformationModalOKButton = document.querySelector("#userIssueResolvedInformationModalOKButton");
+          // $('#userIssueResolvedInformationModal').modal('show');
 
+          // Post Human Feedback to Rust server
+          function getHumanFeedback(feedback) {
+            if (reg_user === "True") {
+              let feedbackContainer = document.getElementById("feedbackContainer");
+              // console.log(`Post human feedback to rust server!`);
+              // console.log(`Feedback: ${feedback}`);
+              // console.log(`reg user: ${reg_user}`);
+              // console.log(`room-slug: ${roomSlug}`);
 
+              if (feedbackContainer !== null) {
+                // feedbackContainer.remove();
+                console.log(`Sent hf signal to socket to remove the HF option from the chatbox!`);
 
-        var get_tms_issue_detail_url = `http://${window.location.host}/staff/api/tms-issue/${ticket_issue_oid}/${user_signin_token}/`;
-        console.log("Fetch URL (GET):", get_tms_issue_detail_url);
+                ChatSupportSocket.send(
+                  JSON.stringify({
+                    feedback: feedback,
+                    roomslug: roomSlug,
+                  })
+                );
+              }
+            }
+          }
 
+          function hf_icon_thumbs_up_mouseover() {
+            let hf_thumbs_up = document.getElementById("hf-thumbs-up");
+            hf_thumbs_up.classList.remove("fa-regular");
+            hf_thumbs_up.classList.add("fa-solid");
+            // console.log(`HF thumbs up icon mouse enter!`);
+            // console.log(`hf-thumbs-up-icon:`, hf_thumbs_up);
+          }
 
-        var requestOptions = {
-            method: 'GET',
-            redirect: 'follow'
-        };
+          function hf_icon_thumbs_up_mouseout() {
+            let hf_thumbs_up = document.getElementById("hf-thumbs-up");
+            hf_thumbs_up.classList.remove("fa-solid");
+            hf_thumbs_up.classList.add("fa-regular");
+            // console.log(`HF thumbs up icon mouse out!`);
+            // console.log(`hf-thumbs-up-icon:`, hf_thumbs_up);
+          }
 
-        // fetch(`http://${window.location.host}/staff/api/tms-issue/${ticket_issue_oid}/${user_signing_token_tms}/`, requestOptions)
-        fetch(`${get_tms_issue_detail_url}`, requestOptions)
-        .then(response => response.json())
-        .then(result => {
-            // HIDE LOADER WILL BE IMPLEMENTED HERE
-            grid_tms_issue_skeleton.style.display = "none";
-            // grid_tms_issue_skeleton.remove();
-            // grid_tms_issue_data.style.visibi = "block";
-            grid_tms_issue_data.removeAttribute('style');
+          function hf_icon_thumbs_down_mouseover() {
+            let hf_thumbs_down = document.getElementById("hf-thumbs-down");
+            hf_thumbs_down.classList.remove("fa-regular");
+            hf_thumbs_down.classList.add("fa-solid");
+            // console.log(`HF thumbs down icon mouse enter!`);
+            // console.log(`hf-thumbs-down-icon:`, hf_thumbs_down);
+          }
 
-            // console.log(result);
-            modal_span_ticket_issue_id.innerHTML = "";
-            modal_span_ticket_issue_id.innerHTML = `${result.data.issue_id}`;
-            modal_span_ticket_issue.innerHTML = "";
-            modal_span_ticket_issue.innerHTML = `${result.data.category_title_en}`;
-            modal_span_ticket_project.innerHTML = "";
-            modal_span_ticket_project.innerHTML = `${result.data.project_title_en}`;
-            modal_span_ticket_status.innerHTML = "";
-            modal_span_ticket_status.innerHTML = `${result.data.status}`;
-            modal_span_ticket_issuer_name.innerHTML = "";
-            modal_span_ticket_issuer_name.innerHTML = `${result.data.issuer_name_en}`;
-            modal_span_ticket_issuer_mobile_number.innerHTML = "";
-            modal_span_ticket_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
-            modal_span_ticket_issuer_email.innerHTML = "";
-            modal_span_ticket_issuer_email.innerHTML = `${result.data.issuer_email}`;
-            modal_span_ticket_created_by.innerHTML = "";
-            modal_span_ticket_created_by.innerHTML = `${result.data.created_by_en}`;
-            modal_span_ticket_created_on.innerHTML = "";
-            modal_span_ticket_created_on.innerHTML = `${result.data.created_on}`;
-            modal_span_ticket_description.innerHTML = "";
-            modal_span_ticket_description.innerHTML = `${result.data.description}`;
-        })
-        .catch(error => console.log('error', error));       // HIDE LOADER WILL BE IMPLEMENTED HERE
+          function hf_icon_thumbs_down_mouseout() {
+            let hf_thumbs_down = document.getElementById("hf-thumbs-down");
+            hf_thumbs_down.classList.remove("fa-solid");
+            hf_thumbs_down.classList.add("fa-regular");
+            // console.log(`HF thumbs down icon mouse out!`);
+            // console.log(`hf-thumbs-down-icon:`, hf_thumbs_down);
+          }
 
+          // WEBSOCKET OBJECT
+          const ChatSupportSocket = new WebSocket(ChatSupportURL);
+          // console.log(ChatSupportSocket);
 
-        
-        // var myHeaders = new Headers();
-        // myHeaders.append("Accept", "application/json, text/plain, */*");
-        // myHeaders.append("Authorization", `Bearer ${user_signin_token}`);
-        // myHeaders.append("Content-Type", "application/json");
-        // // myHeaders.append("Referer", `https://tms-test.celloscope.net/issue/admin-issue-list/${ticket_issue_oid}`);
-        // // myHeaders.append("Referer", `http://172.16.6.134/issue/admin-issue-list/${ticket_issue_oid}`);
-        // myHeaders.append("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 OPR/96.0.0.0");
-        // myHeaders.append("sec-ch-ua", "\"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"110\", \"Opera\";v=\"96\"");
-        // myHeaders.append("sec-ch-ua-mobile", "?0");
-        // myHeaders.append("sec-ch-ua-platform", "\"Linux\"");
+          // WEBSOCKET Open function
+          ChatSupportSocket.onopen = function (e) {
+            console.log("Frontend Websocket: Connection Established!");
+            console.log(`CSO (bool): ${cso_email}`);
 
-
-        // var raw = JSON.stringify({
-        //     "oid": `${ticket_issue_oid}`
-        //     // "oid": `64ecfb10-e036-418d-8bc0-eea566b28ca0`
-        //     // "oid": `20f90502-54a9-4e9b-954e-9c5502b1ceb7`
-        //     // "oid": `8414abc2-0de4-4c6b-9272-5581529f3e6d`
-        // });
-
-        // var requestOptions = {
-        //     method: 'POST',
-        //     headers: myHeaders,
-        //     body: raw,
-        //     redirect: 'follow',
-        //     // mode: 'no-cors', 
-        // };
-
-        // // fetch("https://tms-test.celloscope.net/api/v1/issue-detail-by-oid", requestOptions)
-        // fetch("http://172.16.6.134/api/v1/issue-detail-by-oid", requestOptions)
-        //     // .then(response => response.text())
-        //     .then(response => response.json())
-        //     .then(result => {
-        //         // HIDE LOADER WILL BE IMPLEMENTED HERE
-
-        //         console.log(result);
-        //         // console.log(result.data);
-        //         // console.log(result.data.oid);
-        //         // console.log(result.data.issue_id);
-        //         // console.log(result.data.category_title_en);
-        //         // console.log(result.data.project_title_en);
-        //         // console.log(result.data.status);
-        //         // console.log(result.data.issuer_name_en);
-        //         // console.log(result.data.issuer_mobile_number);
-        //         // console.log(result.data.issuer_email);
-        //         // console.log(result.data.created_by_en);
-        //         // console.log(result.data.created_on);
-        //         // console.log(result.data.description);
-
-        //         modal_span_ticket_issue_id.innerHTML = "";
-        //         modal_span_ticket_issue_id.innerHTML = `${result.data.issue_id}`;
-        //         modal_span_ticket_issue.innerHTML = "";
-        //         modal_span_ticket_issue.innerHTML = `${result.data.category_title_en}`;
-        //         modal_span_ticket_project.innerHTML = "";
-        //         modal_span_ticket_project.innerHTML = `${result.data.project_title_en}`;
-        //         modal_span_ticket_status.innerHTML = "";
-        //         modal_span_ticket_status.innerHTML = `${result.data.status}`;
-        //         modal_span_ticket_issuer_name.innerHTML = "";
-        //         modal_span_ticket_issuer_name.innerHTML = `${result.data.issuer_name_en}`;
-        //         modal_span_ticket_issuer_mobile_number.innerHTML = "";
-        //         modal_span_ticket_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
-        //         modal_span_ticket_issuer_email.innerHTML = "";
-        //         modal_span_ticket_issuer_email.innerHTML = `${result.data.issuer_email}`;
-        //         modal_span_ticket_created_by.innerHTML = "";
-        //         modal_span_ticket_created_by.innerHTML = `${result.data.created_by_en}`;
-        //         modal_span_ticket_created_on.innerHTML = "";
-        //         modal_span_ticket_created_on.innerHTML = `${result.data.created_on}`;
-        //         modal_span_ticket_description.innerHTML = "";
-        //         modal_span_ticket_description.innerHTML = `${result.data.description}`;
-        //     })
-        //     .catch(error => console.log('error', error));       // HIDE LOADER WILL BE IMPLEMENTED HERE
-
-    }
-</script>
-
-
-<!-- Miscellaneaous JS: Chat-body scroller -->
-<script>
-    // Scroll down the chatbody div after window loads
-    var divElement = document.getElementById("chatbody-scroller");
-    divElement.scroll({
-        top: divElement.scrollHeight,//scroll to the bottom of the element
-        behavior: 'smooth' //auto, smooth, initial, inherit
-    });
-</script>
-
-<!-- WebSocket Script -->
-<script>
-    // VARIABLES
-    const roomSlug = `{{ room_slug }}`;
-    const ChatSupportURL = `ws://${window.location.host}/ws/cso-visitor/chat-support/${roomSlug}/`;    // [PRODUCTION - working]construct the websocket url
-    console.log(ChatSupportURL);
-    const chat_send_btn = document.querySelector('#chat-message-send-btn');
-    const chat_msg_input_field = document.querySelector("#chat-message-input");
-    let cso_email = `{{request.user.is_cso}}`;  // "True/False" as string in JS
-    var reg_user = `{{request.user.is_user}}`
-    console.log(`CSO (bool): ${cso_email}`);
-    console.log(`CSO email is not empty: ${cso_email !== ''}`);
-    console.log(`Registered User: ${reg_user}`);
-
-
-    // let userIssueResolvedInformationModal = document.querySelector("#userIssueResolvedInformationModal");
-    // let countDownSpan_userIssueResolvedInformationModal = document.getElementsByClassName("countDownSpan_userIssueUnresolvedInformation");
-    // let countDown_userIssueResolvedInformationModal = 10;
-    // let userIssueResolvedInformationModalOKButton = document.querySelector("#userIssueResolvedInformationModalOKButton");
-    // $('#userIssueResolvedInformationModal').modal('show');
-
-
-    // WEBSOCKET OBJECT
-    const ChatSupportSocket = new WebSocket(ChatSupportURL);
-    // console.log(ChatSupportSocket);
-
-    // WEBSOCKET Open function
-    ChatSupportSocket.onopen = function (e) {
-        console.log('Frontend Websocket: Connection Established!');
-        console.log(`CSO (bool): ${cso_email}`);
-        
-        if (reg_user === 'True') {
-            // FOR USER
-            // Make the conversation CANCELLED by the user, the CSO will only be notified that "The conversation is cancelled by the user"
-            const cancel_chat_btn = document.querySelector("#cancel-chat-btn");
-            cancel_chat_btn.onclick = function (e) {
+            if (reg_user === "True") {
+              // FOR USER
+              // Make the conversation CANCELLED by the user, the CSO will only be notified that "The conversation is cancelled by the user"
+              const cancel_chat_btn =
+                document.querySelector("#cancel-chat-btn");
+              cancel_chat_btn.onclick = function (e) {
                 console.log(`cancel chat button is clicked!`);
                 var user_email = `{{request.user.email}}`;
                 var cso_email_backend = `{{ cso_user_email }}`;
-                console.log(`cancel-chat-btn button is clicked by the user; email: ${user_email}`);
+                console.log(
+                  `cancel-chat-btn button is clicked by the user; email: ${user_email}`
+                );
                 console.log(`CSO email backend: ${cso_email_backend}`);
-                ChatSupportSocket.send(JSON.stringify({
-                    'cso_user_convo_cancelled': 'User has cancelled the chat!',
-                    'cso_email': cso_email_backend,
-                    'reg_user_email': user_email,
-                    'roomslug': roomSlug,
-                }));
+                ChatSupportSocket.send(
+                  JSON.stringify({
+                    cso_user_convo_cancelled: "User has cancelled the chat!",
+                    cso_email: cso_email_backend,
+                    reg_user_email: user_email,
+                    roomslug: roomSlug,
+                  })
+                );
+              };
             }
-        }
 
-        if (cso_email === "True") {
-            // FOR CSO
-            const dismiss_issue_confirmation_btn = document.querySelector("#dismiss-issue-confirmation-btn");
-            console.log(`dismiss_issue_confirmation_btn:`, dismiss_issue_confirmation_btn);
-            
-            if (dismiss_issue_confirmation_btn !== null) {
+            if (cso_email === "True") {
+              // FOR CSO
+              const dismiss_issue_confirmation_btn = document.querySelector(
+                "#dismiss-issue-confirmation-btn"
+              );
+              console.log(
+                `dismiss_issue_confirmation_btn:`,
+                dismiss_issue_confirmation_btn
+              );
+
+              if (dismiss_issue_confirmation_btn !== null) {
                 dismiss_issue_confirmation_btn.onclick = function (e) {
-                    var common_registered_user_email = `{{ common_registered_user_email }}`;
-                    var common_cso_email = `{{ common_cso_email }}`;
-                    var remark_input_dismiss = document.querySelector("#remark-input-dismiss");
-                    var remark_input_dismiss_value = remark_input_dismiss.value;
-                    // console.log(`Chat conversation is dimissed by CSO!`);
-                    // console.log(`cso_email:`, common_cso_email);
-                    // console.log(`reg_user_email:`, common_registered_user_email);
-                    // console.log(`roomslug:`, roomSlug);
-                    // console.log(`remark_input_dismiss_value:`, remark_input_dismiss_value);
+                  var common_registered_user_email = `{{ common_registered_user_email }}`;
+                  var common_cso_email = `{{ common_cso_email }}`;
+                  var remark_input_dismiss = document.querySelector(
+                    "#remark-input-dismiss"
+                  );
+                  var remark_input_dismiss_value = remark_input_dismiss.value;
+                  // console.log(`Chat conversation is dimissed by CSO!`);
+                  // console.log(`cso_email:`, common_cso_email);
+                  // console.log(`reg_user_email:`, common_registered_user_email);
+                  // console.log(`roomslug:`, roomSlug);
+                  // console.log(`remark_input_dismiss_value:`, remark_input_dismiss_value);
 
-                    // // Update TMS for the issue as "Ready to assign"
-                    // console.log(`TMS issue update: Ready to assign!`);
-                    // console.log(`User signin token (TMS): ${user_signin_token}`);
-                    // console.log(`Ticket issue oid (TMS): ${ticket_issue_oid}`);
+                  // // Update TMS for the issue as "Ready to assign"
+                  // console.log(`TMS issue update: Ready to assign!`);
+                  // console.log(`User signin token (TMS): ${user_signin_token}`);
+                  // console.log(`Ticket issue oid (TMS): ${ticket_issue_oid}`);
 
-                    tmsIssueUpdate_unresolve(user_signing_token_tms=user_signin_token, 
-                        remark_input_dismiss_value=remark_input_dismiss_value, 
-                        ticket_issue_oid=ticket_issue_oid, 
-                        common_cso_email=common_cso_email, 
-                        common_registered_user_email=common_registered_user_email, 
-                        roomSlugParam=roomSlug);
+                  tmsIssueUpdate_unresolve(
+                    (user_signing_token_tms = user_signin_token),
+                    (remark_input_dismiss_value = remark_input_dismiss_value),
+                    (ticket_issue_oid = ticket_issue_oid),
+                    (common_cso_email = common_cso_email),
+                    (common_registered_user_email =
+                      common_registered_user_email),
+                    (roomSlugParam = roomSlug)
+                  );
                 };
+              }
             }
-            
-        }
-    }
+          };
 
-    // WEBSOCKET Data Receiving (from backend consumer) function
-    ChatSupportSocket.onmessage = function (e) {
-        const data = JSON.parse(e.data);
-        const cso_dashboard_url = document.querySelector("#cso-dashboard-url");
+          // WEBSOCKET Data Receiving (from backend consumer) function
+          ChatSupportSocket.onmessage = function (e) {
+            const data = JSON.parse(e.data);
+            const cso_dashboard_url = document.querySelector("#cso-dashboard-url");
+            const HF_TEXT = "Was it helpful?";
+            // var human_feedback_query = "";
+            var human_feedback_query = () => {
+              // <p class="botMsg">${HF_TEXT}</p>
+              // <div class="clearfix"></div>
+              //   <button class="feedbackButton btn btn-primary" onclick="getHumanFeedback(feedback='yes')">Yes</button>
+              //   <button class="feedbackButton btn btn-primary" onclick="getHumanFeedback(feedback='no')">No</button>
+              // <div class="clearfix"></div>
+              // </div>
 
-        console.log('Frontend Websocket: onmessage!');
-        console.log(`CSO (bool): ${cso_email}`);
+              if (cso_email === "True" && reg_user === "False") {
+                // console.log(`HF display none in HDO end!`);
+                return `
+                  <div id="feedbackContainer" class="container-fluid text-center d-none">
+                    <div class="row">
+                      <div class="col">
+                        <hr class="hf-hr">
+                      </div>
+                      <div class="col-2 row">
+                        <div class="col p-0"><i id="hf-thumbs-up" class="fa-regular fa-thumbs-up fa-xl" onmouseover="hf_icon_thumbs_up_mouseover()" onmouseout="hf_icon_thumbs_up_mouseout()" onclick="getHumanFeedback(feedback='yes')"></i></div>
+                        <div class="col p-0"><i id="hf-thumbs-down" class="fa-regular fa-thumbs-down fa-flip-horizontal fa-xl" onmouseover="hf_icon_thumbs_down_mouseover()" onmouseout="hf_icon_thumbs_down_mouseout()" onclick="getHumanFeedback(feedback='no')"></i></div>
+                      </div>
+                      <div class="col">
+                        <hr class="hf-hr">
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }
 
-        console.log(data);  // comment it later
-        // Chat message
-        if (data.message) {
-            // console.log(
-            //     (data.user_identity === 'cso')? 'message from cso': 'message from visitor'
-            // );
-            console.log(`CSO (bool) [data.message]: ${cso_email}`);
+              if (reg_user === "True" && cso_email === "False") {
+                // console.log(`HF display is customer end!`);
+                return `
+                  <div id="feedbackContainer" class="container-fluid text-center">
+                    <div class="row">
+                      <div class="col">
+                        <hr class="hf-hr">
+                      </div>
+                      <div class="col-2 row">
+                        <div class="col p-0"><i id="hf-thumbs-up" class="fa-regular fa-thumbs-up fa-xl" onmouseover="hf_icon_thumbs_up_mouseover()" onmouseout="hf_icon_thumbs_up_mouseout()" onclick="getHumanFeedback(feedback='yes')"></i></div>
+                        <div class="col p-0"><i id="hf-thumbs-down" class="fa-regular fa-thumbs-down fa-flip-horizontal fa-xl" onmouseover="hf_icon_thumbs_down_mouseover()" onmouseout="hf_icon_thumbs_down_mouseout()" onclick="getHumanFeedback(feedback='no')"></i></div>
+                      </div>
+                      <div class="col">
+                        <hr class="hf-hr">
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }
+              // <div class="col p-0"><i id="hf-hand" class="fa-regular fa-hand fa-xl" onclick="getHumanFeedback(feedback='null')"></i></div>
+              // <div class="row bg-secondary">
+              //   <div class="col-3 bg-warning"><div>
+              //   <div class="col-6 bg-danger">
+              //     <h1>Hellow</h1>
+              //   <div>
+              //   <div class="col-3 bg-success"><div>
+              // <div>
+            };
 
-            if (data.user_identity === 'cso') { console.log(`message from cso`); }
-            if (data.user_identity === 'reg_user') { console.log(`message from registered user`); }
+            // code here: catch only customer's function call inside the 'getHumanFeedback()' *********************************************
+            // if (data.user_identity === "cso") {
+            //   // <button class="feedbackButton btn btn-primary" onclick="getHumanFeedback(feedback='yes', user_identity='${data.user_identity}')">Yes</button>
+            //   // <button class="feedbackButton btn btn-primary" onclick="getHumanFeedback(feedback='no', user_identity='${data.user_identity}')">No</button>
+            //   // human_feedback_query = `
+            //   //   <div id="feedbackContainer">
+            //   //     <p class="botMsg">${HF_TEXT}</p>
+            //   //     <div class="clearfix"></div>
+            //   //           <button class="feedbackButton btn btn-primary" onclick="getHumanFeedback(feedback='yes')">Yes</button>
+            //   //           <button class="feedbackButton btn btn-primary" onclick="getHumanFeedback(feedback='no')">No</button>
+            //   //           <div class="clearfix"></div>
+            //   //   </div>
+            //   // `;
 
-            if (data.user_identity === 'cso') {
-                var chatHTML = `<div class="d-flex flex-row justify-content-start mb-4">
-                            <img src="{{ cso_user_profile_pic.url }}"
-                                alt="avatar 1" style="width: 45px; height: 45px;" class="rounded-circle">
-                            <div>
-                                <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">${data.message}</p>
-                                <p class="small ms-3 mb-3 rounded-3 text-muted">00:07</p>
-                            </div>
-                        </div>`;
-            } else {
-                var chatHTML = `<div class="d-flex flex-row justify-content-end mb-4">
-                            <div>
-                                <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">${data.message}</p>
-                                <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">00:09</p>
-                            </div>
-                            <img src="{{ registered_user_profile_pic.url }}"
-                                alt="avatar 1" style="width: 45px; height: 45px;" class="rounded-circle">
-                        </div>`;
+            //   // human_feedback_query = `
+            //   //     <div id="feedbackContainer" class="d-none">
+            //   //         <p class="botMsg">${HF_TEXT}</p>
+            //   //         <div class="clearfix"></div>
+            //   //         <button class="feedbackButton btn btn-primary" onclick="getHumanFeedback('yes')">Yes</button>
+            //   //         <button class="feedbackButton btn btn-primary" onclick="getHumanFeedback('no')">No</button>
+            //   //         <div class="clearfix"></div>
+            //   //     </div>
+            //   // `;
+            // }
+
+            // if (data.user_identity === "reg_user") {
+            //   human_feedback_query = `
+            //       <div id="feedbackContainer">
+            //           <p class="botMsg">${HF_TEXT}</p>
+            //           <div class="clearfix"></div>
+            //           <button class="feedbackButton btn btn-primary" onclick="getHumanFeedback('yes')">Yes</button>
+            //           <button class="feedbackButton btn btn-primary" onclick="getHumanFeedback('no')">No</button>
+            //           <div class="clearfix"></div>
+            //       </div>
+            //   `;
+            // }
+            // code here: catch only customer's function call inside the 'getHumanFeedback()' *********************************************
+
+            console.log("Frontend Websocket: onmessage!");
+            // console.log(`CSO (bool): ${cso_email}`);
+            // console.log(`Human Feedback: ${human_feedback_query}`);
+
+            // console.log(data); // comment it later
+
+            // Chat message
+            if (data.message) {
+              // console.log(
+              //     (data.user_identity === 'cso')? 'message from cso': 'message from visitor'
+              // );
+              console.log(`CSO (bool) [data.message]: ${cso_email}`);
+              console.log(`User identity:`, data.user_identity);
+
+              if (data.user_identity === "cso") {
+                console.log(`message from cso`);
+              }
+              if (data.user_identity === "reg_user") {
+                console.log(`message from registered user`);
+              }
+
+              if (data.user_identity === "cso") {
+                var chatHTML = `
+                    <div class="d-flex flex-row justify-content-start mb-4">
+                        <img src="{{ cso_user_profile_pic.url }}"
+                            alt="avatar 1" style="width: 45px; height: 45px;" class="rounded-circle">
+                        <div>
+                            <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">${
+                              data.message
+                            }</p>
+                            <p class="small ms-3 mb-3 rounded-3 text-muted">00:07</p>
+                        </div>
+                    </div>
+                    <div>${human_feedback_query()}</div>
+                `;
+              } else {
+                var chatHTML = `
+                    <div class="d-flex flex-row justify-content-end mb-4">
+                        <div>
+                            <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">${data.message}</p>
+                            <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">00:09</p>
+                        </div>
+                        <img src="{{ registered_user_profile_pic.url }}"
+                            alt="avatar 1" style="width: 45px; height: 45px;" class="rounded-circle">
+                    </div>
+                `;
+              }
+              document.querySelector(".chat-messages-box").innerHTML +=
+                chatHTML;
+              // After adding the chat-message div, scroll down automatically at the bottom
+              divElement.scroll({
+                top: divElement.scrollHeight, //scroll to the bottom of the element
+                behavior: "smooth", //auto, smooth, initial, inherit
+              });
             }
-            document.querySelector('.chat-messages-box').innerHTML += chatHTML;
-            // After adding the chat-message div, scroll down automatically at the bottom
-            divElement.scroll({
-                top: divElement.scrollHeight,//scroll to the bottom of the element
-                behavior: 'smooth' //auto, smooth, initial, inherit
-            });
-        }
-        
-        // Intruder redirection
-        if (data.intruder_redirection) {
-            if (data.intruder_redirection === "Redirect the intruder to homepage!") {
+
+            // Intruder redirection
+            if (data.intruder_redirection) {
+              if (
+                data.intruder_redirection ===
+                "Redirect the intruder to homepage!"
+              ) {
                 console.log(`Redirect the intruder to homepage!`);
                 // Redirect the user to the homepage using the "ChatSupportSocket.onclose" func
                 // [Ref]: https://www.w3schools.com/howto/howto_js_redirect_webpage.asp
-                window.location.href = `{% url 'homeApp:LangingPage' %}`;   // works like render of dj (maybe)
+                window.location.href = `{% url 'homeApp:LangingPage' %}`; // works like render of dj (maybe)
                 // window.location.replace(`{% url 'homeApp:LangingPage' %}`);  // works like render-redirect of dj (maybe)
+              }
             }
-        }
 
-        // Redirect the CSO & visitor/user accordingly to his/her CSO-dashboard & homepage (after 10s), since the corresponding CSO marked the current convo as resolved.
-        if (data.support_is_resolved) {
-            console.log(`The support is resolved! Redirect the cso to it's dashboard & the user to the homepage (after 10s)!`);
-            console.log(`CSO email (data.support_is_resolved):`, cso_email);
-            if (cso_email == 'True') {
+            // Redirect the CSO & visitor/user accordingly to his/her CSO-dashboard & homepage (after 10s), since the corresponding CSO marked the current convo as resolved.
+            if (data.support_is_resolved) {
+              console.log(
+                `The support is resolved! Redirect the cso to it's dashboard & the user to the homepage (after 10s)!`
+              );
+              console.log(`CSO email (data.support_is_resolved):`, cso_email);
+              if (cso_email == "True") {
                 console.log(`CSO email:`, cso_email);
                 // console.log(`CSO dashboard url:`, cso_dashboard_url.value);
                 // window.location.href = cso_dashboard_url.value;
                 window.close();
-            } 
-            // else {
-            //     console.log(`Visitor will be sent to the homepage!`);
-            //     window.location.href = `#`;   // redirect to homepage
-            // }
-            if (reg_user == 'True') {
+              }
+              // else {
+              //     console.log(`Visitor will be sent to the homepage!`);
+              //     window.location.href = `#`;   // redirect to homepage
+              // }
+              if (reg_user == "True") {
                 console.log(`Registered user will be sent to the homepage!`);
 
                 // ----------------------------
-                let userIssueResolvedInformationModal = document.querySelector("#userIssueResolvedInformationModal");
-                let countDownSpan_userIssueResolvedInformationModal = document.getElementsByClassName("countDownSpan_userIssueUnresolvedInformation");
+                let userIssueResolvedInformationModal = document.querySelector(
+                  "#userIssueResolvedInformationModal"
+                );
+                let countDownSpan_userIssueResolvedInformationModal =
+                  document.getElementsByClassName(
+                    "countDownSpan_userIssueUnresolvedInformation"
+                  );
                 let countDown_userIssueResolvedInformationModal = 10;
-                let userIssueResolvedInformationModalOKButton = document.querySelector("#userIssueResolvedInformationModalOKButton");
-                $('#userIssueResolvedInformationModal').modal('show');
+                let userIssueResolvedInformationModalOKButton =
+                  document.querySelector(
+                    "#userIssueResolvedInformationModalOKButton"
+                  );
+                $("#userIssueResolvedInformationModal").modal("show");
 
                 setInterval(() => {
-                    countDown_userIssueResolvedInformationModal -= 1;
-                    countDownSpan_userIssueResolvedInformationModal[0].innerHTML = `${countDown_userIssueResolvedInformationModal}s`;
+                  countDown_userIssueResolvedInformationModal -= 1;
+                  countDownSpan_userIssueResolvedInformationModal[0].innerHTML = `${countDown_userIssueResolvedInformationModal}s`;
                 }, 1000);
 
                 setTimeout(() => {
-                    console.log(`Modal is closed after 10s`);
-                    $('#userIssueResolvedInformationModal').modal('hide');
-                    window.location.href = `{% url 'homeApp:LangingPage' %}`;
+                  console.log(`Modal is closed after 10s`);
+                  $("#userIssueResolvedInformationModal").modal("hide");
+                  window.location.href = `{% url 'homeApp:LangingPage' %}`;
                 }, 10000);
 
-                userIssueResolvedInformationModalOKButton.addEventListener("click", () => {
+                userIssueResolvedInformationModalOKButton.addEventListener(
+                  "click",
+                  () => {
                     console.log(`Immediately redirect to homepage!`);
                     window.location.href = `{% url 'homeApp:LangingPage' %}`;
-                });
+                  }
+                );
                 // ----------------------------
+              }
             }
-        }
 
-        // Redirect the CSO & visitor/user accordingly to his/her CSO-dashboard & homepage, since the corresponding CSO removed the msg-req from the CSR dashboard.
-        if (data.support_req_is_removed) {
-            if (cso_email === 'True') {
+            // Redirect the CSO & visitor/user accordingly to his/her CSO-dashboard & homepage, since the corresponding CSO removed the msg-req from the CSR dashboard.
+            if (data.support_req_is_removed) {
+              if (cso_email === "True") {
                 // Close the chatroom tab if msg-req is cleared by the CSO from the CSR dashboard.
-                if (!data.CSOVisitorConvoInfo_isCancelled){
-                    console.log(`If the tab in the CSO end is opened, then that will be closed automatically!`);
-                    console.log(`data.support_req_is_removed:`, data.support_req_is_removed);
-                    console.log(`data.conversation_is_cancelled:`, data.CSOVisitorConvoInfo_isCancelled);
-                    window. close();
+                if (!data.CSOVisitorConvoInfo_isCancelled) {
+                  console.log(
+                    `If the tab in the CSO end is opened, then that will be closed automatically!`
+                  );
+                  console.log(
+                    `data.support_req_is_removed:`,
+                    data.support_req_is_removed
+                  );
+                  console.log(
+                    `data.conversation_is_cancelled:`,
+                    data.CSOVisitorConvoInfo_isCancelled
+                  );
+                  window.close();
                 }
                 // Doesn't close the chatroom tab if the user cancelled the chat-convo, thus the msg-req gets deleted
-                if (data.CSOVisitorConvoInfo_isCancelled){
-                    console.log(`The user has cancelled the chat-convo!`);
-                    console.log(`Doesn't close the CSO's chatroom tab.`);
-                    console.log(`data.support_req_is_removed:`, data.support_req_is_removed);
-                    console.log(`data.conversation_is_cancelled:`, data.CSOVisitorConvoInfo_isCancelled);
-                    document.querySelector("#chat-message-input").disabled = true;
-                    let chat_message_send_btn = document.querySelector("#chat-message-send-btn")
-                    chat_message_send_btn.disabled = true;
-                    chat_message_send_btn.style.cursor = "not-allowed";
+                if (data.CSOVisitorConvoInfo_isCancelled) {
+                  console.log(`The user has cancelled the chat-convo!`);
+                  console.log(`Doesn't close the CSO's chatroom tab.`);
+                  console.log(
+                    `data.support_req_is_removed:`,
+                    data.support_req_is_removed
+                  );
+                  console.log(
+                    `data.conversation_is_cancelled:`,
+                    data.CSOVisitorConvoInfo_isCancelled
+                  );
+                  document.querySelector("#chat-message-input").disabled = true;
+                  let chat_message_send_btn = document.querySelector(
+                    "#chat-message-send-btn"
+                  );
+                  chat_message_send_btn.disabled = true;
+                  chat_message_send_btn.style.cursor = "not-allowed";
                 }
-            }
-            if (reg_user === 'True') {
+              }
+              if (reg_user === "True") {
                 console.log(`Registered user will be sent to the homepage!`);
                 window.location.href = `{% url 'homeApp:LangingPage' %}`;
+              }
             }
-        }
 
-        // Redirect the user to the homepage, the CSO will be notified that the user has cancelled the chat-convo
-        if (data.conversation_is_cancelled) {
-            if (cso_email === 'True') {
+            // Redirect the user to the homepage, the CSO will be notified that the user has cancelled the chat-convo
+            if (data.conversation_is_cancelled) {
+              if (cso_email === "True") {
                 var chat_convo_cancelled = `{{ chat_convo_cancelled }}`;
                 console.log(`chat-convo is cancelled: ${chat_convo_cancelled}`);
                 if (chat_convo_cancelled === "False") {
-                    console.log(`The user has cancelled the conversation!`);
-                    const cancel_chat_notif_div = document.querySelector("#chat-cancel");
-                    cancel_chat_notif_div.removeAttribute("hidden");
-                    console.log(`chat-cancel notification-div DOM`, cancel_chat_notif_div);
+                  console.log(`The user has cancelled the conversation!`);
+                  const cancel_chat_notif_div =
+                    document.querySelector("#chat-cancel");
+                  cancel_chat_notif_div.removeAttribute("hidden");
+                  console.log(
+                    `chat-cancel notification-div DOM`,
+                    cancel_chat_notif_div
+                  );
                 }
-            }
-            if (reg_user === 'True') {
+              }
+              if (reg_user === "True") {
                 console.log(`Registered user will be sent to the homepage!`);
                 window.location.href = `{% url 'homeApp:LangingPage' %}`;
+              }
             }
-        }
 
-        // Redirect the CSO & visitor/user accordingly to his/her CSO-dashboard & homepage (after 10s), since the corresponding CSO marked the current convo as resolved.
-        if (data.conversation_is_dismissed) {
-            console.log(`The support is dismissed! Redirect the cso to it's dashboard & the user to the homepage (after 10s)!`);
-            if (cso_email == 'True') {
+            // Redirect the CSO & visitor/user accordingly to his/her CSO-dashboard & homepage (after 10s), since the corresponding CSO marked the current convo as resolved.
+            if (data.conversation_is_dismissed) {
+              console.log(
+                `The support is dismissed! Redirect the cso to it's dashboard & the user to the homepage (after 10s)!`
+              );
+              if (cso_email == "True") {
                 console.log(`CSO email:`, cso_email);
                 // console.log(`CSO dashboard url:`, cso_dashboard_url.value);
                 // window.location.href = cso_dashboard_url.value;
                 window.close();
-            }
-            if (reg_user == 'True') {
+              }
+              if (reg_user == "True") {
                 console.log(`Registered user will be sent to the homepage!`);
                 console.log(`Registered user email:`, reg_user);
 
                 // ----------------------------
-                let dismissIssueInformationModal = document.querySelector("#dismissIssueInformationModal");
-                let countDownSpan_dismissIssueInformationModal = document.getElementsByClassName("countDownSpan_dismissIssueInformation");
+                let dismissIssueInformationModal = document.querySelector(
+                  "#dismissIssueInformationModal"
+                );
+                let countDownSpan_dismissIssueInformationModal =
+                  document.getElementsByClassName(
+                    "countDownSpan_dismissIssueInformation"
+                  );
                 let countDown_dismissIssueInformationModal = 10;
-                let dismissIssueInformationModalOKButton = document.querySelector("#dismissIssueInformationModalOKButton");
-                $('#dismissIssueInformationModal').modal('show');
+                let dismissIssueInformationModalOKButton =
+                  document.querySelector(
+                    "#dismissIssueInformationModalOKButton"
+                  );
+                $("#dismissIssueInformationModal").modal("show");
 
                 setInterval(() => {
-                    countDown_dismissIssueInformationModal -= 1;
-                    countDownSpan_dismissIssueInformationModal[0].innerHTML = `${countDown_dismissIssueInformationModal}s`;
+                  countDown_dismissIssueInformationModal -= 1;
+                  countDownSpan_dismissIssueInformationModal[0].innerHTML = `${countDown_dismissIssueInformationModal}s`;
                 }, 1000);
 
                 setTimeout(() => {
-                    console.log(`Modal is closed after 10s`);
-                    $('#dismissIssueInformationModal').modal('hide');
-                    window.location.href = `{% url 'homeApp:LangingPage' %}`;
+                  console.log(`Modal is closed after 10s`);
+                  $("#dismissIssueInformationModal").modal("hide");
+                  window.location.href = `{% url 'homeApp:LangingPage' %}`;
                 }, 10000);
 
-                dismissIssueInformationModalOKButton.addEventListener("click", () => {
+                dismissIssueInformationModalOKButton.addEventListener(
+                  "click",
+                  () => {
                     console.log(`Immediately redirect to homepage!`);
                     window.location.href = `{% url 'homeApp:LangingPage' %}`;
-                });
+                  }
+                );
                 // ----------------------------
+              }
             }
-        }
-    }
 
-    // WEBSOCKET Close function
-    ChatSupportSocket.onclose = function (e) {
-        console.log('Frontend Websocket: Connection Closed!');
-    }
+            // HF html-container remove signal
+            if (data.feedback) {
+              // console.log(`Human feedback is generated!`);
+              if (data.feedback === true) {
+                let feedbackContainer = document.getElementById("feedbackContainer");
+                // console.log(`feedback: ${data.feedback}`);
+                // console.log(`human feedback: ${data.human_feedback}`);
+                // console.log(`roomslug: ${data.roomslug}`);
+                // feedbackContainer.remove();
 
-    // Chat Msg send btn click event
-    chat_send_btn.onclick = function (e) {
-        // console.log('send btn is clicked!');
-        const input_field_message = chat_msg_input_field.value;
-        // console.log(input_field_message);
-        // const user_role = `{{ request.user.is_cso }}`;
-        // const user_identity = (user_role === '')? 'anonymous': 'cso';
-        // console.log('user identity:', user_identity)
-        let user_identity = '';
-        if (reg_user === "True") {
-            user_identity = 'reg_user';
-        }
-        if (cso_email === "True") {
-            user_identity = 'cso';
-        }
+                // To fade away: https://stackoverflow.com/a/61931093
+                feedbackContainer.classList.add("hf-fade-out");
 
-        // check if the input field is not empty
-        if (input_field_message) {
-            ChatSupportSocket.send(JSON.stringify({
-                'message': input_field_message,
-                'user_identity': user_identity,
-                'roomslug': roomSlug
-            }));
-            chat_msg_input_field.value = '';
-        }
-    }
+                // Solution (fade-away animation then remove div): https://stackoverflow.com/a/61931093
+                feedbackContainer.onanimationend = (e) => {
+                  // console.log("Animation ended");
+                  if (e.target.classList.contains("hf-fade-out")) {
+                    feedbackContainer.remove();
+                  }
+                };
+                
+                // To fade away: https://stackoverflow.com/a/61931093
+                // feedbackContainer.classList.add("hf-fade-out");
+              }
+            }
+          };
 
-    chat_msg_input_field.addEventListener("keypress", function (e) {
-        // If the user presses the "Enter" key on the keyboard
-        if (e.key === "Enter") {
-            // Cancel the default action, if needed
-            e.preventDefault();
-            // Trigger the chat-send-button element with a click
-            chat_send_btn.click();
-        }
-    });
+          // WEBSOCKET Close function
+          ChatSupportSocket.onclose = function (e) {
+            console.log("Frontend Websocket: Connection Closed!");
+          };
+
+          // Chat Msg send btn click event
+          chat_send_btn.onclick = function (e) {
+            // console.log('send btn is clicked!');
+            const input_field_message = chat_msg_input_field.value;
+            // console.log(input_field_message);
+            // const user_role = `{{ request.user.is_cso }}`;
+            // const user_identity = (user_role === '')? 'anonymous': 'cso';
+            // console.log('user identity:', user_identity)
+            
+            let user_identity = "";
+            if (reg_user === "True") {
+              user_identity = "reg_user";
+
+              // // Count "null" HF & current remove HF container
+              // // Click on the "hf-hand" icon
+              // let hf_hand = document.getElementById("hf-hand");
+              // if (hf_hand !== null) {
+              //   console.log(`hf-hand:`, hf_hand);
+              //   console.log(`"hf-hand" icon will be clicked!`);
+              //   hf_hand.click();
+              // }
 
 
-    if (cso_email !== '') {
-        // FOR CSO
-        // Mark the conversation as resolved by the CSO (this js-code-block will be avaiable to the CSO-frontend)
-        const is_resolved = document.querySelector("#is-resolved");
+            }
+            if (cso_email === "True") {
+              user_identity = "cso";
+            }
 
-        console.log(`is_resolved_button,`, is_resolved);
-        // alert("testing!");
+            // check if the input field is not empty
+            if (input_field_message) {
+              ChatSupportSocket.send(
+                JSON.stringify({
+                  message: input_field_message,
+                  user_identity: user_identity,
+                  roomslug: roomSlug,
+                })
+              );
+              chat_msg_input_field.value = "";
+            }
+          };
 
-        if (is_resolved !== null) {
-            is_resolved.onclick = function (e) {
+          // "eventPreventDefault()" method is separated, so that it can be invoked after calling another func. "preventDefault()" method will be invoked after executing the "invokeNullHumanFeedback()" function. Otherwise, "preventDefault()" method won't allow to sent null feedback.
+          // Solution: https://www.geeksforgeeks.org/how-to-call-a-function-that-return-another-function-in-javascript/
+          function eventPreventDefault(event) {
+            event.preventDefault();
+          }
+
+          // After sending the null HF, the "event.preventFedult()" will be invoked & returned from this function "invokeNullHumanFeedback()".
+          // Solution: https://www.geeksforgeeks.org/how-to-call-a-function-that-return-another-function-in-javascript/
+          function invokeNullHumanFeedback(event) {
+            getHumanFeedback(feedback='null');
+            return eventPreventDefault(event);
+          }
+
+          chat_msg_input_field.addEventListener("keypress", function (e) {
+            // Solution: https://www.geeksforgeeks.org/how-to-call-a-function-that-return-another-function-in-javascript/
+            // Except "Enter" key, any keypress will execute the "getHumanFeedback(feedback='null')" function if the "feedbackContainer" html dom element exists
+            let feedbackContainer = document.getElementById("feedbackContainer");
+            if (feedbackContainer !== null) {
+              getHumanFeedback(feedback='null');
+            }
+
+            // If the user presses the "Enter" key on the keyboard
+            if (e.key === "Enter") {
+              // Cancel the default action, if needed
+              // e.preventDefault();
+              invokeNullHumanFeedback(e);
+
+              // Trigger the chat-send-button element with a click
+              chat_send_btn.click();
+            }
+
+            // console.log(`Key type:`, e.key);
+          });
+
+          if (cso_email !== "") {
+            // FOR CSO
+            // Mark the conversation as resolved by the CSO (this js-code-block will be avaiable to the CSO-frontend)
+            const is_resolved = document.querySelector("#is-resolved");
+
+            console.log(`is_resolved_button,`, is_resolved);
+            // alert("testing!");
+
+            if (is_resolved !== null) {
+              is_resolved.onclick = function (e) {
                 var hdo_email_resolve_opt = `{{request.user.email}}`;
                 var registered_user_email = `{{ registered_user_email }}`;
-                var remark_input_resolve = document.querySelector("#remark-input-resolve");
+                var remark_input_resolve = document.querySelector(
+                  "#remark-input-resolve"
+                );
                 var remark_input_resolve_value = remark_input_resolve.value;
                 console.log(`is_resolved button is clicked!`);
-                console.log(`is_resolved button is clicked by the CSO; email: ${hdo_email_resolve_opt}`);
+                console.log(
+                  `is_resolved button is clicked by the CSO; email: ${hdo_email_resolve_opt}`
+                );
                 console.log(`registered user email: ${registered_user_email}`);
-                console.log(`Remark Input value: ${remark_input_resolve_value}`);
+                console.log(
+                  `Remark Input value: ${remark_input_resolve_value}`
+                );
                 console.log(`User signin token: ${user_signin_token}`);
                 console.log(`Ticket issue oid: ${ticket_issue_oid}`);
-                console.log(`Static ticket issue iod: cfe5ac26-cd9e-4dd5-9908-307b520582cc`);
-                
+                console.log(
+                  `Static ticket issue iod: cfe5ac26-cd9e-4dd5-9908-307b520582cc`
+                );
+
                 // Resolve issue into TMS, Then send the socket signal
-                tmsIssueUpdate_resolve(user_signin_token=user_signin_token, 
-                    remark_input_resolve_value=remark_input_resolve_value, 
-                    ticket_issue_oid=ticket_issue_oid, 
-                    hdo_email_resolve_opt=hdo_email_resolve_opt, 
-                    registered_user_email=registered_user_email, 
-                    roomSlugParam=roomSlug);
+                tmsIssueUpdate_resolve(
+                  (user_signin_token = user_signin_token),
+                  (remark_input_resolve_value = remark_input_resolve_value),
+                  (ticket_issue_oid = ticket_issue_oid),
+                  (hdo_email_resolve_opt = hdo_email_resolve_opt),
+                  (registered_user_email = registered_user_email),
+                  (roomSlugParam = roomSlug)
+                );
+              };
             }
-        }
-    }
-</script>
-{% endblock %}
+          }
+        </script>
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+</div>
