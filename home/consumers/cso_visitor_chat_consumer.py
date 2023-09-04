@@ -373,6 +373,7 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
             #         }
             #     )
 
+            # Human Feedback
             if 'feedback' in data:
                 feedback = data['feedback']
                 roomslug = data['roomslug']
@@ -385,6 +386,39 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
                     {
                         'type': 'human_feedback',  # will be used to call as a method
                         'feedback': feedback,
+                        'roomslug': roomslug,
+                    }
+                )
+            
+            # Multiline Reply Mode
+            if 'mlr' in data:
+                mlr = data['mlr']
+                roomslug = data['roomslug']
+                # print(f'Multiline Reply Mode: {mlr}')
+                # print(f'roomslug: {roomslug}')
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    # pass a dictionary with custom key-value pairs
+                    {
+                        'type': 'multiline_reply_mode',  # will be used to call as a method
+                        'mlr': mlr,
+                        'roomslug': roomslug,
+                    }
+                )
+            
+            # Send HF on MLR mode disble
+            if 'sendHfOnMlrDisable' in data and data['sendHfOnMlrDisable']=='Send HF on MLR mode disble':
+                print("Sent socket signal to chatroom to send HF to customer end; since HDO has disabled the MLR mode!")
+                user_identity = data['user_identity']
+                roomslug = data['roomslug']
+                # print(f'User Identity (Send HF on MLR disabled): {user_identity}')
+                # print(f'roomslug: {roomslug}')
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    # pass a dictionary with custom key-value pairs
+                    {
+                        'type': 'send_hf_on_mlr_disable',  # will be used to call as a method
+                        'user_identity': user_identity,
                         'roomslug': roomslug,
                     }
                 )
@@ -562,6 +596,31 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
             'roomslug': roomslug,
         }))
 
+    # Multiline Reply Mode
+    def multiline_reply_mode(self, event):
+        mlr = event['mlr']
+        roomslug = event['roomslug']
+        print(f'multiline_reply (mlr): {mlr}')
+        print(f'roomslug (mlr): {roomslug}')
+
+        self.send(text_data=json.dumps({
+            'MultilineReplyMode': True,
+            'mlr': mlr,
+            'roomslug': roomslug,
+        }))
+    
+    # Send HF sending signal on MLR mode disabled
+    def send_hf_on_mlr_disable(self, event):
+        user_identity = event['user_identity']
+        roomslug = event['roomslug']
+        print(f'User identity (send_hf_on_mlr_disable): {user_identity}')
+        print(f'roomslug (send_hf_on_mlr_disable): {roomslug}')
+
+        self.send(text_data=json.dumps({
+            'sendHfOnMlrDisable': True,
+            'user_identity': user_identity,
+            'roomslug': roomslug,
+        }))
 
     # Default method of "WebsocketConsumer" class
     def disconnect(self, *args, **kwargs):

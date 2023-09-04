@@ -31,6 +31,11 @@
   rel="stylesheet"
   href="{% static 'css/home/customerSupport/ticketIssueDetail.css' %}"
 />
+<!-- Chatbox Container CSS -->
+<link
+  rel="stylesheet"
+  href="{% static 'css/home/customerSupport/customerSupportComponents/chatbody.css' %}"
+/>
 {% endblock %}
 
 <!-- Content Body -->
@@ -582,7 +587,7 @@
               </div>
             </div>
           </div>
-          <div id="chatbox-container" class="col-7 bg-light ms-3 rounded shadow">
+          <div class="col-7 bg-light ms-3 rounded shadow">
             {% if request.user.is_cso %}
               <div class="row" style="height: 82.8vh">
             {% endif %} 
@@ -666,6 +671,7 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
         <script src="{% static 'js/home/customerSupportChat/speechToText.js' %}"></script>
         <script src="{% static 'js/miscellaneous/helper_func/get_cookies.js' %}"></script>
 
+        <!-- Skeleton loading effect: while fetching issue detail from test-tms server -->
         <script>
           let grid_tms_issue_skeleton = document.querySelector(
             ".grid-tms-issue-skeleton"
@@ -951,6 +957,7 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
         <script>
           // Scroll down the chatbody div after window loads
           var divElement = document.getElementById("chatbody-scroller");
+          // While the page is loaded, scroll down automatically at the bottom (previous messages)
           divElement.scroll({
             top: divElement.scrollHeight, //scroll to the bottom of the element
             behavior: "smooth", //auto, smooth, initial, inherit
@@ -1004,6 +1011,36 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
             }
           }
 
+          // Send socket signal to backend so that everyone can have the signal: MLR mode is enable/disable by HDO
+          function multiLineReplyMode (mlr) {
+            console.log(`mlr_clicked (multiLineReplyMode): ${mlr}`);
+            ChatSupportSocket.send(
+              JSON.stringify({
+                mlr: mlr,
+                roomslug: roomSlug,
+              })
+            );
+          }
+
+          // Send socket signal to backend so that everyone can have the signal: Send HF to customer end on MLR mode disbaled by the HDO
+          function sendHfOnMlrDisable () {
+            console.log(`Sent socket signal to send HF to only customer end! (through "message" socket signal!)`);
+            let user_identity = "";
+            if (reg_user === "True") {
+              user_identity = "reg_user";
+            }
+            if (cso_email === "True") {
+              user_identity = "cso";
+            }
+            ChatSupportSocket.send(
+              JSON.stringify({
+                sendHfOnMlrDisable: "Send HF on MLR mode disble",
+                user_identity: user_identity,
+                roomslug: roomSlug,
+              })
+            );
+          }
+
           function hf_icon_thumbs_up_mouseover() {
             let hf_thumbs_up = document.getElementById("hf-thumbs-up");
             hf_thumbs_up.classList.remove("fa-regular");
@@ -1044,6 +1081,7 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
           ChatSupportSocket.onopen = function (e) {
             console.log("Frontend Websocket: Connection Established!");
             console.log(`CSO (bool): ${cso_email}`);
+            // console.log(`MLR Container:`, multi_line_reply_container);   // Variable instantiated inside "chatBody.js"
 
             if (reg_user === "True") {
               // FOR USER
@@ -1108,6 +1146,10 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
                     (roomSlugParam = roomSlug)
                   );
                 };
+              }
+              // Display MLR Container
+              if (multi_line_reply_container.classList.contains("mlr-display-none")) {
+                multi_line_reply_container.classList.remove("mlr-display-none");
               }
             }
           };
@@ -1225,29 +1267,57 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
               //     (data.user_identity === 'cso')? 'message from cso': 'message from visitor'
               // );
               console.log(`CSO (bool) [data.message]: ${cso_email}`);
+              console.log(`Customer (bool) [data.message]: ${reg_user}`);
               console.log(`User identity:`, data.user_identity);
 
               if (data.user_identity === "cso") {
                 console.log(`message from cso`);
+                if (multiline_reply_mode === true) {
+                  console.log(`HDO has sent a msg while the MLR mode is enabled!`);
+                  console.log(`Make the "sent_msg_by_hdo_in_mlr_mode" to true; since HDO has sent atleast a single msg while the MLR mode is enabled! But make the "sent_msg_by_hdo_in_mlr_mode" to false while the HDO disables the MLR mode!`);
+                  if (!sent_msg_by_hdo_in_mlr_mode) {
+                    sent_msg_by_hdo_in_mlr_mode = true;
+                    console.log(`sent_msg_by_hdo_in_mlr_mode [data.message]:`, sent_msg_by_hdo_in_mlr_mode);
+                  }
+                }
               }
               if (data.user_identity === "reg_user") {
                 console.log(`message from registered user`);
               }
 
               if (data.user_identity === "cso") {
-                var chatHTML = `
-                    <div class="d-flex flex-row justify-content-start mb-4">
-                        <img src="{{ cso_user_profile_pic.url }}"
-                            alt="avatar 1" style="width: 45px; height: 45px;" class="rounded-circle">
-                        <div>
-                            <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">${
-                              data.message
-                            }</p>
-                            <p class="small ms-3 mb-3 rounded-3 text-muted">00:07</p>
-                        </div>
-                    </div>
-                    <div>${human_feedback_query()}</div>
-                `;
+                // Send HF to customer if MLR mode is off
+                if (multiline_reply_mode === false) {
+                  // if the msg is sent from the HDO, the invoke the HF-generating-func which will sent HF to customer end
+                  var chatHTML = `
+                      <div class="d-flex flex-row justify-content-start mb-4">
+                          <img src="{{ cso_user_profile_pic.url }}"
+                              alt="avatar 1" style="width: 45px; height: 45px;" class="rounded-circle">
+                          <div>
+                              <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">${
+                                data.message
+                              }</p>
+                              <p class="small ms-3 mb-3 rounded-3 text-muted">00:07</p>
+                          </div>
+                      </div>
+                      <div>${human_feedback_query()}</div>
+                  `;
+                // Doesn't send any HF to customer while MLR mode is on
+                } else {
+                  // Doesn't invoke the HF-generating-func, since the msg is sent from the customer
+                  var chatHTML = `
+                      <div class="d-flex flex-row justify-content-start mb-4">
+                          <img src="{{ cso_user_profile_pic.url }}"
+                              alt="avatar 1" style="width: 45px; height: 45px;" class="rounded-circle">
+                          <div>
+                              <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">${
+                                data.message
+                              }</p>
+                              <p class="small ms-3 mb-3 rounded-3 text-muted">00:07</p>
+                          </div>
+                      </div>
+                  `;
+                }
               } else {
                 var chatHTML = `
                     <div class="d-flex flex-row justify-content-end mb-4">
@@ -1262,7 +1332,7 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
               }
               document.querySelector(".chat-messages-box").innerHTML +=
                 chatHTML;
-              // After adding the chat-message div, scroll down automatically at the bottom
+              // After adding the chat-message div, scroll down automatically at the bottom (while msg is sent in real-time)
               divElement.scroll({
                 top: divElement.scrollHeight, //scroll to the bottom of the element
                 behavior: "smooth", //auto, smooth, initial, inherit
@@ -1482,6 +1552,50 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
                 // feedbackContainer.classList.add("hf-fade-out");
               }
             }
+
+            // Multiline reply mode signal (Toggle the "multiline_reply_mode" from everyone's end since the HDO has disabled the MLR mode; this variable exists in everyone's page whoever inside that chatroom)
+            if (data.MultilineReplyMode) {
+              multiline_reply_mode = !multiline_reply_mode;   // if "multiline_reply_mode=true", then make it "multiline_reply_mode=false". Vice versa for other scenario.
+              // console.log(`Multiline Reply Mode (mlr):`, data.mlr);
+              // console.log(`Multiline Reply Mode:`, multiline_reply_mode);
+            }
+
+            // Attach HF to customer end (because HDO disables the MLR mode currently)
+            if (data.sendHfOnMlrDisable) {
+              // console.log(`Attach HF to customer end (data.sendHfOnMlrDisable)! Since HDO has disabled the MLR mode after sending a single msg atleast!`);
+              // console.log(`User identity (HF send on MLR disabled):`, data.user_identity);
+              // console.log(`Roomslug (HF send on MLR disabled):`, data.roomslug);
+              // console.log(`Is HDO:`, cso_email);
+              // console.log(`Is Customer:`, reg_user);
+              
+              if (reg_user==="True") {
+                // console.log(`Attach HF to customer end!`);
+                var chatHTML = `
+                  <div>
+                    <div id="feedbackContainer" class="container-fluid text-center">
+                      <div class="row">
+                        <div class="col">
+                          <hr class="hf-hr">
+                        </div>
+                        <div class="col-2 row">
+                          <div class="col p-0"><i id="hf-thumbs-up" class="fa-regular fa-thumbs-up fa-xl" onmouseover="hf_icon_thumbs_up_mouseover()" onmouseout="hf_icon_thumbs_up_mouseout()" onclick="getHumanFeedback(feedback='yes')"></i></div>
+                          <div class="col p-0"><i id="hf-thumbs-down" class="fa-regular fa-thumbs-down fa-flip-horizontal fa-xl" onmouseover="hf_icon_thumbs_down_mouseover()" onmouseout="hf_icon_thumbs_down_mouseout()" onclick="getHumanFeedback(feedback='no')"></i></div>
+                        </div>
+                        <div class="col">
+                          <hr class="hf-hr">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                `;
+                document.querySelector(".chat-messages-box").innerHTML += chatHTML;
+                // After adding the chat-message div, scroll down automatically at the bottom (while msg is sent in real-time)
+                divElement.scroll({
+                  top: divElement.scrollHeight, //scroll to the bottom of the element
+                  behavior: "smooth", //auto, smooth, initial, inherit
+                });
+              }
+            }
           };
 
           // WEBSOCKET Close function
@@ -1607,6 +1721,9 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
             }
           }
         </script>
+
+        <!-- Chatbody JS -->
+        <script src="{% static 'js/home/customerSupportChat/customerSupportComponents/chatBody.js' %}"></script>
         {% endblock %}
       </div>
     </div>

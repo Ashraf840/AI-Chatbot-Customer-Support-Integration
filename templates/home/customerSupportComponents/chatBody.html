@@ -174,7 +174,7 @@
                             {% endif %}
                         {% endfor %}
                     </div>
-                    <div class="card-footer text-muted d-flex justify-content-start align-items-center px-1 py-2">
+                    <div id="chat-body-card-footer" class="card-footer text-muted d-flex justify-content-start align-items-center px-1 py-2">
                         <!-- <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
                             alt="avatar 3" style="width: 40px; height: 100%;" class="me-1"> -->
                         {% if chat_convo_cancelled %}
@@ -188,6 +188,16 @@
                             placeholder="Type message">
                         <!-- <a class="ms-1 text-muted" href="#!"><i class="fas fa-paperclip"></i></a> -->
                         <!-- <a class="ms-3 text-muted" href="#!"><i class="fas fa-smile"></i></a> -->
+                        {% if request.user.is_cso %}
+                        <!-- Multi Line Reply Icon -->
+                        <div id="mlr-container" class="-mlr-display-none">
+                        <!-- <div id="mlr-container" class="mlr-container-display mlr-container-pop-in-out"> -->
+                            <svg id="mlr" xmlns="http://www.w3.org/2000/svg">
+                                <rect id="mlr-icon" width="100%" height="100%" fill="white"/>   <!-- Changed color code: #344767 -->
+                                <text id="mlr-text" x="50%" y="50%" font-size="16" fill="#344767" text-anchor="middle" dominant-baseline="middle">MLR</text>  <!-- Changed color code: white -->
+                            </svg>
+                        </div>
+                        {% endif %}
                         <a class="mx-3" id="chat-message-send-btn" 
                             style="cursor: pointer;"><i class="fas fa-paper-plane fa-2x" style="color: #344767;"></i></a>
                         <!-- <a class="mx-3" id="chat-msg-mic-btn" 
