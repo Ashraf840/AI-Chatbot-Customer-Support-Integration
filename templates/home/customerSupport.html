@@ -1011,7 +1011,7 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
             }
           }
 
-          // Send socket signal to backend so that everyone can have the signal: MLR mode is enable/disable by HDO
+          // Send socket signal to backend so that everyone can have the signal: MLR mode is enabled/disabled by HDO
           function multiLineReplyMode (mlr) {
             console.log(`mlr_clicked (multiLineReplyMode): ${mlr}`);
             ChatSupportSocket.send(
@@ -1036,6 +1036,17 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
               JSON.stringify({
                 sendHfOnMlrDisable: "Send HF on MLR mode disble",
                 user_identity: user_identity,
+                roomslug: roomSlug,
+              })
+            );
+          }
+
+          // Send socket signal to backend so that everyone can have the signal: Query-reply mode is enabled/disabled by HDO
+          function hdoQueryReplyMode (hifq) {
+            // console.log(`hifq (hdoQueryReplyMode): ${hifq}`);
+            ChatSupportSocket.send(
+              JSON.stringify({
+                hifq: hifq,
                 roomslug: roomSlug,
               })
             );
@@ -1291,7 +1302,9 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
 
               if (data.user_identity === "cso") {
                 // Send HF to customer if MLR mode is off
-                if (multiline_reply_mode === false) {
+                if (multiline_reply_mode === false &&
+                    query_mode === false &&
+                    reply_mode === true) {
                   // if the msg is sent from the HDO, the invoke the HF-generating-func which will sent HF to customer end
                   var chatHTML = `
                       <div class="d-flex flex-row justify-content-start mb-4">
@@ -1600,6 +1613,16 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
                   behavior: "smooth", //auto, smooth, initial, inherit
                 });
               }
+            }
+
+            // Query reply mode signal (Toggle the "query_mode" & "reply_mode" from everyone's end since the HDO has clicked the "Query-reply" mode; this variable exists in everyone's page whoever inside that chatroom)
+            if (data.QueryReplyMode) {
+              query_mode=!query_mode;
+              reply_mode=!reply_mode;
+              console.log(`data.hifq (data.QueryReplyMode - backend signal):`, data.hifq);
+              // console.log(`Query Reply Mode (data.QueryReplyMode - backend signal):`, data.roomslug);
+              // console.log(`Query Mode (data.QueryReplyMode - backend signal) - after:`, query_mode);
+              // console.log(`Reply Mode (data.QueryReplyMode - backend signal) - after:`, reply_mode);
             }
           };
 

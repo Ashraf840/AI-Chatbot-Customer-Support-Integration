@@ -16,6 +16,8 @@ var sent_msg_by_hdo_in_mlr_mode = false;   // global variable (exists in both cu
 
 let hdo_input_field_query = document.getElementById("hdo-input-field-query");   // This HTML dom initialized/rendered only in the HDO end from the server
 let hifq_clicked = false;
+let query_mode = false;
+let reply_mode = true;
 
 if (cso_email === "True") {
     // Query/reply modes (HDO)
@@ -43,7 +45,7 @@ if (cso_email === "True") {
     hdo_input_field_query.onclick = () => {
         // console.log(`Query icon is clicked!`);
         hifq_clicked = !hifq_clicked;
-        console.log(`Query icon is clicked:`, hifq_clicked);
+        // console.log(`Query icon is clicked:`, hifq_clicked);
         if (hifq_clicked===true) {
             if (hdo_input_field_query.classList.contains('fa-regular')) {
                 hdo_input_field_query.classList.remove("fa-regular");
@@ -55,7 +57,7 @@ if (cso_email === "True") {
                 hdo_input_field_query.classList.add("fa-regular");
             }
         }
-        // hdoQueryReplyMode(hifq_clicked=hifq_clicked)
+        hdoQueryReplyMode(hifq=hifq_clicked)
     }
 
     // Multiline reply mode (HDO)

@@ -422,6 +422,21 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
                         'roomslug': roomslug,
                     }
                 )
+            
+            if 'hifq' in data:
+                # print("HIFQ is sent to backend:", data['hifq'])
+                # print("Roomslug (hifq):", data['roomslug'])
+                hifq = data['hifq']
+                roomslug = data['roomslug']
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    # pass a dictionary with custom key-value pairs
+                    {
+                        'type': 'query_reply_mode',  # will be used to call as a method
+                        'hifq': hifq,
+                        'roomslug': roomslug,
+                    }
+                )
 
 
             print("[recieve() method] Recieved data to backend consumer class: CSOVisitorChatSuppportConsumer")
@@ -619,6 +634,18 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps({
             'sendHfOnMlrDisable': True,
             'user_identity': user_identity,
+            'roomslug': roomslug,
+        }))
+
+    def query_reply_mode(self, event):
+        hifq = event['hifq']
+        roomslug = event['roomslug']
+        print(f'Query-reply mode (qrm): {hifq}')
+        print(f'roomslug (qrm): {roomslug}')
+
+        self.send(text_data=json.dumps({
+            'QueryReplyMode': True,
+            'hifq': hifq,
             'roomslug': roomslug,
         }))
 
