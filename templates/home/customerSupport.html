@@ -1151,6 +1151,10 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
               if (multi_line_reply_container.classList.contains("mlr-display-none")) {
                 multi_line_reply_container.classList.remove("mlr-display-none");
               }
+              // Display HIFQ Container
+              if (hdo_input_field_query.classList.contains("hifq-display-none")) {
+                hdo_input_field_query.classList.remove("hifq-display-none");
+              }
             }
           };
 
@@ -1276,7 +1280,7 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
                   console.log(`HDO has sent a msg while the MLR mode is enabled!`);
                   console.log(`Make the "sent_msg_by_hdo_in_mlr_mode" to true; since HDO has sent atleast a single msg while the MLR mode is enabled! But make the "sent_msg_by_hdo_in_mlr_mode" to false while the HDO disables the MLR mode!`);
                   if (!sent_msg_by_hdo_in_mlr_mode) {
-                    sent_msg_by_hdo_in_mlr_mode = true;
+                    sent_msg_by_hdo_in_mlr_mode = true;   // make this global var "=true" in both "customer" & "HDO" end
                     console.log(`sent_msg_by_hdo_in_mlr_mode [data.message]:`, sent_msg_by_hdo_in_mlr_mode);
                   }
                 }
@@ -1555,6 +1559,7 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
 
             // Multiline reply mode signal (Toggle the "multiline_reply_mode" from everyone's end since the HDO has disabled the MLR mode; this variable exists in everyone's page whoever inside that chatroom)
             if (data.MultilineReplyMode) {
+              // Toggle MLR mode both end (customer & HDO end)
               multiline_reply_mode = !multiline_reply_mode;   // if "multiline_reply_mode=true", then make it "multiline_reply_mode=false". Vice versa for other scenario.
               // console.log(`Multiline Reply Mode (mlr):`, data.mlr);
               // console.log(`Multiline Reply Mode:`, multiline_reply_mode);

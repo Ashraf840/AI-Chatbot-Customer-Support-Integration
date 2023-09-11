@@ -31,6 +31,7 @@ function setUserResponse(message) {
  *
  */
 function getBotResponse(text) {
+    // botResponse = `<img class="botAvatar" src="./static/img/sara_avatar.png"/><span class="botMsg">${text}</span><div class="clearfix"></div>`;
     botResponse = `<img class="botAvatar" src="https://st3.depositphotos.com/30456762/37578/v/600/depositphotos_375780486-stock-illustration-chat-bot-robot-avatar-in.jpg"/><span class="botMsg">${text}</span><div class="clearfix"></div>`;
     return botResponse;
 }
@@ -42,10 +43,13 @@ function getBotResponse(text) {
  * for more info: `https://rasa.com/docs/rasa/connectors/your-own-website#request-and-response-format`
  */
 function setBotResponse(response) {
+    // renders bot response after 500 milliseconds
     setTimeout(() => {
         hideBotTyping(); 
         if (response_status=="success" && response.length < 1 ){
-            const fallbackMsg = "দুঃখিত কোনো ধরনের সমস্যা হয়েছে, পুনরায় চেষ্টা করুন";
+            const fallbackMsg = "NID verified successfully. How can i help!";
+
+            // const BotResponse = `<img class="botAvatar" src="./static/img/sara_avatar.png"/><p class="botMsg">${fallbackMsg}</p><div class="clearfix"></div>`;
             const BotResponse = `<img class="botAvatar" src="https://st3.depositphotos.com/30456762/37578/v/600/depositphotos_375780486-stock-illustration-chat-bot-robot-avatar-in.jpg"/><p class="botMsg">${fallbackMsg}</p><div class="clearfix"></div>`;
 
             $(BotResponse).appendTo(".chats").hide().fadeIn(1000);
@@ -81,11 +85,13 @@ function setBotResponse(response) {
                         // check for list text
                         if (html.includes("<ul") || html.includes("<ol") || html.includes("<li") || html.includes('<h3')) {
                             html = html.replaceAll("<br>", "");
+                            // botResponse = `<img class="botAvatar" src="./static/img/sara_avatar.png"/><span class="botMsg">${html}</span><div class="clearfix"></div>`;
                             botResponse = getBotResponse(html);
                         }
                         else {
                             // if no markdown formatting found, render the text as it is.
                             if (!botResponse) {
+                                // botResponse = `<img class="botAvatar" src="./static/img/sara_avatar.png"/><p class="botMsg">${response[i].text}</p><div class="clearfix"></div>`;
                                 botResponse = `<img class="botAvatar" src="https://st3.depositphotos.com/30456762/37578/v/600/depositphotos_375780486-stock-illustration-chat-bot-robot-avatar-in.jpg"/><p class="botMsg">${response[i].text}</p><div class="clearfix"></div>`;
                             }
                         }
@@ -226,39 +232,6 @@ function setBotResponse(response) {
 
 }
 
-
-function setNIDverificationSuccessful(){
-    hideBotTyping();
-    const is_verified_message = "NID Verified succesfully";
-    const BotResponse = `<img class="botAvatar" src="https://st3.depositphotos.com/30456762/37578/v/600/depositphotos_375780486-stock-illustration-chat-bot-robot-avatar-in.jpg"/><p class="botMsg">${is_verified_message}</p><div class="clearfix"></div>`;
-
-    $(BotResponse).appendTo(".chats").hide().fadeIn(2000); 
-    scrollToBottomOfResults();
-}
-
-
-function speechNotRecognized(){
-    hideBotTyping();
-    const is_verified_message = "Speech could not be recognized. Please try again!";
-
-    // const BotResponse = `<img class="botAvatar" src="./static/img/sara_avatar.png"/><p class="botMsg">${fallbackMsg}</p><div class="clearfix"></div>`;
-    const BotResponse = `<img class="botAvatar" src="https://st3.depositphotos.com/30456762/37578/v/600/depositphotos_375780486-stock-illustration-chat-bot-robot-avatar-in.jpg"/><p class="botMsg">${is_verified_message}</p><div class="clearfix"></div>`;
-
-    $(BotResponse).appendTo(".chats").hide().fadeIn(2000); 
-}
-
-function speechRecognize(text){
-    if(text == "Speech could not be recognized"){
-        speechNotRecognized();
-    }
-    else {
-        $(".usrInput").hide().val(text).fadeIn(500);
-	const userInputField = document.querySelector('.usrInput');
-	userInputField.focus();
-    }
-    scrollToBottomOfResults();
-}
-
 /**
  * sends the user message to the rasa server,
  * @param {String} message user message
@@ -287,6 +260,9 @@ function send(message) {
         error(xhr, textStatus) {
             if (message.toLowerCase() === "/restart") {
                 $("#userInput").prop("disabled", false);
+                // if you want the bot to start the conversation after the restart action.
+                // actionTrigger();
+                // return;
             }
 
             // if there is no response from rasa server, set error bot response
@@ -302,8 +278,6 @@ function send(message) {
  * `Note: this method will only work in Rasa 1.x`
  */
 // eslint-disable-next-line no-unused-vars
-
-
 function actionTrigger() {
     $.ajax({
         url: `http://localhost:5005/conversations/${sender_id}/execute`,
@@ -409,7 +383,6 @@ function displayText(inputText){
     const BotResponse = `<img class="botAvatar" src="https://st3.depositphotos.com/30456762/37578/v/600/depositphotos_375780486-stock-illustration-chat-bot-robot-avatar-in.jpg"/><p class="botMsg">${InitMessage}</p><div class="clearfix"></div>`;
     $(BotResponse).appendTo(".chats").hide().fadeIn(1000);
 }
-/*
 $(document).ready(() => { 
 
     var userNID = ""; 
@@ -424,9 +397,7 @@ $(document).ready(() => {
         const fetchNID = async () => { 
             try {
                 // const response = await fetch('http://127.0.0.1:8080/home/api/user-chatbot/socket/4f0f87410c8145a59a4d9999be8bbc42/'); 
-                //const response = await fetch(`http://172.16.6.91/home/api/user-chatbot/socket/${sender_id}/`);
-                //const response = await fetch(`http://ibaschat.celloscope.net//home/api/user-chatbot/socket/${sender_id}/`);
-                const response = await fetch(`http://${window.location.host}/home/api/user-chatbot/socket/${sender_id}/`);
+                const response = await fetch(`http://127.0.0.1:8080/home/api/user-chatbot/socket/${sender_id}/`);
                 const data = await response.json(); 
                 userNID = data.user_NID_no; 
                 // console.log(`Response Data:`, data);
@@ -442,6 +413,7 @@ $(document).ready(() => {
         fetchNID()
     }, 1000); 
 
+    // fetchNID(); 
     // Disable chat input field until NID is validated //
 
     $(".usrInput").attr("disabled", true); 
@@ -483,8 +455,23 @@ $(document).ready(() => {
                     const user_navbar = `<p>User ID: ${userNID} <span id="user-id"></span></p> <p>User Name: ${user_name} <span id="user-name"></span></p>`;
                     $(user_navbar).appendTo(".user-details").hide().fadeIn(1000);
                     $(".chatbox-navbar").toggle();
+                    // Destroy existing chart elements (if any) 
+                    $(".collapsible").remove(); 
+                    $(".dropDownMsg").remove(); 
+                    if (typeof chatChart !== "undefined") { 
+                        chatChart.destroy(); 
+                    } 
+                    $(".chart-container").remove(); 
+                    if (typeof modalChart !== "undefined") {
+                        console.log("15"); 
+                        modalChart.destroy(); 
+                    } 
+                    $("#paginated_cards").remove(); 
+                    $(".suggestions").remove(); 
+                    $(".quickReplies").remove(); 
+                    $(".usrInput").blur(); 
                     setUserResponse(text); 
-		    setNIDverificationSuccessful();
+                    send(text); 
                     e.preventDefault();
                     return false;
                 }
@@ -516,85 +503,9 @@ $(document).ready(() => {
         return true; 
     }); 
 }); 
-*/
+
  
 ///////////////////////////////////////////////
-
-////////////Trial//////////
-$(document).ready(() => { 
-
-    var userNID = ""; 
-    var user_name = "";
-    console.log(sender_id);
-    var validatedNIDConfirmation = false;
-    const InitMessage = "Hi how can i help!";
-    console.log(`sender id (chat.js):`, sender_id);
-    console.log(`ChatbotUserSocketID_socket (inside "chat.js" file):`, ChatbotUserSocketID_socket);
-    displayText(InitMessage);
-    setTimeout(() => {
-        const fetchNID = async () => {
-            try {
-                //const response = await fetch(`http://127.0.0.1:8080/home/api/user-chatbot/socket/${sender_id}/`);
-                const response = await fetch(`http://${window.location.host}/home/api/user-chatbot/socket/${sender_id}/`);
-                
-                const data = await response.json(); 
-                userNID = data.user_NID_no; 
-                user_name = data.first_name + ' ' + data.last_name;
-                console.log(`Username:`, user_name);
-                console.log(`After successfully fetching user NID ('chat.js' file):`, userNID);
-                $(".usrInput").removeAttr("disabled"); 
-            } catch (error) { 
-                console.log(error); 
-            } 
-        };
-        fetchNID()
-    }, 1000); 
-
-
-    $(".usrInput").attr("disabled", true); 
-
-    const validateNID = (text) => { 
-        if (text == userNID) { 
-            return true; 
-        } else { 
-            const InitMessage = "Please enter correct NID: ";
-            $("textarea#userInput").val('');
-            // displayText(InitMessage);
-            return false; 
-        } 
-    }; 
-    $(".usrInput").on("keypress", (e) => { 
-        console.log('sth')
-        const keyCode = e.keyCode || e.which; 
-        var text = $("textarea#userInput").val(); 
-        if (keyCode === 13) 
-        {
-
-            if (typeof chatChart !== "undefined") {
-                chatChart.destroy();
-            }
-        
-            $(".chart-container").remove();
-            if (typeof modalChart !== "undefined") {
-                modalChart.destroy();
-            }
-        
-            $(".suggestions").remove();
-            $("#paginated_cards").remove();
-            $(".quickReplies").remove();
-            $(".usrInput").blur();
-            $(".dropDownMsg").remove();
-            setUserResponse(text);
-            send(text);
-            e.preventDefault();
-            return false;
-        } 
-        return true; 
-    }); 
-}); 
-
-///////////Trial End//////////////
-
 
 $("#sendButton").on("click", (e) => {
     const text = $(".usrInput").val();

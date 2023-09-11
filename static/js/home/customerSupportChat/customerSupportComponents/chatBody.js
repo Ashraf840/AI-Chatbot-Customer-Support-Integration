@@ -11,10 +11,54 @@ let multi_line_reply_icon = document.getElementById("mlr-icon");
 let multi_line_reply_text = document.getElementById("mlr-text");
 // console.log(`Chatbox input field:`, chatbody_card_footer);
 let mlr_clicked = false;
-var multiline_reply_mode = false;   // global variable; toggled inside the "socket.MultilineReplyMode" block of "socket.onmessage" parent block; if the "multiline_reply_mode" is false; only then invoke HF-generate-tocustomer function "human_feedback_query()" from the HDO-end while adding 'chatHTML'.
-var sent_msg_by_hdo_in_mlr_mode = false;   // 
+var multiline_reply_mode = false;   // global variable (exists in both customer & HDO end); toggled inside the "socket.MultilineReplyMode" block of "socket.onmessage" parent block; if the "multiline_reply_mode" is false; only then invoke HF-generate-tocustomer function "human_feedback_query()" from the HDO-end while adding 'chatHTML'.
+var sent_msg_by_hdo_in_mlr_mode = false;   // global variable (exists in both customer & HDO end); Whenever the HDO disables the MLR mode w/t even sending any msg to customer, the system won't sent any HF to customer unless the HDO at least sent a single msg, & when the HDO sends a msg while MLR mode is ON, only then this var becoes true in both customer & HDO end, so that while the HDO wants to disable the MLR mode, the system immediately sends an HF to cusotmer end by invoking the "sendHfOnMlrDisable()" func.
+
+let hdo_input_field_query = document.getElementById("hdo-input-field-query");   // This HTML dom initialized/rendered only in the HDO end from the server
+let hifq_clicked = false;
 
 if (cso_email === "True") {
+    // Query/reply modes (HDO)
+    hdo_input_field_query.onmouseenter = () => {
+        if (!hifq_clicked) {
+            // console.log(`Query icon nouse enter!`);
+            if (hdo_input_field_query.classList.contains('fa-regular')) {
+                // console.log(`Remove "fa-regular" & append "fa-solid"`);
+                hdo_input_field_query.classList.remove("fa-regular");
+                hdo_input_field_query.classList.add("fa-solid");
+                // console.log(`HDO input field icon type:`, hdo_input_field_query);
+            }
+        }
+    };
+    hdo_input_field_query.onmouseleave = () => {
+        if (!hifq_clicked) {
+            // console.log(`Query icon nouse leave!`);
+            if (hdo_input_field_query.classList.contains('fa-solid')) {
+                // console.log(`Remove "fa-solid" & append "fa-regular"`);
+                hdo_input_field_query.classList.remove("fa-solid");
+                hdo_input_field_query.classList.add("fa-regular");
+            }
+        }
+    };
+    hdo_input_field_query.onclick = () => {
+        // console.log(`Query icon is clicked!`);
+        hifq_clicked = !hifq_clicked;
+        console.log(`Query icon is clicked:`, hifq_clicked);
+        if (hifq_clicked===true) {
+            if (hdo_input_field_query.classList.contains('fa-regular')) {
+                hdo_input_field_query.classList.remove("fa-regular");
+                hdo_input_field_query.classList.add("fa-solid");
+            }
+        } else {
+            if (hdo_input_field_query.classList.contains('fa-solid')) {
+                hdo_input_field_query.classList.remove("fa-solid");
+                hdo_input_field_query.classList.add("fa-regular");
+            }
+        }
+        // hdoQueryReplyMode(hifq_clicked=hifq_clicked)
+    }
+
+    // Multiline reply mode (HDO)
     multi_line_reply.onmouseenter = () => {
         if (!mlr_clicked) {
             // console.log(`Mouse enter!`);
