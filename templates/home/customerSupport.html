@@ -1013,7 +1013,7 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
 
           // Send socket signal to backend so that everyone can have the signal: MLR mode is enabled/disabled by HDO
           function multiLineReplyMode (mlr) {
-            console.log(`mlr_clicked (multiLineReplyMode): ${mlr}`);
+            console.log(`mlr_clicked (multiLineReplyMode):`, mlr);
             ChatSupportSocket.send(
               JSON.stringify({
                 mlr: mlr,
@@ -1035,6 +1035,36 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
             ChatSupportSocket.send(
               JSON.stringify({
                 sendHfOnMlrDisable: "Send HF on MLR mode disble",
+                user_identity: user_identity,
+                roomslug: roomSlug,
+              })
+            );
+          }
+
+          // Send socket signal to backend so that everyone can have the signal: Send HF to customer end on CR mode disbaled by the HDO
+          function conversationalReplyMode(cr) {
+            console.log(`cr_clicked (conversationalReplyMode):`, cr);
+            ChatSupportSocket.send(
+              JSON.stringify({
+                cr: cr,
+                roomslug: roomSlug,
+              })
+            );
+          }
+
+          // Send socket signal to backend so that everyone can have the signal: Send HF to customer end on CR mode disbaled by the HDO
+          function sendHfOnCrDisable () {
+            console.log(`Sent socket signal to send HF to only customer end! (through "message" socket signal!)`);
+            let user_identity = "";
+            if (reg_user === "True") {
+              user_identity = "reg_user";
+            }
+            if (cso_email === "True") {
+              user_identity = "cso";
+            }
+            ChatSupportSocket.send(
+              JSON.stringify({
+                sendHfOnCrDisable: "Send HF on CR mode disble",
                 user_identity: user_identity,
                 roomslug: roomSlug,
               })
@@ -1157,6 +1187,10 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
                     (roomSlugParam = roomSlug)
                   );
                 };
+              }
+              // Display CR Container
+              if (conversational_reply_container.classList.contains("cr-display-none")) {
+                conversational_reply_container.classList.remove("cr-display-none");
               }
               // Display MLR Container
               if (multi_line_reply_container.classList.contains("mlr-display-none")) {
@@ -1287,6 +1321,8 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
 
               if (data.user_identity === "cso") {
                 console.log(`message from cso`);
+
+                // Code block to check if a single msg is sent in MLR Node
                 if (multiline_reply_mode === true) {
                   console.log(`HDO has sent a msg while the MLR mode is enabled!`);
                   console.log(`Make the "sent_msg_by_hdo_in_mlr_mode" to true; since HDO has sent atleast a single msg while the MLR mode is enabled! But make the "sent_msg_by_hdo_in_mlr_mode" to false while the HDO disables the MLR mode!`);
@@ -1295,14 +1331,25 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
                     console.log(`sent_msg_by_hdo_in_mlr_mode [data.message]:`, sent_msg_by_hdo_in_mlr_mode);
                   }
                 }
+                
+                // Code block to check if a single msg is sent in CR Node
+                if (conversational_reply_mode === true) {
+                  console.log(`HDO has sent a msg while the CR mode is enabled!`);
+                  console.log(`Make the "sent_msg_by_hdo_in_cr_mode" to true; since HDO has sent atleast a single msg while the CR mode is enabled! But make the "sent_msg_by_hdo_in_cr_mode" to false while the HDO disables the MLR mode!`);
+                  if (!sent_msg_by_hdo_in_cr_mode) {
+                    sent_msg_by_hdo_in_cr_mode = true;   // make this global var "=true" in both "customer" & "HDO" end
+                    console.log(`sent_msg_by_hdo_in_cr_mode [data.message]:`, sent_msg_by_hdo_in_cr_mode);
+                  }
+                }
               }
               if (data.user_identity === "reg_user") {
                 console.log(`message from registered user`);
               }
 
               if (data.user_identity === "cso") {
-                // Send HF to customer if MLR mode is off
+                // Send HF (in SLR mode) to customer if MLR & QUERY mode is off, REPLY mode is on. Basically the SLR (Single Line Reply Mode) is enabled here, HF is sent after every reply of the HDO
                 if (multiline_reply_mode === false &&
+                    conversational_reply_mode === false &&
                     query_mode === false &&
                     reply_mode === true) {
                   // if the msg is sent from the HDO, the invoke the HF-generating-func which will sent HF to customer end
@@ -1572,7 +1619,7 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
 
             // Multiline reply mode signal (Toggle the "multiline_reply_mode" from everyone's end since the HDO has disabled the MLR mode; this variable exists in everyone's page whoever inside that chatroom)
             if (data.MultilineReplyMode) {
-              // Toggle MLR mode both end (customer & HDO end)
+              // Toggle MLR mode in both end (customer & HDO end)
               multiline_reply_mode = !multiline_reply_mode;   // if "multiline_reply_mode=true", then make it "multiline_reply_mode=false". Vice versa for other scenario.
               // console.log(`Multiline Reply Mode (mlr):`, data.mlr);
               // console.log(`Multiline Reply Mode:`, multiline_reply_mode);
@@ -1583,6 +1630,51 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
               // console.log(`Attach HF to customer end (data.sendHfOnMlrDisable)! Since HDO has disabled the MLR mode after sending a single msg atleast!`);
               // console.log(`User identity (HF send on MLR disabled):`, data.user_identity);
               // console.log(`Roomslug (HF send on MLR disabled):`, data.roomslug);
+              // console.log(`Is HDO:`, cso_email);
+              // console.log(`Is Customer:`, reg_user);
+              
+              if (reg_user==="True") {
+                // console.log(`Attach HF to customer end!`);
+                var chatHTML = `
+                  <div>
+                    <div id="feedbackContainer" class="container-fluid text-center">
+                      <div class="row">
+                        <div class="col">
+                          <hr class="hf-hr">
+                        </div>
+                        <div class="col-2 row">
+                          <div class="col p-0"><i id="hf-thumbs-up" class="fa-regular fa-thumbs-up fa-xl" onmouseover="hf_icon_thumbs_up_mouseover()" onmouseout="hf_icon_thumbs_up_mouseout()" onclick="getHumanFeedback(feedback='yes')"></i></div>
+                          <div class="col p-0"><i id="hf-thumbs-down" class="fa-regular fa-thumbs-down fa-flip-horizontal fa-xl" onmouseover="hf_icon_thumbs_down_mouseover()" onmouseout="hf_icon_thumbs_down_mouseout()" onclick="getHumanFeedback(feedback='no')"></i></div>
+                        </div>
+                        <div class="col">
+                          <hr class="hf-hr">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                `;
+                document.querySelector(".chat-messages-box").innerHTML += chatHTML;
+                // After adding the chat-message div, scroll down automatically at the bottom (while msg is sent in real-time)
+                divElement.scroll({
+                  top: divElement.scrollHeight, //scroll to the bottom of the element
+                  behavior: "smooth", //auto, smooth, initial, inherit
+                });
+              }
+            }
+
+            // Conversational reply mode signal (Toggle the "conversational_reply_mode" from everyone's end since the HDO has disabled the MLR mode; this variable exists in everyone's page whoever inside that chatroom)
+            if (data.ConversationalReplyMode) {
+              // Toggle CR mode in both end (customer & HDO end)
+              conversational_reply_mode = !conversational_reply_mode;   // if "conversational_reply_mode=true", then make it "conversational_reply_mode=false". Vice versa for other scenario.
+              console.log(`conversational Reply Mode (cr):`, data.cr);
+              // console.log(`conversational Reply Mode:`, conversational_reply_mode);
+            }
+
+            // Attach HF to customer end (because HDO disables the CR mode currently)
+            if (data.sendHfOnCrDisable) {
+              // console.log(`Attach HF to customer end (data.sendHfOnCrDisable)! Since HDO has disabled the CR mode after sending a single msg atleast!`);
+              // console.log(`User identity (HF send on CR disabled):`, data.user_identity);
+              // console.log(`Roomslug (HF send on CR disabled):`, data.roomslug);
               // console.log(`Is HDO:`, cso_email);
               // console.log(`Is Customer:`, reg_user);
               

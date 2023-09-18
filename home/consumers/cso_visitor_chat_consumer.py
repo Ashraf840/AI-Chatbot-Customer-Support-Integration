@@ -423,7 +423,42 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
                     }
                 )
             
+            # Conversational Reply mode
+            if 'cr' in data:
+                cr = data['cr']
+                roomslug = data['roomslug']
+                # print(f'Conversational Reply Mode: {cr}')
+                # print(f'roomslug: {roomslug}')
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    # pass a dictionary with custom key-value pairs
+                    {
+                        'type': 'conversational_reply_mode',  # will be used to call as a method
+                        'cr': cr,
+                        'roomslug': roomslug,
+                    }
+                )
+            
+            # Send HF on CR mode disble
+            if 'sendHfOnCrDisable' in data and data['sendHfOnCrDisable']=='Send HF on CR mode disble':
+                print("Sent socket signal to chatroom to send HF to customer end; since HDO has disabled the CR mode!")
+                user_identity = data['user_identity']
+                roomslug = data['roomslug']
+                # print(f'User Identity (Send HF on CR disabled): {user_identity}')
+                # print(f'roomslug: {roomslug}')
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    # pass a dictionary with custom key-value pairs
+                    {
+                        'type': 'send_hf_on_cr_disable',  # will be used to call as a method
+                        'user_identity': user_identity,
+                        'roomslug': roomslug,
+                    }
+                )
+
+            # HDO query mode
             if 'hifq' in data:
+                # hifq = human input field query
                 # print("HIFQ is sent to backend:", data['hifq'])
                 # print("Roomslug (hifq):", data['roomslug'])
                 hifq = data['hifq']
@@ -619,7 +654,7 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
         print(f'roomslug (mlr): {roomslug}')
 
         self.send(text_data=json.dumps({
-            'MultilineReplyMode': True,
+            'MultilineReplyMode': True,     # Basically, it's important in the frontend socket currently
             'mlr': mlr,
             'roomslug': roomslug,
         }))
@@ -636,7 +671,34 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
             'user_identity': user_identity,
             'roomslug': roomslug,
         }))
+    
+    # Conversational Reply Mode
+    def conversational_reply_mode(self, event):
+        cr = event['cr']
+        roomslug = event['roomslug']
+        print(f'conversational_reply (cr): {cr}')
+        print(f'roomslug (cr): {roomslug}')
 
+        self.send(text_data=json.dumps({
+            'ConversationalReplyMode': True,     # Basically, it's important in the frontend socket currently
+            'cr': cr,
+            'roomslug': roomslug,
+        }))
+    
+    # Send HF sending signal on CR mode disabled
+    def send_hf_on_cr_disable(self, event):
+        user_identity = event['user_identity']
+        roomslug = event['roomslug']
+        print(f'User identity (send_hf_on_cr_disable): {user_identity}')
+        print(f'roomslug (send_hf_on_cr_disable): {roomslug}')
+
+        self.send(text_data=json.dumps({
+            'sendHfOnCrDisable': True,
+            'user_identity': user_identity,
+            'roomslug': roomslug,
+        }))
+
+    # Query Reply Mode
     def query_reply_mode(self, event):
         hifq = event['hifq']
         roomslug = event['roomslug']
