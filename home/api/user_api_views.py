@@ -50,7 +50,7 @@ class UserDetailAPIChatbotSocket(APIView):
         user_profile_serializer = UserProfileSerailizer(user_profile_instance)
         print("user_profile_serializer: ", dict(user_profile_serializer.data))
         user_userProfile_combined = self.Merge(dict(user_serializer.data), dict(user_profile_serializer.data), dict(userChatbotSocket_serializer.data))
-
+        print("user_userProfile_combined: ", dict(user_userProfile_combined))
         return Response(user_userProfile_combined)
 
     def post(self, request, format=None):

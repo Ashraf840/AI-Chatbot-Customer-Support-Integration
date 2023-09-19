@@ -572,12 +572,12 @@
                   <div class="col d-flex flex-row-reverse">
                     <button
                       type="button"
-                      class="btn text-light mx-2 ticketDetailModal"
+                      class="btn bg-light text-dark mx-2 ticketDetailModal"
                       data-id="ISBN-001122"
                       onclick="dispTicketDetail(ticket_issue_oid='{{ tms_issue_by_oid }}', user_signin_token='{{ user_signing_token_tms }}')"
                       data-bs-toggle="modal"
                       data-bs-target="#ticketDetailModal"
-                      style="display: none; background: #344767"
+                      style="display: none;"
                     >
                       View Detail
                     </button>
@@ -1348,10 +1348,11 @@ Ref:  https://www.youtube.com/watch?v=ZVug65gW-fc&t=55s
 
               if (data.user_identity === "cso") {
                 // Send HF (in SLR mode) to customer if MLR & QUERY mode is off, REPLY mode is on. Basically the SLR (Single Line Reply Mode) is enabled here, HF is sent after every reply of the HDO
-                if (multiline_reply_mode === false &&
-                    conversational_reply_mode === false &&
-                    query_mode === false &&
-                    reply_mode === true) {
+                if (singleline_reply_mode===true &&
+                    multiline_reply_mode===false &&
+                    conversational_reply_mode===false &&
+                    query_mode===false &&
+                    reply_mode===true) {
                   // if the msg is sent from the HDO, the invoke the HF-generating-func which will sent HF to customer end
                   var chatHTML = `
                       <div class="d-flex flex-row justify-content-start mb-4">
