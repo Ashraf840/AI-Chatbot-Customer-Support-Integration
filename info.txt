@@ -1,0 +1,40 @@
+Conda Enviroment
+----------------
+Article Ref: 
+# [Main] https://kiwidamien.github.io/save-the-environment-with-conda-and-how-to-let-others-run-your-programs.html
+# https://www.machinelearningplus.com/deployment/conda-create-environment-and-everything-you-need-to-know-to-manage-conda-virtual-environment/
+
+Facing Error, follow this article below.
+https://django-mongodb-engine.readthedocs.io/en/latest/topics/setup.html
+
+[NB]: Initially, used conda enviroment name "pytorch_env" (optional).
+## Conda enviroment is required to install pytorch, torchvision libs.
+## PIP is required to install djongo, django-channels libs.
+
+- Primarily the project's environment is build upon an anaconda environment.
+- Thus to re-generate the conda environment, use the "environment.yaml" file.
+    - Activate the conda environment first.
+        conda activate <enviroment_name>
+    - First, create the enviroment.yaml file (Platform-safe).
+        conda env export > environment.yaml
+    - Next, re-create the conda enviroment using that file.
+        conda env create -f environment.yml
+- While inside the environment use the "requirements.txt" file to re-inject "mongodb" packages in this project enviroment.
+    pip install -r requirements.txt
+- Django channels is installed using "pip" while inside the conda virtual environment. 
+  Also install channel-redis using "pip".
+  Store that inside the "requirements.txt" file.
+    pip install channels
+    pip install daphne
+    pip freeze > requirements.txt
+
+NB: Daphne is required to run ASGI/channels in both localhost & in ptoduction. After installing channels & daphne, run the typical python command & observer the terminal log if that displays as following:
+
+    Django version 4.1, using settings 'schoolManagementSystem.settings'
+    Starting ASGI/Daphne version 4.0.0 development server at http://127.0.0.1:8080/
+    Quit the server with CTRL-BREAK.
+
+
+- Include "channels" & "daphne" in the "INSTALLED_APPS" section in the "settings.py" file.
+- Install redis inside docker & start with the required port.
+    docker run -it --name redis-container -d -p 6379:6379 redis

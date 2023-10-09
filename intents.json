@@ -1,0 +1,180 @@
+{
+    "intents": [
+        {
+            "tag": "greeting",
+            "input": [
+                "hello!",
+                "hellow!",
+                "hi",
+                "hi there",
+                "hey",
+                "hola",
+                "nice to meet you",
+                "pleased to meet you",
+                "anyone here?",
+                "am i speaking to a school staff?",
+                "am i speaking to a college staff?",
+                "hey there!",
+                "hey! how are you?"
+            ],
+            "responses": [
+                "Hi! Welcome to Dhaka Residential Model College.",
+                "Hello! How can I help you?",
+                "Welcome aboard! How may I help you?",
+                "Ahoy!!",
+                "Hi random person, what do you want?",
+                "Hello! I hope you are doing well.",
+                "Hello! Glad you showed up. How are you?"
+            ]
+        },
+        {
+            "tag": "goodbye",
+            "input": [
+                "bye!",
+                "adios",
+                "Thank you for the info",
+                "okay bye",
+                "bye bro",
+                "goodbye",
+                "see you later",
+                "i will catch you later",
+                "will contact you later"
+            ],
+            "responses": [
+                "Okay, Bye",
+                "Have a nice day",
+                "Adios",
+                "Goodbye",
+                "See you later",
+                "Nice conversation, bye",
+                "Pleased to serve you with information, bye",
+                "Okay, have a nice day",
+                "Take care",
+                "Okay, take care",
+                "We will meet soon!",
+                "Yeah sure, will talk to you later"
+            ]
+        },
+        {
+            "tag": "howami",
+            "input": [
+                "how are you?",
+                "I'm fine, how are you?",
+                "are you fine?",
+                "how are things going on?",
+                "is everything going okay?",
+                "how's everything?",
+                "are you okay?"
+            ],
+            "responses": [
+                "Yeah, I'm fine",
+                "Everythings going well",
+                "Doing good! Thanks for asking friend.",
+                "Things are great",
+                "Yeah fine, nothing much going on in life",
+                "I'm fine! Do you have any further query?",
+                "Everything's great.",
+                "I'm doing good! Although life is boring, need some adventure"
+            ]
+        },
+        {
+            "tag": "whoareyou",
+            "input": [
+                "who are you?",
+                "what are you?",
+                "what is your name?",
+                "are you a chatbot?",
+                "what can i call you?",
+                "your name",
+                "are you a bot?",
+                "who am I talking to?"
+            ],
+            "responses": [
+                "I am Razin and I'm a chatbot of Dhaka Residential Model College.",
+                "Razin at your service.",
+                "I am Razin and you could ask me about DRMC.",
+                "You can call me a TechBot and I am here to help you.",
+                "My name is Razin and I am here to answer you questions about DRMC"
+            ]
+        },
+        {
+            "tag": "whereareyou",
+            "input": [
+                "where are you from?",
+                "where do you live?",
+                "which country are you from?",
+                "which country are you from?",
+                "which place do you live in?",
+                "your location",
+                "where are you?"
+            ],
+            "responses": [
+                "I live near Dhaka Residential Model College at Asadgate, Dhaka.",
+                "I live in Bangladesh, but more technically I live in the cloud.",
+                "DRMC is my second home near my house."
+            ]
+        },
+        {
+            "tag": "howmanyclasses",
+            "input": [
+                "how many classes are there at this college?",
+                "how many classes are there at this school?",
+                "how many classes are there?",
+                "classes?"
+            ],
+            "responses": [
+                "12 Classes are avaialable at DRMC. From class 1 to 12.",
+                "DRMC has a class system form 1 to 12.",
+                "From class 1 to 12 are present at Dhaka Residential Model College"
+            ]
+        },
+        {
+            "tag": "whereisdrmc",
+            "input": [
+                "Where is Dhaka Residential Model College?",
+                "where is the location of this college?",
+                "location?",
+                "college location?",
+                "where is drmc?",
+                "where does the college situated?",
+                "is the college in dhaka?",
+                "tell me the location of your college"
+            ],
+            "responses": [
+                "It is near Blood Bank - Bangladesh Red Crescent Society",
+                "For precise location, please follow the google map list here: https://www.google.com/maps/place/Dhaka+Residential+Model+College/@23.7636302,90.3653745,16z/data=!4m5!3m4!1s0x3755c0a85362a885:0xe12a6608a04f276a!8m2!3d23.7654606!4d90.3688302"
+            ]
+        },
+        {
+            "tag": "whoisprincipal",
+            "input": [
+                "who is the principal of this college?",
+                "college principal?",
+                "principal?",
+                "who is in charge of this college?"
+            ],
+            "responses": [
+                "Brigadier General Kazi Shameem Farhad"
+            ]
+        },
+        {
+            "tag": "customersupport",
+            "input": [
+                "can I talk to a customer support officer?",
+                "can I talk to a real person?",
+                "can you connect me with a customer support agent?",
+                "customer support agent?",
+                "customer support?",
+                "any real person?",
+                "connect me with a real person?",
+                "connect me with a customer support agent?",
+                "can a talk to an agent?",
+                "any agent available?",
+                "is there any customer support agent available now?"
+            ],
+            "responses": [
+                "Sure, I'll connect you with an agent"
+            ]
+        }
+    ]
+}

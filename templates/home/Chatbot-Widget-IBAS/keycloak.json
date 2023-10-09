@@ -1,0 +1,8 @@
+{
+  "realm": "ChatBot",
+  "auth-server-url": "https://nlp.celloscope.net/keycloak/",
+  "ssl-required": "external",
+  "resource": "chat_web_ui",
+  "public-client": true,
+  "confidential-port": 0
+}

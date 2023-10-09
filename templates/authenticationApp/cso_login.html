@@ -1,0 +1,125 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+
+<head>
+	<title>{{ title }} | iBAS++</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900&display=swap" rel="stylesheet">
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<link rel="stylesheet" href="{% static 'css/authenticationApp/generic_style.css' %}">
+
+	<link rel="icon" type="image/png" href="{% static 'images/logo/ibas_logo.png' %}">
+
+	<!-- Form Validation Error -->
+    <link rel="stylesheet" href="{% static 'css/authenticationApp/form_validation_error.css' %}">
+
+</head>
+
+<body>
+	<section class="ftco-section">
+		<div class="container">
+			<div class="row text-center mb-4">
+				<div class="col">
+					<img src="{% static 'images/logo/ibas_logo.png' %}" class="navbar-brand-img" style="height:100px; width:100px" alt="main_logo">
+				</div>
+			</div>
+			<div class="row text-center">
+				<div class="col d-block">
+					<h2>INTEGRATED BUDGET & ACCOUNTING SYSTEM</h2>
+				</div>
+			</div>
+			<div class="row justify-content-center">
+				<div class="col-md-12 col-lg-10">
+					<div class="wrap d-md-flex">
+						<div class="text-wrap p-4 p-lg-5 text-center d-flex align-items-center order-md-last">
+							<div class="text w-100">
+								<h1>Login to iBAS++</h1>
+								<h3>Help Desk Login</h3>
+							</div>
+						</div>
+						<div class="login-wrap p-4 p-lg-5">
+							<div class="d-flex">
+								<div class="w-100">
+									<h3 class="mb-4 text-dark">Sign In</h3>
+								</div>
+								<div class="w-100">
+									<!-- <p class="social-media d-flex justify-content-end">
+										<a href="#"
+											class="social-icon d-flex align-items-center justify-content-center"><span
+												class="fa fa-facebook"></span></a>
+										<a href="#"
+											class="social-icon d-flex align-items-center justify-content-center"><span
+												class="fa fa-twitter"></span></a>
+									</p> -->
+								</div>
+							</div>
+							
+							<!-- Error Flash Msg -->
+							{% if messages %}
+                            	{% for msg in messages %}
+									<div id="errorDiv">
+										<div class="row m-0 p-0">
+											<div class="col-2" id="outer-holder">
+												<div class="outer" id="outer">
+													<div class="inner">
+													<label id="flash_msg_close_label">Close</label>
+												</div>
+												</div>
+											</div>
+											<div class="col d-flex flex-row" id="flash_msg_para_div">
+												<p id="flash_msg_para">{{ msg }}</p>
+											</div>
+										</div>
+									</div>
+								{% endfor %}
+							{% endif %}
+
+							<form action="#" method="POST" class="signin-form">
+								{% csrf_token %}
+								<div class="form-group mb-3">
+									<label class="label" for="email">Email</label>
+									<!-- <input type="text" class="form-control" id="email" placeholder="email" required> -->
+									{{ form.email }}
+								</div>
+								<div class="form-group mb-3">
+									<label class="label" for="password">Password</label>
+									<!-- <input type="password" class="form-control" id="password"  placeholder="Password" required> -->
+									{{ form.password }}
+								</div>
+								<div class="form-group">
+									<button type="submit" class="form-control btn btn-primary submit px-3">Sign
+										In</button>
+								</div>
+								<div class="form-group d-md-flex">
+									<!-- <div class="w-50 text-left">
+										<label class="checkbox-wrap checkbox-primary mb-0">Remember Me
+											<input type="checkbox" checked>
+											<span class="checkmark"></span>
+										</label>
+									</div> -->
+									<!-- <div class="w-50 text-md-right">
+										<a href="#">Forgot Password</a>
+									</div> -->
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<script src="{% static 'js/authenticationApp/cso_auth/jquery.min.js' %}"></script>
+	<script src="{% static 'js/authenticationApp/cso_auth/popper.js' %}"></script>
+	<script src="{% static 'js/authenticationApp/cso_auth/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/authenticationApp/cso_auth/main.js' %}"></script>
+	<script src="{% static 'js/authenticationApp/form_validation_error.js' %}"></script>
+
+</body>
+
+</html>
