@@ -349,7 +349,7 @@ class SupportDashboardConsumer(WebsocketConsumer):
         # call the deactive_user_online() func
         # Query of the HDO's user profile
         usr_detail = UserDetail(user_email=self.room_name)
-        usr_profile = usr_detail.user_profile_detail()
+        usr_profile = usr_detail.user_profile_detail(self.room_name)
         user_organization, user_location, user_district, user_division = usr_profile.user_organization, usr_profile.location, usr_profile.district, usr_profile.division
 
         async_to_sync(deactive_user_online(

@@ -188,35 +188,20 @@ class CustomerSupportRoom(View):
                 port="5432"
             )
             cursor = conn.cursor()
-            sql_query = f"SELECT type_name, (data::json)->>'text' FROM public.events WHERE sender_id='{csr_record.chatbot_socket_id}' AND type_name='user' OR type_name='bot';"
+            sql_query = f"SELECT type_name, (data::json)->>'text' FROM public.events WHERE sender_id='{csr_record.chatbot_socket_id}' AND type_name in ('user', 'bot');"
             cursor.execute(sql_query)
             results = cursor.fetchall()
             results = [(row[0], row[1][:-1]) for row in results]
+            self.context['chatbot_history'] = results
             conn.commit()
             cursor.close()
             conn.close()
-            repeat_counter, polished_results = 0, []
-
-            for row in results[11:]:
-                if repeat_counter <=3:
-                    if row[1]=="দুঃখিত, আপনার সমস্যাটি এই মুহুর্তে সমাধান করা সম্ভব হচ্ছে না, আমাদের প্রতিনিধি খুব শীঘ্রই বিষয়টি নিয়ে আপ্নার সাথে যোগাযোগ করবেন" or \
-                        row[1]=="আপনার সমস্যাটির শ্রেণী নির্বাচন করুনঃ" or \
-                            row[1]=="আপনার সমসস্যাটি আমাদের অবগত করার জন্য ধন্যবাদ, শীঘ্রই আমাদের প্রতিনিধি আপনার সাথে যোগাযোগ করবেন":
-                            repeat_counter+=1
-                            continue
-                if row[0]=="bot":
-                    # print("Left side:", row[1])
-                    polished_results.append(row)
-                if row[0]=="user":
-                    # print("Right side:", row[1])
-                    polished_results.append(row)
-            self.context['chatbot_history'] = polished_results
         except:
-            pass
+            self.context['chatbot_history'] = []
+
         messages = CSOVisitorMessage.objects.filter(room_slug=self.context['room_slug'])
         self.context['chat_messages'] = messages
         return render(request, self.template_name, context=self.context)
-
 
 
 def createCustomerSupportRequest(visitorSessionUUID=None, user_email=None):
