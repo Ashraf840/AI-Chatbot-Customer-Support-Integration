@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.base import ContentFile
 from datetime import datetime
-from speechbrain.pretrained import EncoderClassifier
+# from speechbrain.pretrained import EncoderClassifier
 
 
 @csrf_exempt
@@ -58,21 +58,21 @@ def transcribe(request):
     return JsonResponse({'transcription': text, 'confidence': confidence}, safe=False)
 
 
-def detect_language(file_path):
-    language_id = EncoderClassifier.from_hparams(source="speechbrain/lang-id-voxlingua107-ecapa", savedir="tmp")
+# def detect_language(file_path):
+#     language_id = EncoderClassifier.from_hparams(source="speechbrain/lang-id-voxlingua107-ecapa", savedir="tmp")
     
-    preprocessed = language_id.load_audio(file_path)
-    prediction =  language_id.classify_batch(preprocessed)
+#     preprocessed = language_id.load_audio(file_path)
+#     prediction =  language_id.classify_batch(preprocessed)
     
-    language_code = prediction[3]
-    print("language_code:", language_code)
-    language_name = language_code[0].split(":")[1].strip()
-    print("language_name:", language_name)
+#     language_code = prediction[3]
+#     print("language_code:", language_code)
+#     language_name = language_code[0].split(":")[1].strip()
+#     print("language_name:", language_name)
 
-    if language_name == 'Bengali':
-        return 'bn'
-    else:
-        return 'en'
+#     if language_name == 'Bengali':
+#         return 'bn'
+#     else:
+#         return 'en'
 
 
 
