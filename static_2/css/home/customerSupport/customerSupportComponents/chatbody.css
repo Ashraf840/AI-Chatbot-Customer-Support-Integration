@@ -1,0 +1,44 @@
+#chat-body-card-footer {
+    position: relative;
+}
+
+svg#mlr {
+    border: 0.1rem solid rgb(255, 255, 255, .5);
+    border-radius: 1rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-left: 1rem;
+    font-weight: 500;
+    box-shadow: 0 0 10px 3px #c1c1c1d1;
+    cursor: pointer;
+}
+
+svg#cr {
+    border: 0.1rem solid rgb(255, 255, 255, .5);
+    border-radius: 1rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-left: 1rem;
+    font-weight: 500;
+    box-shadow: 0 0 10px 3px #c1c1c1d1;
+    cursor: pointer;
+}
+
+.cr-display-none {
+    display: none;
+}
+
+.mlr-display-none {
+    display: none;
+}
+
+#hdo-input-field-query {
+    cursor: pointer;
+    color: #344767;
+    position: absolute;
+    right: 15rem;
+}
+
+.hifq-display-none {
+    display: none;
+}

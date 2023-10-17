@@ -20,7 +20,7 @@ function hideLoadingAnimation() {
 function showLoadingAnimation() {
     const loadingAnimation = '<div class="loadingAnimation"></div>';
     $(loadingAnimation).appendTo(".chats");
-    
+    $(loadingAnimation).appendTo("#form-control")
     $(".loadingAnimation").show();
     
     scrollToBottomOfResults();
@@ -39,9 +39,8 @@ function showLoading() {
     // Update the placeholder text in the textarea to "Speech processing..."
     $("#userInput").attr("placeholder", "Speech processing...");
 
-
     $(loadingAnimation).appendTo(".keypad").show("slow");
-
+    
     $(".usrInput").remove();
     scrollToBottomOfResults();
 }

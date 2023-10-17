@@ -15,14 +15,10 @@ navigator.mediaDevices.getUserMedia(constraints)
     let chunks = []
     recorder = new MediaRecorder(stream);
 
-
-
     recorder.ondataavailable = event => {
         // Collect all the chunks of the recording in an array.
         chunks.push(event.data);
     };
-
-
 
     recorder.onstop = event => {
         console.log("Recording stopped.")
@@ -80,17 +76,10 @@ navigator.mediaDevices.getUserMedia(constraints)
         });
     };
 
-
-
     recorder.onstart = event => {
         console.log("Recording started.");
         startButton.disabled = true;
-        // Stop recording when the time is up.
-        // setTimeout(function() { recorder.stop(); }, 5000);
     };
-
-
-    
     
 })
 .catch(function(err) {

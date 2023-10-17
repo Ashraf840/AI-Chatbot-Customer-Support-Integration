@@ -3,6 +3,8 @@ let recorder = null;
 const uploadURL = "http://127.0.0.1:8080/home/api/stt-model/transcribe/";
 // const uploadURL = "http://ibaschat.celloscope.net/home/api/stt-model/transcribe/";
 const startButton = document.getElementById("recordButton");
+const chat_msg_input = document.getElementById("chat-message-input");
+
 startButton.disabled = false;
 const userInput = `<textarea id="userInput" placeholder="Say something..." class="usrInput"></textarea>`
 
@@ -127,7 +129,6 @@ navigator.mediaDevices.getUserMedia(constraints)
             addUserInputField(event);
             appendToUserInputField(text);
             hideLoading();
-
             event.preventDefault();
             
             return false;

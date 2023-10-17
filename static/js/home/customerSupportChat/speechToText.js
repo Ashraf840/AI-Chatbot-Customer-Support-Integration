@@ -5,11 +5,10 @@ const uploadURL = "http://127.0.0.1:8080/home/api/stt-model/transcribe/";
 const startButton = document.getElementById("recordButton");
 // var startButton = document.querySelector("#chat-msg-mic-btn");
 const chat_msg_input = document.getElementById("chat-message-input");
-// const chat_msg_input = document.getElementById("userInput");
+const userInput = `<textarea id="userInput" placeholder="Say something..." class="usrInput"></textarea>`
+
 
 startButton.disabled = false;
-
-
 
 console.log("Customer support sppech-to-text:", startButton);
 
@@ -29,7 +28,7 @@ navigator.mediaDevices.getUserMedia(constraints)
 
 
     recorder.ondataavailable = event => {
-        // Collect all the chunks of the recording in an array.
+
         chunks.push(event.data);
     };
 
@@ -37,6 +36,8 @@ navigator.mediaDevices.getUserMedia(constraints)
 
     recorder.onstop = event => {
         console.log("Recording stopped.")
+        showLoading();
+        console.log("Recording stopped2.")
         // Create a blob with all the chunks of the recording.
         let blob = new Blob(chunks, { type: recorder.mimeType }); 
         chunks = [];
@@ -53,17 +54,28 @@ navigator.mediaDevices.getUserMedia(constraints)
             cache: "no-cache",
             body: formData
         })
-        .then(response => response.json())
+        // .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                console.log("response.ok: ",response.ok)
+                $(".ms-2").attr("placeholder", "Something wrong! Please try again...");
+                hideLoading();
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
         .then(result => {
             console.log("Transcribes response:", result.transcription);
             const text = result.transcription;
             console.log(" -- from server: " + text);
+            hideLoading();
             chat_msg_input.value = text;
         })
+
         .catch(err => {
+            $(".ms-2").attr("placeholder", "Something went wrong! Please try again...");
             console.error(err);
         });
-        
     };
 
 
@@ -71,8 +83,6 @@ navigator.mediaDevices.getUserMedia(constraints)
     recorder.onstart = event => {
         console.log("Recording started.");
         startButton.disabled = true;
-        // Stop recording when the time is up.
-        // setTimeout(function() { recorder.stop(); }, 5000);
     };
 
 
@@ -84,46 +94,8 @@ navigator.mediaDevices.getUserMedia(constraints)
 });
 
 
-
-
-
-// function sendTextForDemo(e) {
-//     const text = $(".usrInput").val();
-//     if (text === "" || $.trim(text) === "") {
-//         e.preventDefault();
-//         return false;
-//     }
-//     // destroy the existing chart
-//     if (typeof chatChart !== "undefined") {
-//         chatChart.destroy();
-//     }
-
-//     $(".chart-container").remove();
-//     if (typeof modalChart !== "undefined") {
-//         modalChart.destroy();
-//     }
-
-//     $(".suggestions").remove();
-//     $("#paginated_cards").remove();
-//     $(".quickReplies").remove();
-//     $(".usrInput").blur();
-//     $(".dropDownMsg").remove();
-//     setUserResponse(text);
-//     send(text);
-//     e.preventDefault();
-//     return false;
-// }
-
-
-
 $("#recordButton").unbind('click').click( (e) => {
 
-    // if ($(".usrInput").val() !== ""){
-    //     sendTextForDemo(e);
-    // }
-
-    // else {
-        // start recorder
         if (!startButton.disabled){
             recorder.start();
             // startButton.style.backgroundImage = 'linear-gradient(180deg, #ff2038 0%, #ffffff 100%)'
