@@ -3,6 +3,9 @@
 /**
  * scroll to the bottom of the chats after new message has been added to chat
  */
+var predicted;
+
+
 const converter = new showdown.Converter();
 function scrollToBottomOfResults() {
     const terminalResultsDiv = document.getElementById("chats");
@@ -91,6 +94,10 @@ function setBotResponse(response) {
                         }
                         // append the bot response on to the chat screen
                         $(botResponse).appendTo(".chats").hide().fadeIn(1000);
+                        if (predicted==1){
+                        
+                            addHumanFeedback();
+                        }
                     }
                 }
 
@@ -268,6 +275,7 @@ function send(message) {
         success(botResponse, status) {
             console.log("Response from Rasa: ", botResponse, "\nStatus: ", status);
             response_status = status
+            predicted = botResponse[0].predicted;
             console.log("response_status", response_status);
 
             // if user wants to restart the chat and clear the existing chat contents
@@ -406,6 +414,35 @@ function displayText(inputText){
     $(BotResponse).appendTo(".chats").hide().fadeIn(1000);
 }
 
+function addHumanFeedback(){
+    
+    const text = "Was it helpful?"
+
+    const HumanFeedbaclQuery = `<p class="botMsg" id="was-it-helpful"">${text}</p><div class="clearfix"></div>`;
+    const yesButton = `<button class="feedbackButton" onclick="getHumanFeedback('yes')">Yes</button>`;
+    const noButton = `<button class="feedbackButton" onclick="getHumanFeedback('no')">No</button><div class="clearfix"></div>`;
+
+    $(HumanFeedbaclQuery).appendTo(".chats").hide().fadeIn(1000);
+    $(yesButton).appendTo(".chats").hide().fadeIn(1000);
+    $(noButton).appendTo(".chats").hide().fadeIn(1000);
+}
+
+function getHumanFeedback(text){
+    humanFeedback = text;
+    if (text == 'yes'){
+        $(".feedbackButton").remove();
+        $("#was-it-helpful").remove();
+  
+    }
+    else {
+
+        $(".feedbackButton").remove();
+        $("#was-it-helpful").remove();
+        console.log("feedback text: ", text)
+
+    }
+}
+
 $(document).ready(() => { 
 
     const InitMessage = "Hi how can i help!";
@@ -434,6 +471,10 @@ $(document).ready(() => {
             $(".dropDownMsg").remove();
             setUserResponse(text);
             send(text);
+            // if (predicted==1){
+                        
+            //     addHumanFeedback();
+            // }
             e.preventDefault();
             return false;
         } 
@@ -465,6 +506,10 @@ $("#sendButton").on("click", (e) => {
     $(".dropDownMsg").remove();
     setUserResponse(text);
     send(text);
+    if (predicted==1){
+                        
+        addHumanFeedback();
+    }
     e.preventDefault();
     return false;
 });
