@@ -5226,7 +5226,7 @@ textarea.form-control-lg {
 
 .modal {
   position: fixed;
-  top: 0;
+  top: 26%;
   left: 0;
   z-index: 1060;
   display: none;
@@ -5235,6 +5235,11 @@ textarea.form-control-lg {
   overflow-x: hidden;
   overflow-y: auto;
   outline: 0;
+}
+
+#promptUserToConnectToHdoModal {
+  height: 30%;
+  width: 30%;
 }
 
 .modal-dialog {
@@ -5285,7 +5290,7 @@ textarea.form-control-lg {
   background-color: #fff;
   background-clip: padding-box;
   border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 0.3rem;
+  border-radius: 0.625rem;
   outline: 0;
 }
 

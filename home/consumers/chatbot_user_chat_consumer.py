@@ -2,6 +2,7 @@ from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 import json
 from ..models import UserChatbotSocket
+import requests
 
 
 
@@ -53,6 +54,40 @@ class ChatbotUserChatConsumer(WebsocketConsumer):
                     chatbot_socket_id=chatbot_socket_id,
                     registered_user_session_uuid=registered_user_session_uuid
                 ))
+        
+        if 'prompt_chatroom_create' in data:
+            print("Make a post request to 'chat_room_create_api_view' api! Reqire additional information!")
+            user_email = data['user_email']
+            chatbot_socket_id = data['chatbot_socket_id']
+            issuerOid = data['issuerOid']
+
+            user_organization = data['user_organization']
+            location = data['location']
+            district = data['district']
+            division = data['division']
+            # print(f"user_email; {user_email}; chatbot_socket_id: {chatbot_socket_id}; issuerOid: {issuerOid}\
+            #       user_organization; {user_organization}; location: {location}; district: {district}; division: {division}")
+
+            url = "http://127.0.0.1:8080/home/api/user-chatroom/socket/"
+            
+            payload = json.dumps({
+                "user_email": user_email,
+                "chatbot_socket_id": chatbot_socket_id,
+                "issuerOid": issuerOid,
+
+                "user_organization": user_organization,
+                "location": location,
+                "district": district,
+                "division": division,
+            })
+            headers = {
+            'Content-Type': 'application/json'
+            }
+            
+            requests.post(
+                url, payload,
+                headers= headers
+            )
         print("#"*50)
     
 
@@ -65,6 +100,35 @@ class ChatbotUserChatConsumer(WebsocketConsumer):
             'user_email': user_email,
             'chatbot_socket_id': chatbot_socket_id,
             'issuerOid': issuerOid,
+        }))
+    
+    def prompt_chatroom_create(self, event):
+        # print("consumer: prompt user to talk to an HDO")
+        user_email = event['user_email']
+        chatbot_socket_id = event['chatbot_socket_id']
+        issuerOid = event['issuerOid']
+        user_organization = event['user_organization']
+        location = event['location']
+        district = event['district']
+        division = event['division']
+        # print("user_email:", user_email)
+        # print("chatbot_socket_id:", chatbot_socket_id)
+        # print("issuerOid:", issuerOid)
+
+        # print("user_organization:", user_organization)
+        # print("location:", location)
+        # print("district:", district)
+        # print("division:", division)
+
+        self.send(text_data=json.dumps({
+            'prompt_chatroom_create': 'True',
+            'user_email': user_email,
+            'chatbot_socket_id': chatbot_socket_id,
+            'issuerOid': issuerOid,
+            'user_organization': user_organization,
+            'location': location,
+            'district': district,
+            'division': division,
         }))
 
     def disconnect(self, *args, **kwargs):

@@ -275,7 +275,8 @@ function send(message) {
         success(botResponse, status) {
             console.log("Response from Rasa: ", botResponse, "\nStatus: ", status);
             response_status = status
-            predicted = botResponse[0].predicted;
+            // predicted = botResponse[0].predicted;
+            predicted = 1;
             console.log("response_status", response_status);
 
             // if user wants to restart the chat and clear the existing chat contents
@@ -479,7 +480,7 @@ $(document).ready(() => {
             return false;
         } 
         return true; 
-    }); 
+    });
 }); 
 
 

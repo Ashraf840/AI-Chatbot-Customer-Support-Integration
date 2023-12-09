@@ -27,7 +27,7 @@
 
     <!-- Testing: If "home/Chatbot-Widget-IBAS/" dir gets appended in the git & github -->
     </head>
-    <body id="page-top" class="bg-dark">
+    <body id="page-top" class="bg-white">
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
             <div class="container">
@@ -434,6 +434,10 @@
             </div>
         </footer>
 
+
+        <!-- Prompt user to connect to Hdo confirmation modal -->
+        {% include 'home/Chatbot-Widget-IBAS/modals/promptUserToConnectToHdoConfirmationModal.html' %} 
+        
         {% comment %}
         <!-- Portfolio Modals-->
         <!-- Portfolio item 1 modal popup-->
@@ -1015,6 +1019,77 @@
 
                 supportReq(issuerOid=data.issuerOid);
             }
+            
+            if (data.prompt_chatroom_create) {
+                let user_email = data.user_email
+                let chatbot_socket_id = data.chatbot_socket_id
+                let issuerOid = data.issuerOid
+                
+                let user_organization = data.user_organization
+                let location = data.location
+                let district = data.district
+                let division = data.division
+                
+                if($('#promptUserToConnectToHdoModal').length){
+                    //let countDown_promptUserToConnectToHdoModal = 10;
+                    var countDown_promptUserToConnectToHdoModal = 10;
+                    let promptUserToConnectToHdoModalOKButton =
+                        document.querySelector(
+                            "#promptUserToConnectToHdoModalOKButton"
+                        );
+                    $("#promptUserToConnectToHdoModal").modal("show");
+
+
+                    if ($('.countDownSpan_promptUserToConnectToHdoInformation').length) {
+                        console.log(`Start countdown!`);
+
+
+                        let countDownSpan_promptUserToConnectToHdoInformation =
+                        document.getElementsByClassName(
+                            "countDownSpan_promptUserToConnectToHdoInformation"
+                        );
+
+                        setInterval(() => {
+                            countDown_promptUserToConnectToHdoModal -= 1;
+                            if (countDown_promptUserToConnectToHdoModal >= 0) {
+                                countDownSpan_promptUserToConnectToHdoInformation[0].innerHTML = `${countDown_promptUserToConnectToHdoModal}s`;
+                            }
+                            if (countDown_promptUserToConnectToHdoModal == 0) {
+                                $("#promptUserToConnectToHdoModal").modal("hide");
+                                countDownSpan_promptUserToConnectToHdoInformation[0].innerHTML = `10s`;
+                            }
+                        }, 1000);
+
+                        if (countDown_promptUserToConnectToHdoModal == 0) {
+                            promptUserToConnectToHdoModalOKButton.click();      // Changed it from "setTimeout" to here
+                        }
+
+                        setTimeout(() => {
+                            console.log(`Modal is closed after 10s`);
+                            countDown_promptUserToConnectToHdoModal = 10;
+                        }, 10000);
+
+                        promptUserToConnectToHdoModalOKButton.addEventListener(
+                            "click",
+                            () => {
+                                // console.log(`Send socket signal to backend to conntect to an HDO!`);
+                                ChatbotUserSocketID_socket.send(JSON.stringify({
+                                    'prompt_chatroom_create': true,
+                                    'user_email': user_email,
+                                    'chatbot_socket_id': chatbot_socket_id,
+                                    'issuerOid': issuerOid,
+                                    'user_organization': user_organization,
+                                    'location': location,
+                                    'district': district,
+                                    'division': division,
+                                }));
+                            }
+                        );
+                    }
+                }
+
+            }
+
         }
         ChatbotUserSocketID_socket.onclose = function (e) {
             console.log('Frontend Websocket: Connection Closed!');
