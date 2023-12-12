@@ -68,6 +68,7 @@ class ChatbotUserChatConsumer(WebsocketConsumer):
             # print(f"user_email; {user_email}; chatbot_socket_id: {chatbot_socket_id}; issuerOid: {issuerOid}\
             #       user_organization; {user_organization}; location: {location}; district: {district}; division: {division}")
 
+            # TODO: Required code refactoring; Move the post-request into a helper function
             url = "http://127.0.0.1:8080/home/api/user-chatroom/socket/"
             
             payload = json.dumps({
@@ -95,6 +96,7 @@ class ChatbotUserChatConsumer(WebsocketConsumer):
         user_email = event['user_email']
         chatbot_socket_id = event['chatbot_socket_id']
         issuerOid = event['issuerOid']
+        print("sending a signal to auto_create_chatroom")
         self.send(text_data=json.dumps({
             'auto_create_chatroom': 'True',
             'user_email': user_email,
@@ -103,7 +105,7 @@ class ChatbotUserChatConsumer(WebsocketConsumer):
         }))
     
     def prompt_chatroom_create(self, event):
-        # print("consumer: prompt user to talk to an HDO")
+        print("consumer: prompt user to talk to an HDO")
         user_email = event['user_email']
         chatbot_socket_id = event['chatbot_socket_id']
         issuerOid = event['issuerOid']

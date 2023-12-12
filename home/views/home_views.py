@@ -106,8 +106,10 @@ class CustomerSupportRoom(View):
                 self.context['common_cso_email'] = csoEmail
                 self.context['common_registered_user_email'] = registeredUserEmail
 
-                tms_issue_by_oid = conversations.issue_by_oid
-                self.context['tms_issue_by_oid'] = tms_issue_by_oid
+                # tms_issue_by_oid = conversations.issue_by_oid
+                self.context['tms_issue_by_oid'] = conversations.issue_by_oid
+                print("Ticket Issue OID (tms_issue_by_oid - cso):", conversations.issue_by_oid)
+
 
                 csr_record = CustomerSupportRequest.objects.get(room_slug=conversations.room_slug)
                 self.context['chatbot_socket_id'] = csr_record.chatbot_socket_id
@@ -150,8 +152,9 @@ class CustomerSupportRoom(View):
                 
                 csr_record = CustomerSupportRequest.objects.get(room_slug=conversations.room_slug)
                 cso_user_email = csr_record.assigned_cso
-                tms_issue_by_oid = csr_record.issue_by_oid
-                self.context['tms_issue_by_oid'] = tms_issue_by_oid
+                # tms_issue_by_oid = csr_record.issue_by_oid
+                self.context['tms_issue_by_oid'] = csr_record.issue_by_oid
+                print("Ticket Issue OID (tms_issue_by_oid - user):", csr_record.issue_by_oid)
                 self.context['chatbot_socket_id'] = csr_record.chatbot_socket_id
                 csoEmail = cso_user_email
                 registeredUserEmail = conversations.registered_user_email
@@ -242,6 +245,7 @@ class CustomerSupportReq(View):
             # chatbot_socket_id
             client_ip, room_slug, ticketIssuerOid, user_email, chatbotSocketId \
                 = request.POST['clientIP'], request.POST['roomSlug'], request.POST['ticketIssuerOid'], request.POST['user_email'], request.POST['chatbotSocketId']
+            print("Ticket Issue OID (CustomerSupportReq):", ticketIssuerOid)
             CustomerSupportRequest.objects.create(
                 client_ip=client_ip,
                 registered_user_email=user_email,

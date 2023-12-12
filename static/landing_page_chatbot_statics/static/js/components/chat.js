@@ -94,7 +94,7 @@ function setBotResponse(response) {
                         }
                         // append the bot response on to the chat screen
                         $(botResponse).appendTo(".chats").hide().fadeIn(1000);
-                        if (predicted==1){
+                        if (predicted==0){
                         
                             addHumanFeedback();
                         }
@@ -276,7 +276,7 @@ function send(message) {
             console.log("Response from Rasa: ", botResponse, "\nStatus: ", status);
             response_status = status
             // predicted = botResponse[0].predicted;
-            predicted = 1;
+            predicted = 0;
             console.log("response_status", response_status);
 
             // if user wants to restart the chat and clear the existing chat contents
@@ -417,15 +417,15 @@ function displayText(inputText){
 
 function addHumanFeedback(){
     
-    const text = "Was it helpful?"
+    // const text = "Was it helpful?"
 
-    const HumanFeedbaclQuery = `<p class="botMsg" id="was-it-helpful"">${text}</p><div class="clearfix"></div>`;
-    const yesButton = `<button class="feedbackButton" onclick="getHumanFeedback('yes')">Yes</button>`;
-    const noButton = `<button class="feedbackButton" onclick="getHumanFeedback('no')">No</button><div class="clearfix"></div>`;
+    // const HumanFeedbaclQuery = `<p class="botMsg" id="was-it-helpful"">${text}</p><div class="clearfix"></div>`;
+    // const yesButton = `<button class="feedbackButton" onclick="getHumanFeedback('yes')">Yes</button>`;
+    // const noButton = `<button class="feedbackButton" onclick="getHumanFeedback('no')">No</button><div class="clearfix"></div>`;
 
-    $(HumanFeedbaclQuery).appendTo(".chats").hide().fadeIn(1000);
-    $(yesButton).appendTo(".chats").hide().fadeIn(1000);
-    $(noButton).appendTo(".chats").hide().fadeIn(1000);
+    // $(HumanFeedbaclQuery).appendTo(".chats").hide().fadeIn(1000);
+    // $(yesButton).appendTo(".chats").hide().fadeIn(1000);
+    // $(noButton).appendTo(".chats").hide().fadeIn(1000);
 }
 
 function getHumanFeedback(text){
@@ -507,7 +507,7 @@ $("#sendButton").on("click", (e) => {
     $(".dropDownMsg").remove();
     setUserResponse(text);
     send(text);
-    if (predicted==1){
+    if (predicted==0){
                         
         addHumanFeedback();
     }

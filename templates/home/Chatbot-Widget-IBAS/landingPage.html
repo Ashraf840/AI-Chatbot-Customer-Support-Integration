@@ -1029,67 +1029,99 @@
                 let location = data.location
                 let district = data.district
                 let division = data.division
+                console.log(`Send socket signal to backend to create chatroom!`);
+                
                 
                 if($('#promptUserToConnectToHdoModal').length){
                     //let countDown_promptUserToConnectToHdoModal = 10;
-                    var countDown_promptUserToConnectToHdoModal = 10;
+                    
                     let promptUserToConnectToHdoModalOKButton =
                         document.querySelector(
                             "#promptUserToConnectToHdoModalOKButton"
                         );
+                    let promptUserToConnectToHdoModalCancelButton =
+                        document.querySelector(
+                            "#promptUserToConnectToHdoModalCancelButton"
+                        );
                     $("#promptUserToConnectToHdoModal").modal("show");
 
-
+                                        
                     if ($('.countDownSpan_promptUserToConnectToHdoInformation').length) {
                         console.log(`Start countdown!`);
-
-
+                        let countDown_promptUserToConnectToHdoModal = 11;
                         let countDownSpan_promptUserToConnectToHdoInformation =
-                        document.getElementsByClassName(
-                            "countDownSpan_promptUserToConnectToHdoInformation"
-                        );
+                            document.getElementsByClassName(
+                                "countDownSpan_promptUserToConnectToHdoInformation"
+                            );
 
-                        setInterval(() => {
+                        let setInterval_promptUserToConnectToHdoModal = setInterval(() => {
                             countDown_promptUserToConnectToHdoModal -= 1;
+                            //console.log(`Countdown:`, countDown_promptUserToConnectToHdoModal);
                             if (countDown_promptUserToConnectToHdoModal >= 0) {
+                                //console.log(`show CD-val in yes btn's innerHTML till CD-val equal to 0!`);
                                 countDownSpan_promptUserToConnectToHdoInformation[0].innerHTML = `${countDown_promptUserToConnectToHdoModal}s`;
                             }
+
                             if (countDown_promptUserToConnectToHdoModal == 0) {
+                                //console.log(`Hide the modal! Change yes btn's innerHTML value to 10s! Connect to HDO automatically!`);
                                 $("#promptUserToConnectToHdoModal").modal("hide");
                                 countDownSpan_promptUserToConnectToHdoInformation[0].innerHTML = `10s`;
+                                console.log(`Connect to an HDO automatically! Click the OK btn!`);
+                                promptUserToConnectToHdoModalOKButton.click();
                             }
                         }, 1000);
 
-                        if (countDown_promptUserToConnectToHdoModal == 0) {
-                            promptUserToConnectToHdoModalOKButton.click();      // Changed it from "setTimeout" to here
+                        let setTimeout_promptUserToConnectToHdoModal = setTimeout(() => {
+                            clearInterval(setInterval_promptUserToConnectToHdoModal);
+                            countDown_promptUserToConnectToHdoModal = 11;
+                            //console.log(`Clear countdown interval at 12th second!`);
+                            //console.log(`Countdown renewed value:`, countDown_promptUserToConnectToHdoModal);
+                        }, 12000);
+
+                        function handleOKButtonClick() {
+                            clearInterval(setInterval_promptUserToConnectToHdoModal);
+                            clearTimeout(setTimeout_promptUserToConnectToHdoModal);
+                            countDown_promptUserToConnectToHdoModal = 11;
+                            countDownSpan_promptUserToConnectToHdoInformation[0].innerHTML = `10s`;
+                            //console.log(`Countdown renewed value (yes btn):`, countDown_promptUserToConnectToHdoModal);
+                            console.log(`Connect to an HDO instantly!`);
+                            //console.log(`Interval & timeout are reset!`);
+                            promptUserToConnectToHdoModalOKButton.removeEventListener("click", handleOKButtonClick);
+                            promptUserToConnectToHdoModalCancelButton.removeEventListener("click", handleCancelButtonClick);
+                            ChatbotUserSocketID_socket.send(JSON.stringify({
+                                'prompt_chatroom_create': true,
+                                'user_email': user_email,
+                                'chatbot_socket_id': chatbot_socket_id,
+                                'issuerOid': issuerOid,
+                                'user_organization': user_organization,
+                                'location': location,
+                                'district': district,
+                                'division': division,
+                            }));
                         }
 
-                        setTimeout(() => {
-                            console.log(`Modal is closed after 10s`);
-                            countDown_promptUserToConnectToHdoModal = 10;
-                        }, 10000);
+                        promptUserToConnectToHdoModalOKButton.addEventListener("click", handleOKButtonClick);
 
-                        promptUserToConnectToHdoModalOKButton.addEventListener(
-                            "click",
-                            () => {
-                                // console.log(`Send socket signal to backend to conntect to an HDO!`);
-                                ChatbotUserSocketID_socket.send(JSON.stringify({
-                                    'prompt_chatroom_create': true,
-                                    'user_email': user_email,
-                                    'chatbot_socket_id': chatbot_socket_id,
-                                    'issuerOid': issuerOid,
-                                    'user_organization': user_organization,
-                                    'location': location,
-                                    'district': district,
-                                    'division': division,
-                                }));
-                            }
-                        );
+                        function handleCancelButtonClick() {
+                            clearInterval(setInterval_promptUserToConnectToHdoModal);
+                            clearTimeout(setTimeout_promptUserToConnectToHdoModal);
+                            countDown_promptUserToConnectToHdoModal = 11;
+                            countDownSpan_promptUserToConnectToHdoInformation[0].innerHTML = `10s`;
+                            //console.log(`Countdown renewed value (no btn):`, countDown_promptUserToConnectToHdoModal);
+                            //console.log(`Interval & timeout is reset!`);
+                            promptUserToConnectToHdoModalCancelButton.removeEventListener("click", handleCancelButtonClick);
+                            promptUserToConnectToHdoModalOKButton.removeEventListener("click", handleOKButtonClick);
+                        }
+
+                        promptUserToConnectToHdoModalCancelButton.addEventListener("click", handleCancelButtonClick);
+
+                        
+                        
+                        
                     }
                 }
 
             }
-
         }
         ChatbotUserSocketID_socket.onclose = function (e) {
             console.log('Frontend Websocket: Connection Closed!');
