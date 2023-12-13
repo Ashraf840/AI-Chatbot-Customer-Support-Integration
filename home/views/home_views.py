@@ -12,6 +12,7 @@ from channels.layers import get_channel_layer
 from django.contrib.auth.mixins import LoginRequiredMixin
 from asgiref.sync import async_to_sync
 from authenticationApp.models import User_Profile, User_signin_token_tms
+from home.utils.escapeSequence_checker import searcEscapeSequence
 
 
 today = date.today()
@@ -160,6 +161,8 @@ class CustomerSupportRoom(View):
                 registeredUserEmail = conversations.registered_user_email
                 self.context['common_cso_email'] = csoEmail
                 self.context['common_registered_user_email'] = registeredUserEmail
+                registeredUser_record = User.objects.get(email=registeredUserEmail)
+                self.context['registered_user_profile_pic'] = registeredUser_record.profile_pic
                 user_signing_token_tms = User_signin_token_tms.objects.get(user_email=csr_record.assigned_cso)
                 self.context['user_signing_token_tms'] = user_signing_token_tms.user_token
                 conversations.issue_by_oid=csr_record.issue_by_oid
@@ -194,7 +197,8 @@ class CustomerSupportRoom(View):
             sql_query = f"SELECT type_name, (data::json)->>'text' FROM public.events WHERE sender_id='{csr_record.chatbot_socket_id}' AND type_name in ('user', 'bot');"
             cursor.execute(sql_query)
             results = cursor.fetchall()
-            results = [(row[0], row[1][:-1]) for row in results]
+            # results = [(row[0], row[1][:-1]) for row in results]
+            reuslts = [(row[0], row[1][:-1]) if searcEscapeSequence(row[1]) else (row[0], row[1]) for row in results]
             self.context['chatbot_history'] = results
             conn.commit()
             cursor.close()
