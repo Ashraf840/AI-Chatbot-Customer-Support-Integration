@@ -7,7 +7,7 @@ app_name = "authenticationApp"
 
 urlpatterns = [
     # cso-auth
-    path("cso-auth/", include(('authenticationApp.urls.staff_auth.cso_auth_urls', 'app_name'), namespace="CsoAuth")),
+    path("hdo-auth/", include(('authenticationApp.urls.staff_auth.cso_auth_urls', 'app_name'), namespace="CsoAuth")),
     # Password-Reset (First Time Login)
     path("initial-login/password-reset/<str:email>/", prv.PasswordResetView.as_view(), name="PasswordResetView"),
     # user-auth
