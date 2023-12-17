@@ -626,7 +626,7 @@
         {% block js %}
         <!-- Miscellaneaous JS: Resolve, Unsolved, Transferred, Invalid button trigger -->
         <script>
-          
+
         </script>
 
         <script
@@ -638,6 +638,7 @@
         <script src="{% static 'js/home/customerSupportChat/speechToText.js' %}"></script>
         <script src="{% static 'js/home/customerSupportChat/botTyping.js' %}"></script>
         <script src="{% static 'js/miscellaneous/helper_func/get_cookies.js' %}"></script>
+        <script src="{% static 'js/miscellaneous/helper_func/random_string_generator.js' %}"></script>
 
         <!-- Skeleton loading effect: while fetching issue detail from test-tms server -->
         <script>
@@ -831,9 +832,13 @@
           console.log(`CSO email is not empty: ${cso_email !== ""}`);
           console.log(`Registered User (bool): ${reg_user}`);
 
-          function getHumanFeedback(feedback) {
+          function getHumanFeedback(feedback, fc_uid=null) {
             if (reg_user === "True") {
-              let feedbackContainer = document.getElementById("feedbackContainer");
+              //console.log(`Feedback:`, feedback);
+              //console.log(`feedback container uid:`, fc_uid);
+              //let feedbackContainer = document.getElementById("feedbackContainer");
+              let feedbackContainer = document.querySelector(`.feedbackContainer-${fc_uid}`);
+
 
               if (feedbackContainer !== null) {
                 console.log(`Sent hf signal to socket to remove the HF option from the chatbox!`);
@@ -841,10 +846,13 @@
                 ChatSupportSocket.send(
                   JSON.stringify({
                     feedback: feedback,
+                    fc_uid: fc_uid,
                     roomslug: roomSlug,
                   })
                 );
               }
+
+
             }
           }
 
@@ -915,26 +923,32 @@
 
           function hf_icon_thumbs_up_mouseover() {
             let hf_thumbs_up = document.getElementById("hf-thumbs-up");
-            hf_thumbs_up.classList.remove("fa-regular");
-            hf_thumbs_up.classList.add("fa-solid");
+            //hf_thumbs_up.classList.remove("fa-regular");
+            //hf_thumbs_up.classList.add("fa-solid");
+            //hf_thumbs_up.classList.add("hf-up-button-custom-css");
+            // TODO: WORK later on button design
           }
 
           function hf_icon_thumbs_up_mouseout() {
             let hf_thumbs_up = document.getElementById("hf-thumbs-up");
-            hf_thumbs_up.classList.remove("fa-solid");
-            hf_thumbs_up.classList.add("fa-regular");
+            //hf_thumbs_up.classList.remove("fa-solid");
+            //hf_thumbs_up.classList.add("fa-regular");
+            //hf_thumbs_up.classList.remove("hf-up-button-custom-css");
+            // TODO: WORK later on button design
           }
 
           function hf_icon_thumbs_down_mouseover() {
             let hf_thumbs_down = document.getElementById("hf-thumbs-down");
-            hf_thumbs_down.classList.remove("fa-regular");
-            hf_thumbs_down.classList.add("fa-solid");
+            //hf_thumbs_down.classList.remove("fa-regular");
+            //hf_thumbs_down.classList.add("fa-solid");
+            // TODO: WORK later on button design
           }
 
           function hf_icon_thumbs_down_mouseout() {
             let hf_thumbs_down = document.getElementById("hf-thumbs-down");
-            hf_thumbs_down.classList.remove("fa-solid");
-            hf_thumbs_down.classList.add("fa-regular");
+            //hf_thumbs_down.classList.remove("fa-solid");
+            //hf_thumbs_down.classList.add("fa-regular");
+            // TODO: WORK later on button design
           }
 
           const ChatSupportSocket = new WebSocket(ChatSupportURL);
@@ -1011,7 +1025,10 @@
             const cso_dashboard_url = document.querySelector("#cso-dashboard-url");
             const HF_TEXT = "Was it helpful?";
             var human_feedback_query = () => {
+              let feedbackContainerRandomString = generateRandomString(10);
+              //console.log(`Random String:${feedbackContainerRandomString}`);
               if (cso_email === "True" && reg_user === "False") {
+                //console.log(`Random string - HF gen (cso):`, feedbackContainerRandomString);
                 return `
                   <div id="feedbackContainer" class="container-fluid text-center d-none">
                     <div class="row"><p class="fw-bold">Was it helpful?</p></div>
@@ -1020,8 +1037,8 @@
                         <hr class="hf-hr">
                       </div>
                       <div class="col-2 row">
-                        <div class="col p-0"><i id="hf-thumbs-up" class="fa-regular fa-thumbs-up fa-xl" onmouseover="hf_icon_thumbs_up_mouseover()" onmouseout="hf_icon_thumbs_up_mouseout()" onclick="getHumanFeedback(feedback='yes')"></i></div>
-                        <div class="col p-0"><i id="hf-thumbs-down" class="fa-regular fa-thumbs-down fa-flip-horizontal fa-xl" onmouseover="hf_icon_thumbs_down_mouseover()" onmouseout="hf_icon_thumbs_down_mouseout()" onclick="getHumanFeedback(feedback='no')"></i></div>
+                        <div class="col p-0"><i class="fa-regular fa-thumbs-up fa-xl" onmouseover="hf_icon_thumbs_up_mouseover()" onmouseout="hf_icon_thumbs_up_mouseout()" onclick="getHumanFeedback(feedback='yes')"></i></div>
+                        <div class="col p-0"><i class="fa-regular fa-thumbs-down fa-flip-horizontal fa-xl" onmouseover="hf_icon_thumbs_down_mouseover()" onmouseout="hf_icon_thumbs_down_mouseout()" onclick="getHumanFeedback(feedback='no')"></i></div>
                       </div>
                       <div class="col">
                         <hr class="hf-hr">
@@ -1032,16 +1049,17 @@
               }
 
               if (reg_user === "True" && cso_email === "False") {
+                //console.log(`Random string - HF gen (user):`, feedbackContainerRandomString);
                 return `
-                  <div id="feedbackContainer" class="container-fluid text-center">
-                    <div class="row"><p class="fw-bold">Was it helpful?</p></div>
+                  <div id="feedbackContainer" class="container-fluid text-center feedbackContainer-${feedbackContainerRandomString}">
+                    <div class="row"><p class="fw-bold">Was it helpful - User?</p></div>
                     <div class="row">
                       <div class="col">
                         <hr class="hf-hr">
                       </div>
                       <div class="col-2 row">
-                        <div class="col p-0"><button id="hf-thumbs-up" type="button" class="btn text-white" style="background-color: #344767" onclick="getHumanFeedback(feedback='yes')">Yes</button></div>
-                        <div class="col p-0"><button id="hf-thumbs-down" type="button" class="btn text-white" style="background-color: #bb2d3b" onclick="getHumanFeedback(feedback='no')">No</button></div>
+                        <div class="col p-0"><button id="hf-thumbs-up" type="button" class="btn text-white" style="background-color: #344767" onmouseover="hf_icon_thumbs_up_mouseover()" onmouseout="hf_icon_thumbs_up_mouseout()" onclick="getHumanFeedback(feedback='yes', fc_uid='${feedbackContainerRandomString}')">Yes</button></div>
+                        <div class="col p-0"><button id="hf-thumbs-down" type="button" class="btn text-white" style="background-color: #bb2d3b" onmouseover="hf_icon_thumbs_down_mouseover()" onmouseout="hf_icon_thumbs_down_mouseout()" onclick="getHumanFeedback(feedback='no', fc_uid='${feedbackContainerRandomString}')">No</button></div>
                       </div>
                       <div class="col">
                         <hr class="hf-hr">
@@ -1310,15 +1328,21 @@
 
             if (data.feedback) {
               if (data.feedback === true) {
-                let feedbackContainer = document.getElementById("feedbackContainer");
+                //let feedbackContainer = document.getElementById("feedbackContainer");
+                let fc_uid = data.fc_uid
+                //console.log(`Remove feedback container:`, fc_uid)
+                //let feedbackContainer = document.querySelector(".feedbackContainer");
+                let feedbackContainer = document.querySelector(`.feedbackContainer-${fc_uid}`);
 
-                feedbackContainer.classList.add("hf-fade-out");
-
-                feedbackContainer.onanimationend = (e) => {
-                  if (e.target.classList.contains("hf-fade-out")) {
-                    feedbackContainer.remove();
-                  }
-                };
+                if (feedbackContainer !== null) {
+                  //console.log(`Feedback container to remove:`, feedbackContainer);
+                  feedbackContainer.classList.add("hf-fade-out");
+                  feedbackContainer.onanimationend = (e) => {
+                    if (e.target.classList.contains("hf-fade-out")) {
+                      feedbackContainer.remove();
+                    }
+                  };
+                }
                 
               }
             }
@@ -1329,7 +1353,10 @@
 
             if (data.sendHfOnMlrDisable) {
               if (reg_user==="True") {
-                var chatHTML = `
+                var chatHTML = `<div>${human_feedback_query()}</div>`;
+
+                
+                {% comment %} `
                   <div>
                     <div id="feedbackContainer" class="container-fluid text-center">
                       <div class="row"><p class="fw-bold">Was it helpful?</p></div>
@@ -1347,7 +1374,9 @@
                       </div>
                     </div>
                   </div>
-                `;
+                `; {% endcomment %}
+
+                
                 document.querySelector(".chat-messages-box").innerHTML += chatHTML;
                 divElement.scroll({
                   top: divElement.scrollHeight,
@@ -1364,7 +1393,10 @@
             if (data.sendHfOnCrDisable) {
               
               if (reg_user==="True") {
-                var chatHTML = `
+                var chatHTML = `<div>${human_feedback_query()}</div>`;
+                
+                
+                {% comment %} `
                   <div>
                     <div id="feedbackContainer" class="container-fluid text-center">
                       <div class="row"><p class="fw-bold">Was it helpful?</p></div>
@@ -1382,7 +1414,9 @@
                       </div>
                     </div>
                   </div>
-                `;
+                `; {% endcomment %}
+
+
                 document.querySelector(".chat-messages-box").innerHTML += chatHTML;
                 divElement.scroll({
                   top: divElement.scrollHeight, //scroll to the bottom of the element
@@ -1429,19 +1463,22 @@
             event.preventDefault();
           }
 
+          /*
+          # Should not provide null HF anymore beacuse of the user starts typing w/o giving any HF to the HDO's last reply. 
           function invokeNullHumanFeedback(event) {
             getHumanFeedback(feedback='null');
             return eventPreventDefault(event);
           }
+          */
 
           chat_msg_input_field.addEventListener("keypress", function (e) {
             let feedbackContainer = document.getElementById("feedbackContainer");
-            if (feedbackContainer !== null) {
-              getHumanFeedback(feedback='null');
-            }
+            //if (feedbackContainer !== null) {
+              //getHumanFeedback(feedback='null');
+            //}
 
             if (e.key === "Enter") {
-              invokeNullHumanFeedback(e);
+              //invokeNullHumanFeedback(e);
 
               chat_send_btn.click();
             }

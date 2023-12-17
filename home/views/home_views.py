@@ -65,6 +65,8 @@ class CustomerSupportRoom(View):
         'title': 'Help Desk Chatroom',
     }
 
+    # TODO: Require to Optimize this class view
+
     def get(self, request, *args, **kwargs):
         """
         Serves the CSO-visitor chat platform to both Customer Support Officer & The visitors.
@@ -107,10 +109,12 @@ class CustomerSupportRoom(View):
                 self.context['common_cso_email'] = csoEmail
                 self.context['common_registered_user_email'] = registeredUserEmail
 
+                cso_user_record = User.objects.get(email=csoEmail)
+                self.context['cso_user_profile_pic'] = cso_user_record.profile_pic
+
                 # tms_issue_by_oid = conversations.issue_by_oid
                 self.context['tms_issue_by_oid'] = conversations.issue_by_oid
                 print("Ticket Issue OID (tms_issue_by_oid - cso):", conversations.issue_by_oid)
-
 
                 csr_record = CustomerSupportRequest.objects.get(room_slug=conversations.room_slug)
                 self.context['chatbot_socket_id'] = csr_record.chatbot_socket_id

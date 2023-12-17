@@ -256,13 +256,16 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
 
             if 'feedback' in data:
                 feedback = data['feedback']
+                fc_uid = data['fc_uid']
                 roomslug = data['roomslug']
+                # print("Feedback container uid (backend):", fc_uid)
 
                 async_to_sync(self.channel_layer.group_send)(
                     self.room_group_name,
                     {
                         'type': 'human_feedback',
                         'feedback': feedback,
+                        'fc_uid': fc_uid,
                         'roomslug': roomslug,
                     }
                 )
@@ -387,7 +390,6 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
                 'CSOVisitorConvoInfo_isCancelled': CSOVisitorConvoInfo_isCancelled
             }))
 
-    
     def chat_convo_cancelled(self, event):
         print('\n', '-'*50)
         print('The chat conversation is cancelled by the user!')
@@ -427,6 +429,7 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
 
     def human_feedback(self, event):
         feedback = event['feedback']
+        fc_uid = event['fc_uid']
         roomslug = event['roomslug']
         print(f'feedback (human_feedback): {feedback}')
         print(f'roomslug (human_feedback): {roomslug}')
@@ -434,6 +437,7 @@ class CSOVisitorChatSuppportConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps({
             'feedback': True,
             'human_feedback': feedback,
+            'fc_uid': fc_uid,
             'roomslug': roomslug,
         }))
 
