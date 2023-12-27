@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>{{ title }} | iBAS++</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/png" href="{% static 'images/logo/ibas_logo.png' %}">
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
+        
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="{% static 'css/home/landing_page/styles.css' %}" rel="stylesheet" />
+        <!-- Chatbot CSS -->
+        <link rel="stylesheet" href="{% static 'css/home/chatbot/style.css' %}">
+    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+     
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/script.js' %}"></script>
+
+    </head>
+    <body id="page-top">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'homeApp:LangingPage' %}"><img src="{% static 'images/logo/ibas_logo.png' %}" alt="navbar-logo" style="width: 50px; height:50px"/>&nbsp;<span class="text-lowercase">i</span>BAS++</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    Menu
+                    <i class="fas fa-bars ms-1"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+                        <!-- <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#team">Team</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li> -->
+                        <li class="nav-item">
+                            <a class="dropdown-item text-danger fw-bold" 
+                                href="{% url 'authenticationApplication:UserAuth:UserLogoutView' %}">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Masthead-->
+        <!-- <header class="masthead" style="background-image: url({% static 'images/logo/masthead_bg_img.jpg' %})"> -->
+        <header class="masthead">
+            <div class="container">
+                <div class="masthead-subheading">iBAS++</div>
+                <div class="masthead-heading text-uppercase">INTEGRATED BUDGET & ACCOUNTING SYSTEM</div>
+		<div class="row">
+                    <div class="row"><h4>User Location Detail</h4></div>
+                    <div class="row"><p>Organization: <b>{{ user_organization }}</b></p></div>
+                    <div class="row"><p>Location: <b>{{ user_location }}</b></p></div>
+                    <div class="row"><p>District: <b>{{ user_district }}</b></p></div>
+                    <div class="row"><p>Division: <b>{{ user_division }}</b></p></div>
+                </div>
+            </div>
+        </header>
+        <!-- ------------------------------------------------------------ -->
+
+        <!-- Chatbot window -->
+        <!-- <div class="chatbox fixed-bottom">
+            <div class="chatbox__support">
+                <div class="chatbox__header">
+                    <div class="chatbox__image--header">
+                        <img src="https://img.icons8.com/color/48/000000/circled-user-female-skin-type-5--v1.png" alt="image">
+                    </div>
+                    <div class="chatbox__content--header">
+                        <h4 class="chatbox__heading--header">Chat support</h4>
+                        <p class="chatbox__description--header">Hi. I am a bot. How can I help you?</p>
+                    </div>
+                </div>
+                <div class="chatbox__messages">
+                    <div></div>
+                </div>
+                <div class="chatbox__footer">
+                    <input type="text" placeholder="Write a message...">
+                    <button class="chatbox__send--footer send__button">Send</button>
+                </div>
+            </div>
+            <div class="chatbox__button">
+                <button><img src="{% static 'images/home/chatbot/chatbox-icon.svg' %}" alt="chat-btn-img"/></button>
+            </div>
+        </div> -->
+        
+        <!-- ------------------------------------------------------------ -->
+        <!-- Services-->
+        <!-- <section class="page-section" id="services">
+            <div class="container">
+                <div class="text-center">
+                    <h2 class="section-heading text-uppercase">Services</h2>
+                    <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
+                </div>
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <span class="fa-stack fa-4x">
+                            <i class="fas fa-circle fa-stack-2x text-primary"></i>
+                            <i class="fas fa-shopping-cart fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <h4 class="my-3">E-Commerce</h4>
+                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="fa-stack fa-4x">
+                            <i class="fas fa-circle fa-stack-2x text-primary"></i>
+                            <i class="fas fa-laptop fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <h4 class="my-3">Responsive Design</h4>
+                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit. 
+                            <a href="{% url 'authenticationApplication:CsoAuth:CSOLoginPageView' %}"><b>CSO Login</b></a> <br>
+                            <a href="{% url 'staffApplication:CsoWorkload:CsoDashboard' %}"><b>CSO Dashboard</b></a> <br>
+                            <a href="{% url 'authenticationApplication:PasswordResetView' 'test1@gmail.com' %}"><b>User Password Reset (First time login)</b></a> 
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="fa-stack fa-4x">
+                            <i class="fas fa-circle fa-stack-2x text-primary"></i>
+                            <i class="fas fa-lock fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <h4 class="my-3">Web Security</h4>
+                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
+                    </div>
+                </div>
+            </div>
+        </section> -->
+        <!-- Portfolio Grid-->
+        <!-- <section class="page-section bg-light" id="portfolio">
+            <div class="container">
+                <div class="text-center">
+                    <h2 class="section-heading text-uppercase">Portfolio</h2>
+                    <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-sm-6 mb-4">
+                        <div class="portfolio-item">
+                            <a class="portfolio-link" data-bs-toggle="modal" href="#portfolioModal1">
+                                <div class="portfolio-hover">
+                                    <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                                </div>
+                                <img class="img-fluid" src="assets/img/portfolio/1.jpg" alt="..." />
+                            </a>
+                            <div class="portfolio-caption">
+                                <div class="portfolio-caption-heading">Threads</div>
+                                <div class="portfolio-caption-subheading text-muted">Illustration</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 mb-4">
+                        <div class="portfolio-item">
+                            <a class="portfolio-link" data-bs-toggle="modal" href="#portfolioModal2">
+                                <div class="portfolio-hover">
+                                    <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                                </div>
+                                <img class="img-fluid" src="assets/img/portfolio/2.jpg" alt="..." />
+                            </a>
+                            <div class="portfolio-caption">
+                                <div class="portfolio-caption-heading">Explore</div>
+                                <div class="portfolio-caption-subheading text-muted">Graphic Design</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 mb-4">
+                        <div class="portfolio-item">
+                            <a class="portfolio-link" data-bs-toggle="modal" href="#portfolioModal3">
+                                <div class="portfolio-hover">
+                                    <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                                </div>
+                                <img class="img-fluid" src="assets/img/portfolio/3.jpg" alt="..." />
+                            </a>
+                            <div class="portfolio-caption">
+                                <div class="portfolio-caption-heading">Finish</div>
+                                <div class="portfolio-caption-subheading text-muted">Identity</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 mb-4 mb-lg-0">
+                        <div class="portfolio-item">
+                            <a class="portfolio-link" data-bs-toggle="modal" href="#portfolioModal4">
+                                <div class="portfolio-hover">
+                                    <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                                </div>
+                                <img class="img-fluid" src="assets/img/portfolio/4.jpg" alt="..." />
+                            </a>
+                            <div class="portfolio-caption">
+                                <div class="portfolio-caption-heading">Lines</div>
+                                <div class="portfolio-caption-subheading text-muted">Branding</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 mb-4 mb-sm-0">
+                        <div class="portfolio-item">
+                            <a class="portfolio-link" data-bs-toggle="modal" href="#portfolioModal5">
+                                <div class="portfolio-hover">
+                                    <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                                </div>
+                                <img class="img-fluid" src="assets/img/portfolio/5.jpg" alt="..." />
+                            </a>
+                            <div class="portfolio-caption">
+                                <div class="portfolio-caption-heading">Southwest</div>
+                                <div class="portfolio-caption-subheading text-muted">Website Design</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6">
+                        <div class="portfolio-item">
+                            <a class="portfolio-link" data-bs-toggle="modal" href="#portfolioModal6">
+                                <div class="portfolio-hover">
+                                    <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                                </div>
+                                <img class="img-fluid" src="assets/img/portfolio/6.jpg" alt="..." />
+                            </a>
+                            <div class="portfolio-caption">
+                                <div class="portfolio-caption-heading">Window</div>
+                                <div class="portfolio-caption-subheading text-muted">Photography</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> -->
+        <!-- About-->
+        <!-- <section class="page-section" id="about">
+            <div class="container">
+                <div class="text-center">
+                    <h2 class="section-heading text-uppercase">About</h2>
+                    <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
+                </div>
+                <ul class="timeline">
+                    <li>
+                        <div class="timeline-image"><img class="rounded-circle img-fluid" src="assets/img/about/1.jpg" alt="..." /></div>
+                        <div class="timeline-panel">
+                            <div class="timeline-heading">
+                                <h4>2009-2011</h4>
+                                <h4 class="subheading">Our Humble Beginnings</h4>
+                            </div>
+                            <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div>
+                        </div>
+                    </li>
+                    <li class="timeline-inverted">
+                        <div class="timeline-image"><img class="rounded-circle img-fluid" src="assets/img/about/2.jpg" alt="..." /></div>
+                        <div class="timeline-panel">
+                            <div class="timeline-heading">
+                                <h4>March 2011</h4>
+                                <h4 class="subheading">An Agency is Born</h4>
+                            </div>
+                            <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="timeline-image"><img class="rounded-circle img-fluid" src="assets/img/about/3.jpg" alt="..." /></div>
+                        <div class="timeline-panel">
+                            <div class="timeline-heading">
+                                <h4>December 2015</h4>
+                                <h4 class="subheading">Transition to Full Service</h4>
+                            </div>
+                            <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div>
+                        </div>
+                    </li>
+                    <li class="timeline-inverted">
+                        <div class="timeline-image"><img class="rounded-circle img-fluid" src="assets/img/about/4.jpg" alt="..." /></div>
+                        <div class="timeline-panel">
+                            <div class="timeline-heading">
+                                <h4>July 2020</h4>
+                                <h4 class="subheading">Phase Two Expansion</h4>
+                            </div>
+                            <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div>
+                        </div>
+                    </li>
+                    <li class="timeline-inverted">
+                        <div class="timeline-image">
+                            <h4>
+                                Be Part
+                                <br />
+                                Of Our
+                                <br />
+                                Story!
+                            </h4>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section> -->
+        <!-- Team-->
+        <!-- <section class="page-section bg-light" id="team">
+            <div class="container">
+                <div class="text-center">
+                    <h2 class="section-heading text-uppercase">Our Amazing Team</h2>
+                    <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="team-member">
+                            <img class="mx-auto rounded-circle" src="assets/img/team/1.jpg" alt="..." />
+                            <h4>Parveen Anand</h4>
+                            <p class="text-muted">Lead Designer</p>
+                            <a class="btn btn-dark btn-social mx-2" href="#!"><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-dark btn-social mx-2" href="#!"><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-dark btn-social mx-2" href="#!"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="team-member">
+                            <img class="mx-auto rounded-circle" src="assets/img/team/2.jpg" alt="..." />
+                            <h4>Diana Petersen</h4>
+                            <p class="text-muted">Lead Marketer</p>
+                            <a class="btn btn-dark btn-social mx-2" href="#!"><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-dark btn-social mx-2" href="#!"><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-dark btn-social mx-2" href="#!"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="team-member">
+                            <img class="mx-auto rounded-circle" src="assets/img/team/3.jpg" alt="..." />
+                            <h4>Larry Parker</h4>
+                            <p class="text-muted">Lead Developer</p>
+                            <a class="btn btn-dark btn-social mx-2" href="#!"><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-dark btn-social mx-2" href="#!"><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-dark btn-social mx-2" href="#!"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8 mx-auto text-center"><p class="large text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut eaque, laboriosam veritatis, quos non quis ad perspiciatis, totam corporis ea, alias ut unde.</p></div>
+                </div>
+            </div>
+        </section> -->
+        <!-- Clients-->
+        <!-- <div class="py-5">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-3 col-sm-6 my-3">
+                        <a href="#!"><img class="img-fluid img-brand d-block mx-auto" src="assets/img/logos/microsoft.svg" alt="..." /></a>
+                    </div>
+                    <div class="col-md-3 col-sm-6 my-3">
+                        <a href="#!"><img class="img-fluid img-brand d-block mx-auto" src="assets/img/logos/google.svg" alt="..." /></a>
+                    </div>
+                    <div class="col-md-3 col-sm-6 my-3">
+                        <a href="#!"><img class="img-fluid img-brand d-block mx-auto" src="assets/img/logos/facebook.svg" alt="..." /></a>
+                    </div>
+                    <div class="col-md-3 col-sm-6 my-3">
+                        <a href="#!"><img class="img-fluid img-brand d-block mx-auto" src="assets/img/logos/ibm.svg" alt="..." /></a>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        <!-- Contact-->
+        <section class="page-section" id="contact">
+            <div class="container">
+                <!-- <div class="text-center">
+                    <h2 class="section-heading text-uppercase">Contact Us</h2>
+                    <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
+                </div>
+                <form id="contactForm" data-sb-form-api-token="API_TOKEN">
+                    <div class="row align-items-stretch mb-5">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input class="form-control" id="name" type="text" placeholder="Your Name *" data-sb-validations="required" />
+                                <div class="invalid-feedback" data-sb-feedback="name:required">A name is required.</div>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" id="email" type="email" placeholder="Your Email *" data-sb-validations="required,email" />
+                                <div class="invalid-feedback" data-sb-feedback="email:required">An email is required.</div>
+                                <div class="invalid-feedback" data-sb-feedback="email:email">Email is not valid.</div>
+                            </div>
+                            <div class="form-group mb-md-0">
+                                <input class="form-control" id="phone" type="tel" placeholder="Your Phone *" data-sb-validations="required" />
+                                <div class="invalid-feedback" data-sb-feedback="phone:required">A phone number is required.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-group-textarea mb-md-0">
+                                <textarea class="form-control" id="message" placeholder="Your Message *" data-sb-validations="required"></textarea>
+                                <div class="invalid-feedback" data-sb-feedback="message:required">A message is required.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-none" id="submitSuccessMessage">
+                        <div class="text-center text-white mb-3">
+                            <div class="fw-bolder">Form submission successful!</div>
+                            To activate this form, sign up at
+                            <br />
+                            <a href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>
+                        </div>
+                    </div>
+                    <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
+                    <div class="text-center"><button class="btn btn-primary btn-xl text-uppercase disabled" id="submitButton" type="submit">Send Message</button></div>
+                </form> -->
+
+                <!-- Client Support form (hidden) -->
+                <div class="col-md-4" hidden>
+                    <form action="{% url 'homeApplication:CustomerSupportRequest' %}" 
+                        method="POST" id="support-request-connection">
+                        {% csrf_token %}
+                        <input type="text" name="clientIP" id="clientIP" readonly="readonly" placeholder="clientIP">
+                        <input type="text" name="roomSlug" id="roomSlug" readonly="readonly" placeholder="roomSlug">
+			<input type="text" name="chatbotSocketId" id="chatbotSocketId" readonly="readonly" placeholder="chatbotSocketId">
+                        <input type="text" name="ticketIssuerOid" id="ticketIssuerOid" readonly="readonly" placeholder="ticketIssuerOid">
+                        {% if visitor_session_uuid %}
+                        <input type="text" name="visitorSessionUUID" id="visitorSessionUUID" value="{{ visitor_session_uuid }}" readonly="readonly" placeholder="visitorSessionUUID">
+                        {% endif %}
+                        {% if user_email_normalized %}
+                        <input type="text" name="user_email_normalized" id="user_email_normalized" value="{{ user_email_normalized }}" readonly="readonly" placeholder="user_email_normalized">
+			<input type="text" name="user_email" id="user_email" value="{{ user_email }}" readonly="readonly" placeholder="user_email">
+                        {% endif %}
+                        <button type="submit">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+        <!-- Footer-->
+        <footer class="footer py-4">
+            <div class="container">
+                <div class="row justify-content-md-center">
+                    <div class="col-lg-3 text-lg-start">Copyright &copy; 
+			<b><a href="http://www.doer.com.bd">Doer Services Ltd.</a></b>
+		    </div>
+                    <div class="col-lg-3 my-3 my-lg-0">
+                    </div>
+                    <div class="col-lg-3 text-lg-end">
+                        <a class="link-dark text-decoration-none me-3" href="#!">Privacy Policy</a>
+                        <a class="link-dark text-decoration-none" href="#!">Terms of Use</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+	<!-- Prompt user to connect to Hdo confirmation modal -->
+        {% include 'home/Chatbot-Widget-IBAS/modals/promptUserToConnectToHdoConfirmationModal.html' %}
+
+        {% comment %}
+        <!-- Portfolio Modals-->
+        <!-- Portfolio item 1 modal popup-->
+        <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <div class="modal-body">
+                                    <!-- Project details-->
+                                    <h2 class="text-uppercase">Project Name</h2>
+                                    <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
+                                    <img class="img-fluid d-block mx-auto" src="assets/img/portfolio/1.jpg" alt="..." />
+                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
+                                    <ul class="list-inline">
+                                        <li>
+                                            <strong>Client:</strong>
+                                            Threads
+                                        </li>
+                                        <li>
+                                            <strong>Category:</strong>
+                                            Illustration
+                                        </li>
+                                    </ul>
+                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                        <i class="fas fa-times me-1"></i>
+                                        Close Project
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Portfolio item 2 modal popup-->
+        <div class="portfolio-modal modal fade" id="portfolioModal2" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <div class="modal-body">
+                                    <!-- Project details-->
+                                    <h2 class="text-uppercase">Project Name</h2>
+                                    <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
+                                    <img class="img-fluid d-block mx-auto" src="assets/img/portfolio/2.jpg" alt="..." />
+                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
+                                    <ul class="list-inline">
+                                        <li>
+                                            <strong>Client:</strong>
+                                            Explore
+                                        </li>
+                                        <li>
+                                            <strong>Category:</strong>
+                                            Graphic Design
+                                        </li>
+                                    </ul>
+                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                        <i class="fas fa-times me-1"></i>
+                                        Close Project
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Portfolio item 3 modal popup-->
+        <div class="portfolio-modal modal fade" id="portfolioModal3" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <div class="modal-body">
+                                    <!-- Project details-->
+                                    <h2 class="text-uppercase">Project Name</h2>
+                                    <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
+                                    <img class="img-fluid d-block mx-auto" src="assets/img/portfolio/3.jpg" alt="..." />
+                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
+                                    <ul class="list-inline">
+                                        <li>
+                                            <strong>Client:</strong>
+                                            Finish
+                                        </li>
+                                        <li>
+                                            <strong>Category:</strong>
+                                            Identity
+                                        </li>
+                                    </ul>
+                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                        <i class="fas fa-times me-1"></i>
+                                        Close Project
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Portfolio item 4 modal popup-->
+        <div class="portfolio-modal modal fade" id="portfolioModal4" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <div class="modal-body">
+                                    <!-- Project details-->
+                                    <h2 class="text-uppercase">Project Name</h2>
+                                    <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
+                                    <img class="img-fluid d-block mx-auto" src="assets/img/portfolio/4.jpg" alt="..." />
+                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
+                                    <ul class="list-inline">
+                                        <li>
+                                            <strong>Client:</strong>
+                                            Lines
+                                        </li>
+                                        <li>
+                                            <strong>Category:</strong>
+                                            Branding
+                                        </li>
+                                    </ul>
+                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                        <i class="fas fa-times me-1"></i>
+                                        Close Project
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Portfolio item 5 modal popup-->
+        <div class="portfolio-modal modal fade" id="portfolioModal5" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <div class="modal-body">
+                                    <!-- Project details-->
+                                    <h2 class="text-uppercase">Project Name</h2>
+                                    <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
+                                    <img class="img-fluid d-block mx-auto" src="assets/img/portfolio/5.jpg" alt="..." />
+                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
+                                    <ul class="list-inline">
+                                        <li>
+                                            <strong>Client:</strong>
+                                            Southwest
+                                        </li>
+                                        <li>
+                                            <strong>Category:</strong>
+                                            Website Design 
+                                        </li>
+                                    </ul>
+                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                        <i class="fas fa-times me-1"></i>
+                                        Close Project
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Portfolio item 6 modal popup-->
+        <div class="portfolio-modal modal fade" id="portfolioModal6" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <div class="modal-body">
+                                    <!-- Project details-->
+                                    <h2 class="text-uppercase">Project Name</h2>
+                                    <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
+                                    <img class="img-fluid d-block mx-auto" src="assets/img/portfolio/6.jpg" alt="..." />
+                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
+                                    <ul class="list-inline">
+                                        <li>
+                                            <strong>Client:</strong>
+                                            Window
+                                        </li>
+                                        <li>
+                                            <strong>Category:</strong>
+                                            Photography
+                                        </li>
+                                    </ul>
+                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                        <i class="fas fa-times me-1"></i>
+                                        Close Project
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endcomment %}
+
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="{% static 'js/home/landing_page/scripts.js' %}"></script>
+        <!-- Jquery CDN (To get client IP address) -->
+        <script>
+            $.getJSON("https://api.ipify.org?format=json", function(data) {
+                // Setting text of element P with id gfg
+                $('input[name="clientIP"]').val(`${data.ip}`);
+            });
+        </script>
+
+        {% comment %}
+        <!-- Zubair Vai's Chatbot's JS file -->
+        <!-- <script src="{% static 'js/home/landing_page/index.js' %}"></script>
+        Chatbot JS
+        <script>
+            // const session_ID = require('./index.js')
+            
+            !(function () {
+              let e = document.createElement("script"),
+                t = document.head || document.getElementsByTagName("head")[0];
+              (e.src ="{% static 'js/home/landing_page/index.js' %}"),
+    
+                // Replace 1.x.x with the version that you want
+                (e.async = !0),
+                (e.onload = () => {
+                  setTimeout(function myStopFunction() {
+
+                    
+                    // Create a websocket to store user-email along with chatbot's socket-id in the db
+
+                    // User-chatbot websocket
+                    let user_email = `{{ user_email }}`;
+                    let registered_user_session_uuid = `{{ registered_user_session_uuid }}`;
+                    console.log(`User Email (backend channel-group will normalize the email-string):`, user_email);
+                    const url = `ws://${window.location.host}/ws/user-chatbot/socket/${user_email}/`;    // [PRODUCTION - working]construct the websocket url
+                    console.log(`User-Chatbot-Socket-Channel-URL: ${url}`);
+
+                    // WEBSOCKET OBJECT
+                    const ChatbotUserSocketID_socket = new WebSocket(url);
+                    // console.log(`Chatbot socket ID: ${socket_ID}`);
+
+                    // Open the websocket connection for the frontend
+                    ChatbotUserSocketID_socket.onopen = function (e) {
+                        console.log('Frontend Websocket: Connection Established!');
+                        ChatbotUserSocketID_socket.send(JSON.stringify({
+                            'ChatbotUserSocketStorage': 'ChatbotUserSocketStorage',
+                            'user_email': user_email,
+                            'chatbot_socket_id': socket_ID,
+                            'registered_user_session_uuid': registered_user_session_uuid
+                        }));
+                    }
+                    // socket receiver: Backend Frontend
+                    ChatbotUserSocketID_socket.onmessage = function (e) {
+                        // console.log(e.data);
+                        // console.log(JSON.parse(e.data));    // gets the json-resp-data sent from the backend-consumer-websocket
+                        const data = JSON.parse(e.data);
+                        console.log(`Something is sent fromt he backend channels`);
+                        if (data.auto_create_chatroom) {
+                            console.log(`Trigger the supportReq() function`);
+                            // console.log(`User email:`, data.user_email);
+                            // console.log(`Chatbot socket id:`, data.chatbot_socket_id);
+                            console.log(`Ticket Issuer Oid:`, data.issuerOid);
+                            supportReq(issuerOid=data.issuerOid);
+                        }
+                    }
+                    ChatbotUserSocketID_socket.onclose = function (e) {
+                        console.log('Frontend Websocket: Connection Closed!');
+                    }
+
+                    console.log("session id from", socket_ID);
+                    }, 1000);
+                  window.WebChat.default(
+                    {
+                      title: "iBAS++",
+                      initPayload: ['/greet_en'].join(''),
+                      customData: { language: "en", agentName: this.name },
+                      socketUrl: "http://localhost:5005",
+                      inputTextFieldHint: "Type a message",
+                      showMessageDate: true,
+                      displayUnreadCount: true
+                    },
+                    null
+                  );
+                }),
+                t.insertBefore(e, t.firstChild);
+            })();
+            
+            // Add this script to include the hidden input field
+            // const input = document.createElement("input");
+            // input.setAttribute("type", "hidden");
+            // input.setAttribute("id", "user_email");
+            // input.setAttribute("value", "{{ request.user.email }}");
+            // document.body.appendChild(input);
+        </script> -->
+        {% endcomment %}
+        
+        <!-- Zubair new bot UI -->
+        <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+    <meta content="utf-8" http-equiv="encoding" />
+
+    <!--Import Google Icon Font-->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Raleway:500&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato&display=swap"
+      rel="stylesheet"
+    />
+
+    <!--Import Font Awesome Icon Font-->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+      integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0="
+      crossorigin="anonymous"
+    />
+
+    <!--Import materialize.css-->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'landing_page_chatbot_statics/static/css/materialize.min.css' %}"
+    />
+
+    <!--Main css-->
+    <link rel="stylesheet" type="text/css" href="{% static 'landing_page_chatbot_statics/static/css/style.css' %}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/lib/keycloak.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/auth.js' %}"></script>
+  
+
+
+    <!-- <div class="container">
+	    <div class="bottomleft">
+		    <p style="font-family:'Arial'; color:white"> <b><em>celloscope</em> </b></p>
+		    <button id="speechToTextButton" onclick="getSpeechToText()">speech to text</button>
+	    </div> -->
+      <!-- <div class="right">
+        <button onclick="logOut()">LogOut</button>
+      </div> -->
+      <!-- Modal for rendering the charts, declare this if you want to render charts, 
+         else you remove the modal -->
+
+
+    
+
+
+    <!--bot profile-->
+    <div href="#" class="profile_div" id="profile_div">
+    <img class="imgProfile" src="{% static 'landing_page_chatbot_statics/static/img/botAvatar.png' %}" />
+    </div>
+
+    <!-- Bot pop-up intro -->
+    <!-- <div class="tap-target" data-target="profile_div">
+        <div class="tap-target-content">
+            <h5 class="white-text">Hey there👋</h5>
+            <p class="white-text">
+            I can answer your questions!
+            </p>
+        </div>
+    </div> -->
+
+    <!--JavaScript at end of body for optimized loading-->
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+    <script
+      type="text/javascript"
+      src="{% static 'landing_page_chatbot_statics/static/js/lib/materialize.min.js' %}"
+    ></script>
+    <script src="{% static 'landing_page_chatbot_statics/static/js/lib/uuid.min.js' %}"></script>
+    <!--Main Script -->
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/lib/showdown.min.js' %}"></script>
+    <!-- <script type="text/javascript" src="static/js/components/index.js"></script> -->
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/lib/showdown.min.js' %}"></script>
+    
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/index.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/chat.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/constants.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/cardsCarousel.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/botTyping.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/charts.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/collapsible.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/dropDown.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/location.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/pdfAttachment.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/quickReplies.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/suggestionButtons.js' %}"></script>
+
+    <!-- bot ui end -->
+
+    <script>
+        const csrf_token =  `{{ csrf_token }}`;
+        // console.log(csrf_token);
+        const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        
+        function generateString(length) {
+            let result = '';
+            const charactersLength = characters.length;
+            for ( let i = 0; i < length; i++ ) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+        }
+
+        // Create a webSocket function here.
+        function supportReq(issuerOid="Null") {
+            console.log(`WebSocket connection is about to create!`);
+            // Create & set a random room-slug (char-digits);
+            let room_slug = `cso-support-${generateString(8)}`;
+            console.log(`room slug: ${room_slug}`);
+            let room_slug_input = document.querySelector('#roomSlug');
+            room_slug_input.value = room_slug;
+            // Get the visitor's IP.
+            let client_ip = document.querySelector('#clientIP').value;
+            console.log(`client ip: ${client_ip}`);
+            // Set Ticket Issuer Oid
+            let ticketIssuerOid = document.querySelector('#ticketIssuerOid');
+            ticketIssuerOid.value = issuerOid;
+            let support_request = document.querySelector('#support-request-connection');
+            if (room_slug_input.value===null || room_slug_input.value==="" 
+                || client_ip.value===null || client_ip.value==="" ) {
+                    console.log(`value is empty!`);
+                    return;
+            } else {
+                console.log(`Submit the support request form!`);
+                support_request.submit();
+            }
+            // redirect the user to that spicific room with the random-room-name (websocket will be enabled in that page)
+        }
+    </script>
+
+    <!-- new chat window -->
+
+    <div class="widget">
+        <div style="border: 5px solid #302c78;text-align: center;background-color: #302c78;border-radius: 10px 10px 0px 0px;">
+        <p style="font-family: 'Roboto Mono', monospace;color:white"> <b>IBAS ChatBot++</b></p>
+            <!--Add the name of the bot here -->
+            <!--<span class="dropdown-trigger" href="#" data-target="dropdown1"> -->
+            <!--<i class="material-icons"> more_vert </i>-->
+            <!--</span>-->
+
+            <!-- Dropdown menu-->
+            <ul id="dropdown1" class="dropdown-content">
+                <li><a href="#" id="clear">Clear</a></li>
+                <li><a href="#" id="restart">Restart</a></li>
+                <li><a href="#" id="close">Close</a></li>
+            </ul>
+        </div>
+
+        <!--Chatbot contents goes here -->
+        <div class="chats" id="chats">
+            <div class="chatbox-navbar">
+                <div class="user-details">
+                    <!-- Chatbox content area -->
+                </div>
+              </div>
+            <div class="clearfix"></div>
+        </div>
+
+        <!--keypad for user to type the message -->
+        <div class="keypad">
+            <textarea
+            id="userInput"
+            placeholder="Say something..."
+            class="usrInput"
+            ></textarea>
+            
+            <div id="recordButton" aria-disabled="true">
+                <i id="microphone" class="fa fa-microphone" aria-hidden="true"></i>
+            </div>
+        </div>
+        </div>
+
+        <!--bot profile-->
+        <!-- <div class="profile_div" id="profile_div">
+        <img class="imgProfile" src="{% static 'landing_page_chatbot_statics/static/img/botAvatar.png' %}" />
+        </div> -->
+
+        <!-- Bot pop-up intro -->
+        <!-- <div class="tap-target" data-target="profile_div">
+        <div class="tap-target-content">
+            <h5 class="white-text">Hey there👋</h5>
+            <p class="white-text">
+            I can answer your questions!
+            </p>
+        </div>
+        </div> -->
+    </div>
+    
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/speechToText.js' %}"></script>
+    <!--JavaScript at end of body for optimized loading-->
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/lib/materialize.min.js' %}"></script>
+    <script src="{% static 'landing_page_chatbot_statics/static/js/lib/uuid.min.js' %}"></script>
+    <!--Main Script -->
+    <!-- <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/script.js' %}"></script> -->
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/lib/showdown.min.js' %}"></script>
+    <!-- <script type="text/javascript" src="Chatbot-Widget-IBAS/static/js/components/speechToText.js"></script> -->
+    <!-- <script type="text/javascript" src="Chatbot-Widget-IBAS/static/js/botwindow.js"></script> -->
+
+
+    <!-- Websocket -->
+    <script>
+        // const session_ID = require('./index.js')
+    
+        // Create a websocket to store user-email along with chatbot's socket-id in the db
+
+        // User-chatbot websocket
+        let user_email = `{{ user_email }}`;
+        let registered_user_session_uuid = `{{ registered_user_session_uuid }}`;
+        console.log(`registered user's session uuid (from backend):`, registered_user_session_uuid);
+        console.log(`User Email (backend channel-group will normalize the email-string):`, user_email);
+        const url = `ws://${window.location.host}/ws/user-chatbot/socket/${user_email}/`;    // [PRODUCTION - working]construct the websocket url
+        //const url = `ws://172.16.6.91/ws/user-chatbot/socket/${user_email}/`;    // [PRODUCTION - working]construct the websocket url
+        console.log(`User-Chatbot-Socket-Channel-URL: ${url}`);
+
+        // WEBSOCKET OBJECT
+        const ChatbotUserSocketID_socket = new WebSocket(url);
+        // console.log(`Chatbot socket ID:`, socket_ID);
+        console.log(`Chatbot sender ID:`, sender_id);
+
+        // Open the websocket connection for the frontend
+        ChatbotUserSocketID_socket.onopen = function (e) {
+            console.log('Frontend Websocket: Connection Established!');
+	    document.querySelector('#chatbotSocketId').value = sender_id;
+            ChatbotUserSocketID_socket.send(JSON.stringify({
+                'ChatbotUserSocketStorage': 'ChatbotUserSocketStorage',
+                'user_email': user_email,
+                // 'chatbot_socket_id': socket_ID,
+                'chatbot_socket_id': sender_id,
+                'registered_user_session_uuid': registered_user_session_uuid
+            }));
+        }
+        // socket receiver: Backend --> Frontend
+        ChatbotUserSocketID_socket.onmessage = function (e) {
+            // console.log(e.data);
+            // console.log(JSON.parse(e.data));    // gets the json-resp-data sent from the backend-consumer-websocket
+            const data = JSON.parse(e.data);
+            if (data.auto_create_chatroom) {
+                console.log(`Trigger the supportReq() function`);
+                // console.log(`User email:`, data.user_email);
+                // console.log(`Chatbot socket id:`, data.chatbot_socket_id);
+                console.log(`Ticket Issuer Oid:`, data.issuerOid);
+                supportReq(issuerOid=data.issuerOid);
+            }
+
+	    if (data.prompt_chatroom_create) {
+                let user_email = data.user_email
+                let chatbot_socket_id = data.chatbot_socket_id
+                let issuerOid = data.issuerOid
+                
+                let user_organization = data.user_organization
+                let location = data.location
+                let district = data.district
+                let division = data.division
+                
+                if($('#promptUserToConnectToHdoModal').length){
+                    let promptUserToConnectToHdoModalOKButton =
+                        document.querySelector(
+                            "#promptUserToConnectToHdoModalOKButton"
+                        );
+                    let promptUserToConnectToHdoModalCancelButton =
+                        document.querySelector(
+                            "#promptUserToConnectToHdoModalCancelButton"
+                        );
+                    $("#promptUserToConnectToHdoModal").modal("show");
+
+                                        
+                    if ($('.countDownSpan_promptUserToConnectToHdoInformation').length) {
+                        let countDown_promptUserToConnectToHdoModal = 11;
+                        let countDownSpan_promptUserToConnectToHdoInformation =
+                            document.getElementsByClassName(
+                                "countDownSpan_promptUserToConnectToHdoInformation"
+                            );
+
+                        let setInterval_promptUserToConnectToHdoModal = setInterval(() => {
+                            countDown_promptUserToConnectToHdoModal -= 1;
+                            if (countDown_promptUserToConnectToHdoModal >= 0) {
+                                countDownSpan_promptUserToConnectToHdoInformation[0].innerHTML = `${countDown_promptUserToConnectToHdoModal}s`;
+                            }
+
+                            if (countDown_promptUserToConnectToHdoModal == 0) {
+                                $("#promptUserToConnectToHdoModal").modal("hide");
+                                countDownSpan_promptUserToConnectToHdoInformation[0].innerHTML = `10s`;
+                                promptUserToConnectToHdoModalOKButton.click();
+                            }
+                        }, 1000);
+
+                        let setTimeout_promptUserToConnectToHdoModal = setTimeout(() => {
+                            clearInterval(setInterval_promptUserToConnectToHdoModal);
+                            countDown_promptUserToConnectToHdoModal = 11;
+                        }, 12000);
+
+                        function handleOKButtonClick() {
+                            clearInterval(setInterval_promptUserToConnectToHdoModal);
+                            clearTimeout(setTimeout_promptUserToConnectToHdoModal);
+                            countDown_promptUserToConnectToHdoModal = 11;
+                            countDownSpan_promptUserToConnectToHdoInformation[0].innerHTML = `10s`;
+                            promptUserToConnectToHdoModalOKButton.removeEventListener("click", handleOKButtonClick);
+                            promptUserToConnectToHdoModalCancelButton.removeEventListener("click", handleCancelButtonClick);
+                            ChatbotUserSocketID_socket.send(JSON.stringify({
+                                'prompt_chatroom_create': true,
+                                'user_email': user_email,
+                                'chatbot_socket_id': chatbot_socket_id,
+                                'issuerOid': issuerOid,
+                                'user_organization': user_organization,
+                                'location': location,
+                                'district': district,
+                                'division': division,
+                            }));
+                        }
+
+                        promptUserToConnectToHdoModalOKButton.addEventListener("click", handleOKButtonClick);
+
+                        function handleCancelButtonClick() {
+                            clearInterval(setInterval_promptUserToConnectToHdoModal);
+                            clearTimeout(setTimeout_promptUserToConnectToHdoModal);
+                            countDown_promptUserToConnectToHdoModal = 11;
+                            countDownSpan_promptUserToConnectToHdoInformation[0].innerHTML = `10s`;
+                            promptUserToConnectToHdoModalCancelButton.removeEventListener("click", handleCancelButtonClick);
+                            promptUserToConnectToHdoModalOKButton.removeEventListener("click", handleOKButtonClick);
+                        }
+
+                        promptUserToConnectToHdoModalCancelButton.addEventListener("click", handleCancelButtonClick);
+                    }
+                }
+
+            }
+        }
+
+
+
+
+
+        ChatbotUserSocketID_socket.onclose = function (e) {
+            console.log('Frontend Websocket: Connection Closed!');
+        }
+        
+        // Add this script to include the hidden input field
+        // const input = document.createElement("input");
+        // input.setAttribute("type", "hidden");
+        // input.setAttribute("id", "user_email");
+        // input.setAttribute("value", "{{ request.user.email }}");
+        // document.body.appendChild(input);
+    </script>
+
+
+    </body>
+</html>

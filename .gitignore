@@ -1,0 +1,8 @@
+env/
+env
+venv
+.idea
+__pycache__/
+db.sqlite3
+*.log
+templates/miscellaneous/
