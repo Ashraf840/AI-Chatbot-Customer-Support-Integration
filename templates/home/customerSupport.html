@@ -1016,7 +1016,7 @@
               if (cso_email === "True" && reg_user === "False") {
                 return `
                   <div id="feedbackContainer" class="container-fluid text-center d-none">
-                    <div class="row"><p class="fw-bold">Was it helpful?</p></div>
+                    <div class="row"><p class="fw-bold">${HF_TEXT}</p></div>
                     <div class="row">
                       <div class="col">
                         <hr class="hf-hr">
@@ -1036,7 +1036,7 @@
               if (reg_user === "True" && cso_email === "False") {
                 return `
                   <div id="feedbackContainer" class="container-fluid text-center feedbackContainer-${feedbackContainerRandomString}">
-                    <div class="row"><p class="fw-bold">Was it helpful?</p></div>
+                    <div class="row"><p class="fw-bold">${HF_TEXT}</p></div>
                     <div class="row">
                       <div class="col">
                         <hr class="hf-hr">
