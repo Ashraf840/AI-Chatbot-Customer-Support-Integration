@@ -1,0 +1,9 @@
+# Delete existing migrations
+find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+find . -path "*/migrations/*.pyc"  -delete
+
+# Delete the database
+rm db.sqlite3  # Replace with the actual database file if using a different database
+
+# Recreate migrations
+python manage.py makemigrations

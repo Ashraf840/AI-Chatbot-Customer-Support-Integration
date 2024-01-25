@@ -65,6 +65,7 @@ urlpatterns = [
     path("", include(('home.urls', 'app_name'), namespace="homeApplication")),
     path("auth/", include(('authenticationApp.urls.urls', 'app_name'), namespace="authenticationApplication")),
     path("staff/", include(('staffApp.urls.urls', 'app_name'), namespace="staffApplication")),
+    path('tada-portal/', include('tadaApp.urls')),
 ]
 
 # Media File URL Configuration (in the development stage)
