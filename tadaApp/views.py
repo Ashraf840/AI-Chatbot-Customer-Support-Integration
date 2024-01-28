@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.db import connection
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view
 
 @csrf_exempt
 def calculate_da(request):
@@ -84,3 +85,43 @@ def calculate_ta(request):
 
     else:
         return JsonResponse({'error': 'Invalid request method'})
+
+@csrf_exempt
+@api_view(['GET', 'POST'])
+def get_location_list(request):
+    if request.method == "GET":
+        try:
+            location_state = request.query_params.get('location_state', '')
+            language = request.query_params.get('language', '')
+            print('location state:', location_state, language)
+            if location_state == 'start_location' or location_state == 'end_location':
+                if language == 'en' or language == 'bn':
+                    with connection.cursor() as cursor:
+                        cursor.execute(f"SELECT {location_state}_id, {location_state}_name_{language} FROM distance_matrix")
+                        rows = cursor.fetchall()
+                        print("rows:", rows)
+                        location_list = [{f'{location_state}_id': row[0], f'{location_state}_name_{language}': row[1]} for row in rows]
+
+                    return JsonResponse({f'{location_state}s': location_list})
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)})
+# from django.http import JsonResponse
+# from django.db import connection
+
+# def get_start_locations(request):
+#     try:
+#         # Execute raw SQL query to retrieve distinct start locations
+#         with connection.cursor() as cursor:
+#             cursor.execute("SELECT DISTINCT start_location_id, start_location_name_en FROM distance_matrix")
+
+#             # Fetch all rows from the cursor
+#             rows = cursor.fetchall()
+
+#         # Format the rows into a list of dictionaries
+#         start_location_list = [{'start_location_id': row[0], 'start_location_name_en': row[1]} for row in rows]
+
+#         return JsonResponse({'start_locations': start_location_list})
+
+#     except Exception as e:
+#         return JsonResponse({'error': str(e)})
