@@ -566,7 +566,7 @@ $(document).ready(() => {
     $(".usrInput").on("keypress", (e) => { 
         const keyCode = e.keyCode || e.which; 
         var text = $("#userInput").val(); 
-	var text_trimmed = $("#userInput").val().trim();
+	    var text_trimmed = $("#userInput").val().trim();
         if (keyCode === 13 && text_trimmed!== "") 
         {
 

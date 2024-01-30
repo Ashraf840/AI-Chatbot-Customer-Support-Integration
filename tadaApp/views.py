@@ -43,13 +43,15 @@ def calculate_ta_da(request):
             v_end_location_id = data.get('v_end_location_id')
             pay_grade = data.get('pay_grade')
             transport_type = data.get('transport_type')
-
+            print('sth')
             with connection.cursor() as cursor:
+                print('sth2')
                 cursor.execute(
-                    "SELECT public.calculate_ta_da(%s, %s, %s, %s, %s, %s) as result",
+                    "SELECT public.get_ta_da(%s, %s, %s, %s, %s, %s) as result",
                     [start_date, end_date, v_start_location_id, v_end_location_id, pay_grade, transport_type]
                 )
                 result = cursor.fetchone()
+                print("result:",result)
 
             return JsonResponse({'result': result[0] if result else ''})
 
