@@ -1,0 +1,334 @@
+.cd__main {
+  display: block !important;
+  /* background: hsl(184, 96%, 18%) !important;
+  height: 35vh !important; */
+  /* min-height: 720px; */
+}
+.main-body {
+  position: relative;
+  margin: 0;
+  background: hsl(184, 96%, 18%) !important;
+  height: 25vh !important;
+  /* min-height: 720px; */
+}
+.offcanvas.offcanvas-start {
+  /* top: 80px !important; */
+  border-radius: 10px !important;
+}
+
+/* Profile Picture */
+.profile-pic {
+  display: inline-block;
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+.profile-pic img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+.profile-menu .dropdown-menu {
+  right: 0;
+  left: unset;
+}
+.profile-menu .fa-fw {
+  margin-right: 10px;
+}
+
+.toggle-change::after {
+  border-top: 0;
+  border-bottom: 0.3em solid;
+}
+.dropdown-menu[data-bs-popper] {
+  left: -50px !important;
+}
+.navbar-brand {
+  color: white !important;
+}
+.navbar-image {
+  background-color: white;
+  width: 8.5vh;
+  border-radius: 50px;
+}
+.nav-item {
+  padding: 0 20px;
+  float: left;
+  position: relative;
+}
+.nav-link :hover {
+  color: red !important;
+}
+.bell-icon {
+  display: flex;
+  align-items: center;
+  padding-right: 0;
+  color: white;
+  font-size: 18px;
+}
+.nav-item .active::after {
+  border-bottom: 3px solid #89e18b;
+  position: absolute;
+  content: " ";
+  bottom: 5px;
+  left: 0;
+  right: 0;
+}
+
+.nav-link {
+  font-size: 14px !important;
+  color: white !important;
+  padding: 0 8px !important;
+  &.active,
+  &.show {
+    color: #89e18b !important;
+  }
+}
+.sidebar-btn {
+  font-size: 25px !important;
+}
+.container-fluid {
+  margin: 10px 0 !important;
+}
+.container {
+  /* margin: 0 50px !important; */
+  margin: 0 auto !important;
+}
+.card {
+  width: 18rem;
+  margin-bottom: 20px;
+  padding: 20px 0;
+  border: none !important;
+}
+.side-bar-card {
+  width: 100%;
+  background-color: #f6f6f7 !important;
+  border: none !important;
+}
+.side-bar-card:last-child {
+  height: 59vh;
+}
+.card-image {
+  max-width: 100px;
+  border-radius: 50%;
+}
+.side-bar-card-image {
+  height: 100px;
+  margin: auto;
+  padding: 5px;
+}
+.text-body {
+  /* display: flex;
+  justify-content: center; */
+  text-align: center;
+  padding: 15px 0;
+}
+.card-text {
+  margin: 3px 0;
+  font-size: 14px;
+}
+.sidebar-icon {
+  color: #02555b;
+  font-size: 22px;
+}
+/* tables styles */
+.table-container {
+  height: 87vh;
+  padding: 25px 40px;
+  background-color: #f6f6f7 !important;
+  border-radius: 10px;
+}
+.table-wrapper {
+  overflow: auto;
+  padding: 1rem 2rem;
+}
+.feature-intro {
+  display: flex;
+  padding: 0 2rem;
+  justify-content: space-between;
+}
+.feature-intro-item .page-title {
+  font-size: 1.1rem;
+}
+.feature-intro-item .title {
+  font-size: 1rem;
+  color: #5f8a40;
+}
+.feature-intro-item .title span {
+  font-weight: 700;
+}
+.first-button {
+  background-color: #2d9596 !important;
+  --bs-btn-border-radius: 20px !important;
+}
+.second-button {
+  background-color: #28b4aa !important;
+  --bs-btn-border-radius: 20px !important;
+}
+.third-button {
+  background-color: #df5454 !important;
+  --bs-btn-border-radius: 20px !important;
+}
+.table {
+  overflow: scroll;
+}
+thead tr:first-child th {
+  border: 0px !important;
+}
+tbody tr {
+  vertical-align: middle;
+  border-collapse: collapse !important;
+  border-width: 0 0 2px 0 !important;
+  border: 5px !important;
+  border-color: #d2e9e9 !important;
+}
+.last-tr {
+  border-width: 0 0 15px 0 !important;
+}
+.table th {
+  padding-left: 50px !important;
+  background-color: #d2e9e9 !important;
+  font-weight: 500;
+  font-size: 0.8rem !important;
+}
+.table th:first-child {
+  border-radius: 10px 0 0 10px !important;
+  border-bottom: none !important;
+}
+.table th:last-child {
+  border-radius: 0 10px 10px 0 !important;
+  border-bottom: none;
+}
+.table td {
+  font-size: 0.8rem;
+  padding-left: 50px !important;
+  background-color: #f6f6f7 !important;
+}
+.table td:first-child {
+  border-radius: 10px 0 0 10px !important;
+}
+.table td:last-child {
+  border-radius: 0 10px 10px 0 !important;
+}
+td .btn {
+  width: 80px;
+  height: 25px !important;
+  color: white !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center;
+  font-size: 0.8rem !important;
+}
+.ticket-view-modal {
+  height: 460px;
+  overflow: auto;
+}
+.modal-header {
+  justify-content: center !important;
+}
+.ticket-view-modal {
+  --bs-modal-width: 120vh !important;
+}
+.ticket-modal-logo {
+  position: absolute;
+  top: 4.5vh;
+}
+.issue-details-button {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 5rem;
+  height: 4vh;
+  font-size: 0.8rem;
+}
+
+/* Modal View Details classes */
+
+.field-wrapper {
+  height: 10vh;
+}
+.field-wrapper p {
+  font-size: 14px;
+  color: #000;
+  margin: 2px 0px 2px 0px;
+}
+
+.field-label {
+  display: flex;
+  width: 180px;
+  text-align: left;
+}
+.field-label p {
+  font-size: 0.1rem;
+  color: #6c7169;
+}
+
+.field-divider {
+  width: 20px;
+}
+
+.field-value {
+  width: calc(100% - 210px);
+  text-align: left;
+}
+.field-value p {
+  color: #246c71;
+  margin: 0;
+}
+
+@media only screen and (max-width: 990px) {
+  .nav-item .active::after {
+    border-bottom: 2px solid #89e18b;
+    bottom: 0;
+  }
+  .sidebar {
+    display: none;
+  }
+  .ticket-modal-logo {
+    top: 3.5vh;
+  }
+  .ticket-view-modal {
+    --bs-modal-width: 80vh !important;
+    /* height: auto !important; */
+  }
+  .table-container {
+    padding: 20px 20px;
+  }
+}
+@media only screen and (min-width: 990px) {
+  .sidebar-btn {
+    display: none !important;
+  }
+}
+@media only screen and (min-width: 1400px) {
+  .container {
+    min-width: 95% !important;
+  }
+}
+@media only screen and (max-width: 500px) {
+  .nav-title {
+    font-size: 16px !important;
+  }
+  .navbar-image {
+    width: 5.5vh;
+  }
+  .table-wrapper {
+    padding: 1rem 0.5rem;
+  }
+  .feature-intro {
+    padding: 0 0.5rem;
+  }
+}
+@media only screen and (max-width: 400px) {
+  .nav-title {
+    font-size: 14px !important;
+  }
+  .feature-intro-item .page-title {
+    font-size: 0.9rem;
+  }
+  .feature-intro-item .title {
+    font-size: 0.8rem;
+  }
+}
