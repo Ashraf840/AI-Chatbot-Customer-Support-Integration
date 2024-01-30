@@ -99,7 +99,7 @@ def get_location_list(request):
             if location_state == 'start_location' or location_state == 'end_location':
                 if language == 'en' or language == 'bn':
                     with connection.cursor() as cursor:
-                        cursor.execute(f"SELECT {location_state}_id, {location_state}_name_{language} FROM distance_matrix")
+                        cursor.execute(f"SELECT DISTINCT {location_state}_id, {location_state}_name_{language} FROM distance_matrix")
                         rows = cursor.fetchall()
                         print("rows:", rows)
                         location_list = [{f'{location_state}_id': row[0], f'{location_state}_name_{language}': row[1]} for row in rows]
