@@ -22,6 +22,8 @@
     <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
      
+        <link rel="stylesheet" href="{% static 'css/home/landing_page/tada_style.css' %}">
+        <link rel="stylesheet" href="{% static 'css/home/landing_page/static_calendar.css' %}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/script.js' %}"></script>
 
@@ -654,6 +656,13 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
         <script src="{% static 'js/home/landing_page/scripts.js' %}"></script>
+
+        <script src="{% static 'js/home/landing_page/ta-da/ta-da.js' %}"></script>
+        <script src="{% static 'js/home/landing_page/ta-da/components/general-functions.js' %}"></script>
+        <script src="{% static 'js/home/landing_page/ta-da/components/daily-allowance.js' %}"></script>
+        <script src="{% static 'js/home/landing_page/ta-da/components/travel-allowance.js' %}"></script>
+        <script src="{% static 'js/home/landing_page/ta-da/components/travel-daily-allowance.js' %}"></script>
+        
         <!-- Jquery CDN (To get client IP address) -->
         <script>
             $.getJSON("https://api.ipify.org?format=json", function(data) {
