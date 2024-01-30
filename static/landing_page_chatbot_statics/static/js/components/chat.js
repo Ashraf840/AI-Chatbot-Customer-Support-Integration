@@ -282,6 +282,7 @@ function send(message) {
                 // customActionTrigger();
                 return;
             }
+            TaDaOptionChecker(botResponse[0].text)
             setBotResponse(botResponse);
         },
         error(xhr, textStatus) {

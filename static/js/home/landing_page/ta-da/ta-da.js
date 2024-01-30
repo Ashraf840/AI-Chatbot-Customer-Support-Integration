@@ -11,18 +11,18 @@ inputField.addEventListener("keypress", function(event) {
 });
 
 function TaDaOptionChecker(inputValue) {
-    if (inputValue === "ta"
-        || inputValue === "da"
-        || inputValue === "tada") {
+    if (inputValue === "travel_allowance"
+        || inputValue === "daily_allowance"
+        || inputValue === "travel_and_daily_allowance") {
         document.querySelector("#userInput").disabled = true;
         switch (inputValue) {
-            case 'ta':
+            case 'travel_allowance':
                 TavelAllowance('ta');
                 break;
-            case 'da':
+            case 'daily_allowance':
                 DailyAllowance('da');
                 break;
-            case 'tada':
+            case 'travel_and_daily_allowance':
                 TavelDailyAllowance('tada');
                 break;
             default:
