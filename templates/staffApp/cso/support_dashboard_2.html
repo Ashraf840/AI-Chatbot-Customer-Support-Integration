@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+{% extends 'base/staffApp_base.html' %}
+{% load static %}
+
+<!-- Title -->
+{% block title %} {{ title }} | iBAS++ {% endblock %}
+
+<!-- Content Body -->
+{% block content %}
+<div class="container-fluid">
+    <div class="row d-flex justify-content-center">
+        <div class="col">
+            <h2>Support Request List | iBAS++ </h2>
+        </div>
+    </div>
+
+    <div class="row d-flex justify-content-center mt-4">
+        <div class="col">
+            <div class="row mt-4">
+                <h4 class="ps-4">Help Desk Officer Name: {{ request.user.first_name }} {{ request.user.last_name }} </h4>
+            </div>
+        </div>
+        <div class="col">
+            <div class="row mt-4">
+                <h4 class="text-end pe-4">Current Request(s): 
+                    <span id="support_req_nums">{{ support_req_nums }}</span>
+                </h4>
+            </div>
+        </div>
+
+	<div class="row mt-4">
+            <div class="col"><p>Organization: <b>{{ user_organization }}</b></p></div>
+            <div class="col"><p>Location: <b>{{ user_location }}</b></p></div>
+            <div class="col"><p>District: <b>{{ user_district }}</b></p></div>
+            <div class="col"><p>Division: <b>{{ user_division }}</b></p></div>
+        </div>
+    </div>
+
+
+    <!-- Chat Support Request List -->
+    <div class="table-responsive" style="margin-top: 1.3rem;">
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col" class="text-center">#</th>
+                    <th scope="col" class="text-center">Client IP</th>
+                    <th scope="col" class="text-center">Registered User Email</th>
+                    <th scope="col" class="text-center">Room Slug</th>
+                    <th scope="col" class="text-center">Enter Chat</th>
+                    <th scope="col" class="text-center">View Ticket</th>
+                    <th scope="col" class="text-center">Clear Request</th>
+                </tr>
+            </thead>
+            <tbody id="tbody">
+                {% for csr in customer_support_requests %}
+                <tr id="Row_msg_req_{{ csr.room_slug }}">
+                    <th scope="row" class="text-center">{{ forloop.counter }}</th>
+                    <td class="text-center">{{ csr.client_ip }}</td>
+                    <td class="text-center">{{ csr.registered_user_email }}</td>
+                    <td class="text-center">{{ csr.room_slug }}</td>
+                    <td class="text-center">
+                        <a href="{% url 'homeApplication:CustomerSupportRoom' csr.room_slug %}"
+                            class="btn btn-dark btn-xl px-4" target="_blank">
+                            Enter
+                        </a>
+                    </td>
+                    <!-- View issue ticket by fetching the API -->
+                    <td class="text-center">
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-secondary" data-id="ISBN-001122"
+                            onclick="disp(msg_id='{{ csr.room_slug }}', ticket_issue_oid='{{ csr.issue_by_oid }}')"
+                            data-bs-toggle="modal" data-bs-target="#ticketDetailModal">
+                            Ticket
+                        </button>
+                    </td>
+                    <!-- Clear message request -->
+                    <td class="text-center">
+                        <form method="POST" id="msg-req-clear-form-{{ csr.room_slug }}" hidden>
+                            {% csrf_token %}
+                            <input type="text" name="cso_email" value="{{ request.user.email }}">
+                            <input type="text" name="room_slug" value="{{ csr.room_slug }}">
+                        </form>
+                        <!-- Button trigger clear-msg-req-form -->
+                        <button type="button" class="btn btn-danger"
+                            onclick="remove_msg_req(room_slug='{{ csr.room_slug }}')">
+                            Clear
+                        </button>
+                    </td>
+                </tr>
+                <!-- using "empty" block solution: https://stackoverflow.com/a/902786 -->
+                {% empty %}
+                <tr>
+                    <th scope="row" colspan="8" class="text-center"><b>No Support Request :)</b></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
+<!-- View Ticket Detail Modal -->
+<div class="modal fade" id="ticketDetailModal" tabindex="-1" aria-labelledby="ticketDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-2" id="ticketDetailModalLabel">Issue Detail</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row py-2">
+                        <div class="col text-start">
+                            <div class="row">
+                                <p>
+                                    <div class="col-2"><b class="fs-4">Issue ID:</b></div>
+                                    <div class="col text-start fs-4" style="margin-left: -2rem;"><span id="span_issue_id">-</span></div>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row py-2">
+                        <div class="col text-start">
+                            <div class="row">
+                                <p>
+                                    <div class="col-3"><b class="fs-5">Issue:</b></div>
+                                    <div class="col text-start fs-5 ms-3"><span id="span_issue">-</span></div>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col text-start">
+                            <div class="row">
+                                <p>
+                                    <div class="col-3"><b class="fs-5">Project:</b></div>
+                                    <div class="col text-start fs-5 ms-3"><span id="span_project">-</span></div>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row py-2">
+                        <div class="col text-start">
+                            <div class="row">
+                                <p>
+                                    <div class="col-3"><b class="fs-5">Status:</b></div>
+                                    <div class="col text-start fs-5 ms-3"><span id="span_status">-</span></div>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col text-start">
+                            <div class="row">
+                                <p>
+                                    <div class="col-3"><b class="fs-5">Name:</b></div>
+                                    <div class="col text-start fs-5 ms-3"><span id="span_issuer_name">-</span></div>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row py-2">
+                        <div class="col text-start">
+                            <div class="row">
+                                <p>
+                                    <div class="col-3"><b class="fs-5">Phone:</b></div>
+                                    <div class="col text-start fs-5 ms-3"><span id="span_issuer_mobile_number">-</span></div>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col text-start">
+                            <div class="row">
+                                <p>
+                                    <div class="col-3"><b class="fs-5">Email:</b></div>
+                                    <div class="col text-start fs-5 ms-3"><span id="span_issuer_email">-</span></div>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row py-2">
+                        <div class="col text-start">
+                            <div class="row">
+                                <p>
+                                    <div class="col-3"><b class="fs-5">Created By:</b></div>
+                                    <div class="col text-start fs-5 ms-3"><span id="span_created_by">-</span></div>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col text-start">
+                            <div class="row">
+                                <p>
+                                    <div class="col-3"><b class="fs-5">Created On:</b></div>
+                                    <div class="col text-start fs-5 ms-3"><span id="span_created_on">-</span></div>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row py-2">
+                        <div class="col text-start">
+                            <div class="row">
+                                <p>
+                                    <div class="col-2"><b class="fs-5">Description:</b></div>
+                                    <div class="col text-start fs-5" style="margin-left: -2rem;"><span id="span_description">-</span></div>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+<!-- Custom JS -->
+{% block js %}
+<!-- <script type="text/javascript" src="/test/wp-content/themes/child/script/jquery.jcarousel.min.js"></script> -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+<!-- get cookies -->
+<script src="{% static 'js/miscellaneous/helper_func/get_cookies.js' %}"></script>
+
+<!-- Fetch ticket issue from TMS -->
+<script>
+    // msg_id -> message-request-id
+    // ticket_issue_oid -> tms-ticket-issue-oid
+    function disp(msg_id = 1, ticket_issue_oid = 2) {
+        console.log(`disp() function is executed!`);
+        console.log(`clicked! ${msg_id}`);
+        console.log(`Ticket Issue Id: ${ticket_issue_oid}`);
+        let user_signing_token_tms = "{{ user_signing_token_tms }}";
+        console.log(`User signin token TMS: ${user_signing_token_tms}`);
+
+        let span_issue_id = document.getElementById('span_issue_id');
+        let span_issue = document.getElementById('span_issue');
+        let span_project = document.getElementById('span_project');
+        let span_status = document.getElementById('span_status');
+        let span_issuer_name = document.getElementById('span_issuer_name');
+        let span_issuer_mobile_number = document.getElementById('span_issuer_mobile_number');
+        let span_issuer_email = document.getElementById('span_issuer_email');
+        let span_created_by = document.getElementById('span_created_by');
+        let span_created_on = document.getElementById('span_created_on');
+        let span_description = document.getElementById('span_description');
+
+	var get_tms_issue_detail_url = `http://${window.location.host}/staff/api/tms-issue/${ticket_issue_oid}/${user_signing_token_tms}/`;
+        console.log("Fetch URL (GET):", get_tms_issue_detail_url);
+
+	var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+	
+	fetch(`${get_tms_issue_detail_url}`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            // HIDE LOADER WILL BE IMPLEMENTED HERE
+
+            // console.log("THIS IS THE RESULT");
+            // console.log("THIS IS THE RESULT",result);
+            // console.log(result.data.oid);
+            // console.log(result.data.issue_id);
+            // console.log(result.data.category_title_en);
+            // console.log(result.data.project_title_en);
+            // console.log(result.data.status);
+            // console.log(result.data.issuer_name_en);
+            // console.log(result.data.issuer_mobile_number);
+            // console.log(result.data.issuer_email);
+            // console.log(result.data.created_by_en);
+            // console.log(result.data.created_on);
+            // console.log(result.data.description);
+
+            span_issue_id.innerHTML = "";
+            span_issue_id.innerHTML = `${result.data.issue_id}`;
+            span_issue.innerHTML = "";
+            span_issue.innerHTML = `${result.data.category_title_en}`;
+            span_project.innerHTML = "";
+            span_project.innerHTML = `${result.data.project_title_en}`;
+            span_status.innerHTML = "";
+            span_status.innerHTML = `${result.data.status}`;
+            span_issuer_name.innerHTML = "";
+            span_issuer_name.innerHTML = `${result.data.issuer_name_en}`;
+            span_issuer_mobile_number.innerHTML = "";
+            span_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
+            span_issuer_email.innerHTML = "";
+            span_issuer_email.innerHTML = `${result.data.issuer_email}`;
+            span_created_by.innerHTML = "";
+            span_created_by.innerHTML = `${result.data.created_by_en}`;
+            span_created_on.innerHTML = "";
+            span_created_on.innerHTML = `${result.data.created_on}`;
+            span_description.innerHTML = "";
+            span_description.innerHTML = `${result.data.description}`;
+        })
+        .catch(error => console.log('error', error));       // HIDE LOADER WILL BE IMPLEMENTED HERE
+	
+    }
+
+</script>
+
+<!-- Clear message request -->
+<script>
+    function remove_msg_req(room_slug) {
+        console.log(`Clear button is clicked! ${room_slug}`);
+        let msg_req_clear_form = document.querySelector(`#msg-req-clear-form-${room_slug}`);
+        console.log('msg-form: ', msg_req_clear_form);
+        msg_req_clear_form.submit()
+    }
+</script>
+
+<!-- WebSocket Script -->
+<script>
+    // VARIABLES
+    let cso_email = `{{ cso_email }}`;
+    console.log(`CSO Email (backend channel-group will normalize the email-string):`, cso_email);
+    const url = `ws://${window.location.host}/ws/cso-workload/support-dashboard/${cso_email}/`;    // [PRODUCTION - working]construct the websocket url
+    // console.log(url);
+    const cso_request_numsDOM = document.querySelector('#support_req_nums');
+
+    // WEBSOCKET OBJECT
+    const socket = new WebSocket(url);
+    // console.log(socket);
+
+    // Open the websocket connection for the frontend
+    socket.onopen = function (e) {
+        console.log('Frontend Websocket: Connection Established!');
+    }
+
+    // socket receiver: Backend --> Frontend
+    socket.onmessage = function (e) {
+        // console.log(e.data);
+        // console.log(JSON.parse(e.data));    // gets the json-resp-data sent from the backend-consumer-websocket
+        const data = JSON.parse(e.data);
+
+        // New Cust-Support Request
+        if (data.new_supprt_reqst) {
+            console.log(`New customer support raised!`);
+            updated_reqs = data.new_supprt_reqst.reverse()
+            console.log(`New customer support request:`, updated_reqs);
+            cso_request_numsDOM.innerHTML = updated_reqs.length;
+            // Get all the table-body-rows & delete each rows
+            let tbodytr = document.querySelectorAll("tbody#tbody > tr");
+            tbodytr.forEach((Item) => {
+                Item.remove();
+            });
+            let tbody = document.querySelector("#tbody");
+            let newtr = '';
+            let counter = 0;
+            //let url = 'http://127.0.0.1:8080/customer-support';
+	    let url = `http://${window.location.host}/customer-support`;
+            updated_reqs.forEach((req) => {
+                // console.log(req);
+                // newtr += `${req.client_ip} ----- ${req.room_slug}`;
+                newtr += `<tr id="Row_msg_req_${req.room_slug}">
+                    <th scope="row" class="text-center">${counter += 1}</th>
+                    <td class="text-center">${req.client_ip}</td>
+                    <td class="text-center">${req.registered_user_email}</td>
+                    <td class="text-center">${req.room_slug}</td>
+                    <td class="text-center">
+                        <a href="${url}/${req.room_slug}/"
+                            class="btn btn-dark btn-xl px-4" 
+                            target="_blank">
+                            Enter
+                        </a>
+                    </td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-secondary" data-id="ISBN-001122"
+                            onclick="disp(msg_id='${req.room_slug}', ticket_issue_oid='${req.issue_by_oid}')"
+                            data-bs-toggle="modal" data-bs-target="#ticketDetailModal">
+                            Ticket
+                        </button>
+                    </td>
+                    <td class="text-center">
+                        <form method="POST" id="msg-req-clear-form-${req.room_slug}" hidden>
+                            {% csrf_token %}
+                            <input type="text" name="cso_email" value="${req.assigned_cso}">
+                            <input type="text" name="room_slug" value="${req.room_slug}">
+                        </form>
+                        <button type="button" class="btn btn-danger"
+                            onclick="remove_msg_req(room_slug='${req.room_slug}')">
+                            Clear
+                        </button>
+                    </td>
+                </tr>`;
+            });
+            tbody.innerHTML = newtr;
+        }
+
+        // Old Cust-Support Request is resolved
+        if (data.old_supprt_req_roomSlug) {
+            let old_supprt_req_roomSlug = data.old_supprt_req_roomSlug;
+            // let old_supprt_req_isResolved = data.old_supprt_req_isResolved;
+            let total_current_reqs = data.total_current_reqs;
+            console.log(`An old message request is resolved!`);
+            console.log(`Total current reqs: `, total_current_reqs);
+            cso_request_numsDOM.innerHTML = total_current_reqs;
+            let msg_req_row_resolved = document.getElementById(`Row_msg_req_${data.old_supprt_req_roomSlug}`);
+            msg_req_row_resolved.remove();   // remove the msg-req-row which is currently marked as "Resolved" by the CSO
+        }
+
+        // Chat-convo is cancelled by the user; remove the msg-req from the CST list in real-time
+        if (data.chat_convo_cancelled) {
+            console.log(`chat-convo is cancelled!`);
+            let supprt_req_roomSlug = data.instance_room_slug;
+            let total_current_reqs_after_convo_cancelled = data.total_current_reqs_after_convo_cancelled;
+            cso_request_numsDOM.innerHTML = total_current_reqs_after_convo_cancelled;
+            let msg_req_row_cancelled = document.getElementById(`Row_msg_req_${supprt_req_roomSlug}`);
+            msg_req_row_cancelled.remove();
+        }
+    }
+
+    socket.onclose = function (e) {
+        console.log('Frontend Websocket: Connection Closed!');
+    }
+</script>
+{% endblock %}
