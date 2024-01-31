@@ -108,7 +108,7 @@
   border: none !important;
 }
 .side-bar-card:last-child {
-  height: 59vh;
+  height: 58vh;
 }
 .card-image {
   max-width: 100px;
@@ -135,7 +135,7 @@
 }
 /* tables styles */
 .table-container {
-  height: 87vh;
+  height: 86vh;
   padding: 25px 40px;
   background-color: #f6f6f7 !important;
   border-radius: 10px;
@@ -222,7 +222,7 @@ td .btn {
   font-size: 0.8rem !important;
 }
 .ticket-view-modal {
-  height: 460px;
+  height: 600px;
   overflow: auto;
 }
 .modal-header {
@@ -261,7 +261,6 @@ td .btn {
   text-align: left;
 }
 .field-label p {
-  font-size: 0.1rem;
   color: #6c7169;
 }
 

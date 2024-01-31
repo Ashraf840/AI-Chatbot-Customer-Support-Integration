@@ -112,7 +112,7 @@
                   </li>
                   <li><hr class="dropdown-divider" /></li>
                   <li>
-                    <a class="dropdown-item" href="#"
+                    <a class="dropdown-item" href="{% url 'authenticationApplication:CsoAuth:CSOLogoutView' %}"
                       ><i class="fas fa-sign-out-alt fa-fw"></i> Log Out</a
                     >
                   </li>
@@ -226,7 +226,7 @@
                     <h1 class="page-title">Support Request List</h1>
                   </div>
                   <div class="feature-intro-item">
-                    <p class="title"><span id="support_req_nums">{{ support_req_nums }} </span>Active Request(s)</p>
+                    <p class="title"><span id="support_req_nums">{{ support_req_nums }}</span> Active Request(s)</p>
                   </div>
                 </div>
                 <div class="table-wrapper">
@@ -254,26 +254,50 @@
                             type="button"
                             class="btn first-button"
                             data-bs-toggle="modal"
+                            onclick="get_enter_confirmation_dialog(room_slug='{{ csr.room_slug }}')"
                             data-bs-target="#chatroomEnter"
                           >
                             Enter
                           </button>
-                          
                         </td>
                         <td>
-                          <button
+                          <!-- <button
                             type="button"
                             class="btn second-button"
                             data-bs-toggle="modal"
                             data-bs-target="#ticketView"
                           >
                             View
-                          </button>
+                          </button> -->
+
+                          <button type="button" class="btn second-button" data-id="ISBN-001122"
+                            onclick="disp(msg_id='{{ csr.room_slug }}', ticket_issue_oid='{{ csr.issue_by_oid }}')"
+                            data-bs-toggle="modal" data-bs-target="#ticketView">
+                            Ticket
+                        </button>
+
                         </td>
                         <td>
-                          <button type="button" class="btn third-button">
+                          <form method="POST" id="msg-req-clear-form-{{ csr.room_slug }}" hidden>
+                            {% csrf_token %}
+                            <input type="text" name="cso_email" value="{{ request.user.email }}">
+                            <input type="text" name="room_slug" value="{{ csr.room_slug }}">
+                          </form>
+                          <button type="button" class="btn third-button"
+                            onclick="get_clear_confirmation_dialog(room_slug='{{ csr.room_slug }}')"
+                            data-bs-toggle="modal" data-bs-target="#clearsupportrequest">
                             Clear
-                          </button>
+                        </button>
+                          <!-- <form method="POST" id="msg-req-clear-form-{{ csr.room_slug }}" hidden>
+                            {% csrf_token %}
+                            <input type="text" name="cso_email" value="{{ request.user.email }}">
+                            <input type="text" name="room_slug" value="{{ csr.room_slug }}">
+                          </form>
+
+                          <button type="button" class="btn third-button"
+                            onclick="remove_msg_req(room_slug='{{ csr.room_slug }}')">
+                            Clear
+                        </button> -->
                         </td>
                       </tr>
                       {% endfor %}
@@ -313,9 +337,53 @@
                     <button
                       type="button"
                       class="btn second-button w-25 text-white"
+                      onclick="go_to_chat_room()"
+                      data-bs-dismiss="modal"
                     >
                       Yes
                     </button>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal -->
+        <div
+          class="modal fade"
+          id="clearsupportrequest"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-light">
+              <div class="modal-body p-4">
+                <div class="card w-100 text-center mb-0">
+                  <div class="card-body mx-auto">
+                    <h5 class="card-title fs-6">Clear the Request?</h5>
+                    <p class="card-text my-3">
+                      Do you want to Remove the request?
+                    </p>
+                  </div>
+                  <div class="d-flex justify-content-center gap-4">
+                    <button
+                      type="button"
+                      class="btn third-button w-25 text-white"
+                      data-bs-dismiss="modal"
+                    >
+                      No
+                    </button>
+                    <button
+                      type="button"
+                      class="btn second-button w-25 text-white"
+                      onclick="clearChat()"
+                      data-bs-dismiss="modal"
+                    >
+                      Yes
+                    </button>
+
                   </div>
                 </div>
               </div>
@@ -383,7 +451,7 @@
                         <p>Status</p>
                       </span>
                       <span class="field-value">
-                        <p id="status"></p>
+                        <p id="issueStatus"></p>
                       </span>
                     </div>
                     <div class="col-md-3 col-sm-6 field-wrapper">
@@ -449,9 +517,12 @@
                   <button
                     type="button"
                     class="btn second-button text-white issue-details-button"
+                    onclick="go_to_chat_room()"
+                    data-bs-dismiss="modal"
                   >
                     Enter
                   </button>
+                  
                 </div>
               </div>
             </div>
@@ -465,26 +536,36 @@
       crossorigin="anonymous"
     ></script>
     <!-- Script JS -->
-    <script 
-    src="{% static '/js/staffApp/script.js' %}"
-    ></script>
-   
-  
+    
     <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
 <!-- get cookies -->
 <script src="{% static 'js/miscellaneous/helper_func/get_cookies.js' %}"></script>
 
 <!-- Fetch ticket issue from TMS -->
 <script>
-    // msg_id -> message-request-id
-    // ticket_issue_oid -> tms-ticket-issue-oid
-    function disp(msg_id = 1, ticket_issue_oid = 2) {
-        console.log(`disp() function is executed!`);
-        console.log(`clicked! ${msg_id}`);
-        console.log(`Ticket Issue Id: ${ticket_issue_oid}`);
-        let user_signing_token_tms = "{{ user_signing_token_tms }}";
-        console.log(`User signin token TMS: ${user_signing_token_tms}`);
+    let room_slug_glo; 
+    function get_enter_confirmation_dialog(room_slug) {
+      room_slug_glo = room_slug;
+    }
 
+    function get_clear_confirmation_dialog(room_slug) {
+      room_slug_glo = room_slug;
+    }
+
+    function go_to_chat_room() {
+        window.open(`http://${window.location.host}/customer-support/${room_slug_glo}`, "_blank");
+    }
+
+    function clearChat() {
+        let msg_req_clear_form = document.querySelector(`#msg-req-clear-form-${room_slug_glo}`);
+        msg_req_clear_form.submit()
+    }
+
+    function disp(msg_id = 1, ticket_issue_oid = 2) {
+        room_slug_glo = msg_id;
+
+        let user_signing_token_tms = "{{ user_signing_token_tms }}";
+      
         let span_issue_id = document.getElementById('span_issue_id');
         let span_issue = document.getElementById('span_issue');
         let span_project = document.getElementById('span_project');
@@ -507,42 +588,26 @@
 	fetch(`${get_tms_issue_detail_url}`, requestOptions)
         .then(response => response.json())
         .then(result => {
-            // HIDE LOADER WILL BE IMPLEMENTED HERE
-
-            // console.log("THIS IS THE RESULT");
-            // console.log("THIS IS THE RESULT",result);
-            // console.log(result.data.oid);
-            // console.log(result.data.issue_id);
-            // console.log(result.data.category_title_en);
-            // console.log(result.data.project_title_en);
-            // console.log(result.data.status);
-            // console.log(result.data.issuer_name_en);
-            // console.log(result.data.issuer_mobile_number);
-            // console.log(result.data.issuer_email);
-            // console.log(result.data.created_by_en);
-            // console.log(result.data.created_on);
-            // console.log(result.data.description);
-
-            span_issue_id.innerHTML = "";
-            span_issue_id.innerHTML = `${result.data.issue_id}`;
-            span_issue.innerHTML = "";
-            span_issue.innerHTML = `${result.data.category_title_en}`;
-            span_project.innerHTML = "";
-            span_project.innerHTML = `${result.data.project_title_en}`;
-            span_status.innerHTML = "";
-            span_status.innerHTML = `${result.data.status}`;
-            span_issuer_name.innerHTML = "";
-            span_issuer_name.innerHTML = `${result.data.issuer_name_en}`;
-            span_issuer_mobile_number.innerHTML = "";
-            span_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
-            span_issuer_email.innerHTML = "";
-            span_issuer_email.innerHTML = `${result.data.issuer_email}`;
-            span_created_by.innerHTML = "";
-            span_created_by.innerHTML = `${result.data.created_by_en}`;
-            span_created_on.innerHTML = "";
-            span_created_on.innerHTML = `${result.data.created_on}`;
-            span_description.innerHTML = "";
-            span_description.innerHTML = `${result.data.description}`;
+            issueId.innerHTML = "";
+            issueId.innerHTML = `${result.data.issue_id}`;
+            issueType.innerHTML = "";
+            issueType.innerHTML = `${result.data.category_title_en}`;
+            project.innerHTML = "";
+            project.innerHTML = `${result.data.project_title_en}`;
+            issueStatus.innerHTML = "";
+            issueStatus.innerHTML = `${result.data.status}`;
+            userName.innerHTML = "";
+            userName.innerHTML = `${result.data.issuer_name_en}`;
+            userMobileNo.innerHTML = "";
+            userMobileNo.innerHTML = `${result.data.issuer_mobile_number}`;
+            emailId.innerHTML = "";
+            emailId.innerHTML = `${result.data.issuer_email}`;
+            createdBy.innerHTML = "";
+            createdBy.innerHTML = `${result.data.created_by_en}`;
+            createdOn.innerHTML = "";
+            createdOn.innerHTML = `${result.data.created_on}`;
+            description.innerHTML = "";
+            description.innerHTML = `${result.data.description}`;
         })
         .catch(error => console.log('error', error));       // HIDE LOADER WILL BE IMPLEMENTED HERE
 	
@@ -604,32 +669,37 @@
                 // console.log(req);
                 // newtr += `${req.client_ip} ----- ${req.room_slug}`;
                 newtr += `<tr id="Row_msg_req_${req.room_slug}">
-                    <th scope="row" class="text-center">${counter += 1}</th>
-                    <td class="text-center">${req.client_ip}</td>
-                    <td class="text-center">${req.registered_user_email}</td>
-                    <td class="text-center">${req.room_slug}</td>
-                    <td class="text-center">
-                        <a href="${url}/${req.room_slug}/"
-                            class="btn btn-dark btn-xl px-4" 
-                            target="_blank">
+                    <td>${counter += 1}</td>
+                    <td>${req.client_ip}</td>
+                    <td>${req.registered_user_email}</td>
+                    <td>${req.room_slug}</td>
+                    <td>
+                        <button
+                            type="button"
+                            class="btn first-button"
+                            data-bs-toggle="modal"
+                            onclick="get_enter_confirmation_dialog(room_slug='${req.room_slug}')"
+                            data-bs-target="#chatroomEnter"
+                          >
                             Enter
-                        </a>
+                          </button>
                     </td>
                     <td class="text-center">
-                        <button type="button" class="btn btn-secondary" data-id="ISBN-001122"
+                        <button type="button" class="btn second-button" data-id="ISBN-001122"
                             onclick="disp(msg_id='${req.room_slug}', ticket_issue_oid='${req.issue_by_oid}')"
-                            data-bs-toggle="modal" data-bs-target="#ticketDetailModal">
+                            data-bs-toggle="modal" data-bs-target="#ticketView">
                             Ticket
                         </button>
                     </td>
                     <td class="text-center">
-                        <form method="POST" id="msg-req-clear-form-${req.room_slug}" hidden>
+                      <form method="POST" id="msg-req-clear-form-${req.room_slug}" hidden>
                             {% csrf_token %}
                             <input type="text" name="cso_email" value="${req.assigned_cso}">
                             <input type="text" name="room_slug" value="${req.room_slug}">
-                        </form>
-                        <button type="button" class="btn btn-danger"
-                            onclick="remove_msg_req(room_slug='${req.room_slug}')">
+                          </form>
+                          <button type="button" class="btn third-button"
+                            onclick="get_clear_confirmation_dialog(room_slug='${req.room_slug}')"
+                            data-bs-toggle="modal" data-bs-target="#clearsupportrequest">
                             Clear
                         </button>
                     </td>

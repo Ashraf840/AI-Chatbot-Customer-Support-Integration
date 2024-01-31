@@ -105,7 +105,8 @@ class CSOLoginPageView(View):
 
                     login(request, user)
                     # TODO: Get TMS-signin-token & store into DB table (User Signin Token)
-                    return redirect('staffApplication:CsoWorkload:CsoDashboard')
+                    # return redirect('staffApplication:CsoWorkload:CsoDashboard')
+                    return redirect(reverse('staffApplication:CsoWorkload:SupportDashboard', kwargs={'email': user.email}))
                 else:
                     msg = 'Permission denied!'
                     messages.info(request, '%s' % msg)
