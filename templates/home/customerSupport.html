@@ -274,7 +274,12 @@
                       <p style='font-size: 16px;  color:red;' class="card-text fw-lighter"><b><i style='font-size:20px; color:red; padding-right: 6px;' class="fas fa-comment-slash"></i> Dismiss Chat</b></p>
                     </div>
                     <div class="col-2 text-body">
-                      <p style='font-size: 16px;  color:red;' class="card-text fw-lighter"><b><i style='font-size:20px; padding-right: 6px;' class="fa fa-chevron-right utility-card"></i></b></p>
+                      <p style='font-size: 16px;  color:red;' class="card-text fw-lighter"><b><i 
+                        style='font-size:20px; padding-right: 6px;' 
+                        class="fa fa-chevron-right utility-card"
+                        data-bs-toggle="modal"
+                        data-bs-target="#chatroomLeave"
+                        ></i></b></p>
                     </div>
                   </div>
                   {% endif %}
@@ -366,6 +371,52 @@
                     </div>
                   </div>
                 </div>
+
+                <div
+          class="modal fade"
+          id="chatroomLeave"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-light">
+              <div class="modal-body p-4">
+                <div class="card w-100 text-center mb-0">
+                  <div class="card-body mx-auto">
+                    <h5 class="card-title fs-6">Leave the Chatroom?</h5>
+                    <p class="card-text my-3">
+                      Do you want to leave the chatroom?
+                    </p>
+                  </div>
+                  <div class="d-flex justify-content-center gap-4">
+                    <button
+                      type="button"
+                      class="btn third-button w-25 text-white"
+                      data-bs-dismiss="modal"
+                    >
+                      No
+                    </button>
+                    <!-- <button type="button" 
+                    class="btn btn-danger" 
+                    id="cancel-chat-btn" 
+                    data-mdb-ripple-color="dark" 
+                    style="width: 8rem;">Cancel Chat</button> -->
+                    <button
+                      type="button"
+                      id="cancel-chat-btn" 
+                      class="btn second-button w-25 text-white"
+                      data-bs-dismiss="modal"
+                    >
+                      Yes
+                    </button>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
                 <!-- Modal -->
         <div
@@ -609,116 +660,14 @@
     }
 </script>
 
-<!-- WebSocket Script -->
-<script>
-    // VARIABLES
-    let cso_email = `{{ cso_email }}`;
-    console.log(`CSO Email (backend channel-group will normalize the email-string):`, cso_email);
-    const url = `ws://${window.location.host}/ws/cso-workload/support-dashboard/${cso_email}/`;    // [PRODUCTION - working]construct the websocket url
-    // console.log(url);
-    const cso_request_numsDOM = document.querySelector('#support_req_nums');
-
-    // WEBSOCKET OBJECT
-    const socket = new WebSocket(url);
-    // console.log(socket);
-
-    // Open the websocket connection for the frontend
-    socket.onopen = function (e) {
-        console.log('Frontend Websocket: Connection Established!');
-    }
-
-    // socket receiver: Backend --> Frontend
-    socket.onmessage = function (e) {
-        // console.log(e.data);
-        // console.log(JSON.parse(e.data));    // gets the json-resp-data sent from the backend-consumer-websocket
-        const data = JSON.parse(e.data);
-
-        // New Cust-Support Request
-        if (data.new_supprt_reqst) {
-            console.log(`New customer support raised!`);
-            updated_reqs = data.new_supprt_reqst.reverse()
-            console.log(`New customer support request:`, updated_reqs);
-            cso_request_numsDOM.innerHTML = updated_reqs.length;
-            // Get all the table-body-rows & delete each rows
-            let tbodytr = document.querySelectorAll("tbody#tbody > tr");
-            tbodytr.forEach((Item) => {
-                Item.remove();
-            });
-            let tbody = document.querySelector("#tbody");
-            let newtr = '';
-            let counter = 0;
-            //let url = 'http://127.0.0.1:8080/customer-support';
-	    let url = `http://${window.location.host}/customer-support`;
-            updated_reqs.forEach((req) => {
-                // console.log(req);
-                // newtr += `${req.client_ip} ----- ${req.room_slug}`;
-                newtr += `<tr id="Row_msg_req_${req.room_slug}">
-                    <td>${counter += 1}</td>
-                    <td>${req.client_ip}</td>
-                    <td>${req.registered_user_email}</td>
-                    <td>${req.room_slug}</td>
-                    <td>
-                        <button
-                            type="button"
-                            class="btn first-button"
-                            data-bs-toggle="modal"
-                            onclick="get_enter_confirmation_dialog(room_slug='${req.room_slug}')"
-                            data-bs-target="#chatroomEnter"
-                          >
-                            Enter
-                          </button>
-                    </td>
-                    <td class="text-center">
-                        <button type="button" class="btn second-button" data-id="ISBN-001122"
-                            onclick="disp(msg_id='${req.room_slug}', ticket_issue_oid='${req.issue_by_oid}')"
-                            data-bs-toggle="modal" data-bs-target="#ticketView">
-                            Ticket
-                        </button>
-                    </td>
-                    <td class="text-center">
-                      <form method="POST" id="msg-req-clear-form-${req.room_slug}" hidden>
-                            {% csrf_token %}
-                            <input type="text" name="cso_email" value="${req.assigned_cso}">
-                            <input type="text" name="room_slug" value="${req.room_slug}">
-                          </form>
-                          <button type="button" class="btn third-button"
-                            onclick="get_clear_confirmation_dialog(room_slug='${req.room_slug}')"
-                            data-bs-toggle="modal" data-bs-target="#clearsupportrequest">
-                            Clear
-                        </button>
-                    </td>
-                </tr>`;
-            });
-            tbody.innerHTML = newtr;
-        }
-
-        // Old Cust-Support Request is resolved
-        if (data.old_supprt_req_roomSlug) {
-            let old_supprt_req_roomSlug = data.old_supprt_req_roomSlug;
-            // let old_supprt_req_isResolved = data.old_supprt_req_isResolved;
-            let total_current_reqs = data.total_current_reqs;
-            console.log(`An old message request is resolved!`);
-            console.log(`Total current reqs: `, total_current_reqs);
-            cso_request_numsDOM.innerHTML = total_current_reqs;
-            let msg_req_row_resolved = document.getElementById(`Row_msg_req_${data.old_supprt_req_roomSlug}`);
-            msg_req_row_resolved.remove();   // remove the msg-req-row which is currently marked as "Resolved" by the CSO
-        }
-
-        // Chat-convo is cancelled by the user; remove the msg-req from the CST list in real-time
-        if (data.chat_convo_cancelled) {
-            console.log(`chat-convo is cancelled!`);
-            let supprt_req_roomSlug = data.instance_room_slug;
-            let total_current_reqs_after_convo_cancelled = data.total_current_reqs_after_convo_cancelled;
-            cso_request_numsDOM.innerHTML = total_current_reqs_after_convo_cancelled;
-            let msg_req_row_cancelled = document.getElementById(`Row_msg_req_${supprt_req_roomSlug}`);
-            msg_req_row_cancelled.remove();
-        }
-    }
-
-    socket.onclose = function (e) {
-        console.log('Frontend Websocket: Connection Closed!');
-    }
-</script>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"
+          integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+          crossorigin="anonymous"></script>
+        <script src="{% static 'js/home/customerSupportChat/tmsIssueUpdate.js' %}"></script>
+        <script src="{% static 'js/home/customerSupportChat/speechToText.js' %}"></script>
+        <script src="{% static 'js/home/customerSupportChat/botTyping.js' %}"></script>
+        <script src="{% static 'js/miscellaneous/helper_func/get_cookies.js' %}"></script>
+<script src="{% static 'js/miscellaneous/helper_func/random_string_generator.js' %}"></script>
 
 <script>
   let grid_tms_issue_skeleton = document.querySelector(
@@ -1182,7 +1131,7 @@ let feedbackContainerRandomString = generateRandomString(10);
                   <img src="{{ cso_user_profile_pic.url }}"
                       alt="avatar 1" style="width: 45px; height: 45px;" class="rounded-circle">
                   <div>
-                      <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">${
+                    <p class="small ms-3 mb-1" style="padding: 13px; border-radius: 0px 50px 50px 50px; background-color: #c3ffec;">${
                         data.message
                       }</p>
                       <p class="small ms-3 mb-3 rounded-3 text-muted">00:07</p>
@@ -1192,23 +1141,25 @@ let feedbackContainerRandomString = generateRandomString(10);
           `;
         } else {
           var chatHTML = `
+          
               <div class="d-flex flex-row justify-content-start mb-4">
                   <img src="{{ cso_user_profile_pic.url }}"
                       alt="avatar 1" style="width: 45px; height: 45px;" class="rounded-circle">
                   <div>
-                      <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">${
+                      <p class="small ms-3 mb-1" style="padding: 13px; border-radius: 0px 50px 50px 50px; background-color: #c3ffec;">${
                         data.message
                       }</p>
-                      <p class="small ms-3 mb-3 rounded-3 text-muted">00:07</p>
+                      <p class="small ms-3 mb-3 rounded-3 text-muted">00:08</p>
                   </div>
               </div>
           `;
         }
       } else {
         var chatHTML = `
+          
             <div class="d-flex flex-row justify-content-end mb-4">
                 <div>
-                    <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">${data.message}</p>
+                    <p style="border-radius: 50px 0px 50px 50px; background-color: #99ebff; padding: 13px;" class="small me-3 mb-1">${data.message}</p>
                     <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">00:09</p>
                 </div>
                 <img src="{{ registered_user_profile_pic.url }}"

@@ -36,7 +36,7 @@ svg#cr {
     cursor: pointer;
     color: #344767;
     position: absolute;
-    right: 15rem;
+    right: 18rem !important;
 }
 
 .hifq-display-none {
