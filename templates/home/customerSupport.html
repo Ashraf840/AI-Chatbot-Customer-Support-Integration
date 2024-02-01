@@ -554,8 +554,18 @@
               <div class="container-fluid table-container shadow-sm">
                 
                   {% include 'home/customerSupportComponents/chatBodynew.html' %}
+
+                  {% if request.user.is_cso %}
                   {% include 'home/customerSupportComponents/modals/resolveIssueModal.html' %}
                   {% include 'home/customerSupportComponents/modals/dismissIssueConfirmationModal.html' %}
+                  {% endif %}
+
+                  {% if request.user.is_user %}
+                  <!-- User Issue resolved Information Modal -->
+                  {% include 'home/customerSupportComponents/modals/userIssueResolvedInformationModal.html' %}
+                  <!-- Dismiss/Unresolved Issue Information Modal -->
+                  {% include 'home/customerSupportComponents/modals/dismissIssueInformationModal.html' %} 
+                  {% endif %}
                 
               </div>
             </div>
