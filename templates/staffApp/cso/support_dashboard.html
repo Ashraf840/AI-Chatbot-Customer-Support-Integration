@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <meta name="author" content="CodeHim" />
+    <title> Support Dashboard | iBAS++ </title>
+    <!-- Style CSS -->
+    <link rel="stylesheet" href="{% static '/css/staffApp/style.css' %}" />
+    <link rel="stylesheet" href="{% static '/css/staffApp/demo.css' %}" />
+    <link rel="icon" type="image/png" href="{% static 'images/logo/ibas_logo.png' %}">
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <main class="cd__main">
+      <!-- Start DEMO HTML (Use the following code into your project)-->
+      <nav
+        class="navbar navbar-expand-lg bg-body-tertiary"
+        style="background-color: #02555b !important; padding: 0 20px"
+      >
+        <div class="container-fluid">
+          <div class="navbar-brand">
+            <img
+              class="navbar-image"
+              src="{% static '/images/logo/ibas_logo.png' %}"
+              alt="Profile Picture"
+            />
+          </div>
+          <a class="navbar-brand nav-title" href="#">IBAS++</a>
+          <a class="navbar-brand nav-title" href="#" style="font-weight: 300"
+            >Help Desk</a
+          >
+          <a class="navbar-brand">
+            <button
+              class="btn sidebar-btn"
+              type="button"
+              title="Open Sidebar"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#offcanvasExample"
+              aria-controls="offcanvasExample"
+            >
+              <i class="far fa-caret-square-right"></i>
+            </button>
+          </a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            title="Open "
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 profile-menu">
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="#">Dashboard</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="#">Support Request</a>
+              </li>
+              <li class="nav-item bell-icon">
+                <i class="far fa-bell"></i>
+              </li>
+
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  id="navbarDropdown"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <div class="profile-pic">
+                    <img
+                      src="https://source.unsplash.com/250x250?girl"
+                      alt="Profile Picture"
+                    />
+                  </div>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><i class="fas fa-sliders-h fa-fw"></i> Profile</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><i class="fas fa-cog fa-fw"></i> Settings</a
+                    >
+                  </li>
+                  <li><hr class="dropdown-divider" /></li>
+                  <li>
+                    <a class="dropdown-item" href="{% url 'authenticationApplication:CsoAuth:CSOLogoutView' %}"
+                      ><i class="fas fa-sign-out-alt fa-fw"></i> Log Out</a
+                    >
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <!-- END EDMO HTML (Happy Coding!)-->
+      <div class="main-body">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-3">
+              <div class="sidebar container-fluid" style="border-radius: 10px">
+                <div class="card side-bar-card shadow-sm">
+                  <div class="side-bar-card-image">
+                    <img
+                      class="card-image"
+                      src="https://source.unsplash.com/300x300?professional man"
+                      alt="Profile Picture"
+                    />
+                  </div>
+                  <div class="text-body">
+                    <p class="card-text fs-6">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+                    <p class="card-text">Help Desk Officer</p>
+                    <p class="card-text fw-lighter">ID 170010</p>
+                  </div>
+                </div>
+                <div class="card px-4 side-bar-card shadow-sm">
+                  <div class="text-body" style="text-align: left">
+                    <i class="fas fa-building sidebar-icon"></i>
+                    <p class="card-text fw-lighter">Organization</p>
+                    <p class="card-text">{{ user_organization }}</p>
+                  </div>
+                  <div class="text-body" style="text-align: left">
+                    <i class="fas fa-map-marker-alt sidebar-icon"></i>
+                    <p class="card-text fw-lighter">Address</p>
+                    <p class="card-text">
+                      <span><p>Location: <b>{{ user_location }}</b></p></span>
+                      <span><p>District: <b>{{ user_district }}</b></p></span>
+                      <span><p>Division: <b>{{ user_division }}</b></p></span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div
+                  class="offcanvas offcanvas-start"
+                  tabindex="-1"
+                  id="offcanvasExample"
+                  aria-labelledby="offcanvasExampleLabel"
+                >
+                  <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasExampleLabel">
+                      Help Desk Officer Info
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="offcanvas"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="offcanvas-body">
+                    <div
+                      class="container-fluid"
+                      style="border-radius: 10px; margin: auto"
+                    >
+                      <div class="card side-bar-card shadow-sm">
+                        <div class="side-bar-card-image">
+                          <img
+                            class="card-image"
+                            src="https://source.unsplash.com/300x300?professional man"
+                            alt="Profile Picture"
+                          />
+                        </div>
+
+                        <div class="text-body">
+                          <p class="card-text fs-6">Mohammad Zamal Uddin</p>
+                          <p class="card-text">Help Desk Officer</p>
+                          <p class="card-text fw-lighter">ID 170010</p>
+                        </div>
+                      </div>
+                      <div class="card px-4 side-bar-card shadow-sm">
+                        <div class="text-body" style="text-align: left">
+                          <i class="fas fa-building sidebar-icon"></i>
+                          <p class="card-text fw-lighter">Organization</p>
+                          <p class="card-text">National Borad of Revenue</p>
+                        </div>
+                        <div class="text-body" style="text-align: left">
+                          <i class="fas fa-map-marker-alt sidebar-icon"></i>
+                          <p class="card-text fw-lighter">Address</p>
+                          <p class="card-text">
+                            <span>Plot# F1/A Agargaon</span>
+                            <span>Sher-e-Bangla Nagor, Dhaka-1207</span>
+                            <span>Telephone: 022222217700 Ex-0140</span>
+                            <span>Email: customsn@gmail.com</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-9 col-sm-12">
+              <div class="container-fluid table-container shadow-sm">
+                <div class="feature-intro">
+                  <div class="feature-intro-item">
+                    <h1 class="page-title">Support Request List</h1>
+                  </div>
+                  <div class="feature-intro-item">
+                    <p class="title"><span id="support_req_nums">{{ support_req_nums }}</span> Active Request(s)</p>
+                  </div>
+                </div>
+                <div class="table-wrapper">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Client IP</th>
+                        <th scope="col">User Email ID</th>
+                        <th scope="col">Room Slug</th>
+                        <th scope="col">Chatroom</th>
+                        <th scope="col">Ticket</th>
+                        <th scope="col">Clear Request</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbody">
+                      {% for csr in customer_support_requests %}
+                      <tr id="Row_msg_req_{{ csr.room_slug }}">
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ csr.client_ip }}</td>
+                        <td>{{ csr.registered_user_email }}</td>
+                        <td>{{ csr.room_slug }}</td>
+                        <td>
+                          <button
+                            type="button"
+                            class="btn first-button"
+                            data-bs-toggle="modal"
+                            onclick="get_enter_confirmation_dialog(room_slug='{{ csr.room_slug }}')"
+                            data-bs-target="#chatroomEnter"
+                          >
+                            Enter
+                          </button>
+                        </td>
+                        <td>
+                          <!-- <button
+                            type="button"
+                            class="btn second-button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#ticketView"
+                          >
+                            View
+                          </button> -->
+
+                          <button type="button" class="btn second-button" data-id="ISBN-001122"
+                            onclick="disp(msg_id='{{ csr.room_slug }}', ticket_issue_oid='{{ csr.issue_by_oid }}')"
+                            data-bs-toggle="modal" data-bs-target="#ticketView">
+                            Ticket
+                        </button>
+
+                        </td>
+                        <td>
+                          <form method="POST" id="msg-req-clear-form-{{ csr.room_slug }}" hidden>
+                            {% csrf_token %}
+                            <input type="text" name="cso_email" value="{{ request.user.email }}">
+                            <input type="text" name="room_slug" value="{{ csr.room_slug }}">
+                          </form>
+                          <button type="button" class="btn third-button"
+                            onclick="get_clear_confirmation_dialog(room_slug='{{ csr.room_slug }}')"
+                            data-bs-toggle="modal" data-bs-target="#clearsupportrequest">
+                            Clear
+                        </button>
+                          <!-- <form method="POST" id="msg-req-clear-form-{{ csr.room_slug }}" hidden>
+                            {% csrf_token %}
+                            <input type="text" name="cso_email" value="{{ request.user.email }}">
+                            <input type="text" name="room_slug" value="{{ csr.room_slug }}">
+                          </form>
+
+                          <button type="button" class="btn third-button"
+                            onclick="remove_msg_req(room_slug='{{ csr.room_slug }}')">
+                            Clear
+                        </button> -->
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal -->
+        <div
+          class="modal fade"
+          id="chatroomEnter"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-light">
+              <div class="modal-body p-4">
+                <div class="card w-100 text-center mb-0">
+                  <div class="card-body mx-auto">
+                    <h5 class="card-title fs-6">Enter the Chatroom?</h5>
+                    <p class="card-text my-3">
+                      Do you want to enter the chatroom?
+                    </p>
+                  </div>
+                  <div class="d-flex justify-content-center gap-4">
+                    <button
+                      type="button"
+                      class="btn third-button w-25 text-white"
+                      data-bs-dismiss="modal"
+                    >
+                      No
+                    </button>
+                    <button
+                      type="button"
+                      class="btn second-button w-25 text-white"
+                      onclick="go_to_chat_room()"
+                      data-bs-dismiss="modal"
+                    >
+                      Yes
+                    </button>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal -->
+        <div
+          class="modal fade"
+          id="clearsupportrequest"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-light">
+              <div class="modal-body p-4">
+                <div class="card w-100 text-center mb-0">
+                  <div class="card-body mx-auto">
+                    <h5 class="card-title fs-6">Clear the Request?</h5>
+                    <p class="card-text my-3">
+                      Do you want to Remove the request?
+                    </p>
+                  </div>
+                  <div class="d-flex justify-content-center gap-4">
+                    <button
+                      type="button"
+                      class="btn third-button w-25 text-white"
+                      data-bs-dismiss="modal"
+                    >
+                      No
+                    </button>
+                    <button
+                      type="button"
+                      class="btn second-button w-25 text-white"
+                      onclick="clearChat()"
+                      data-bs-dismiss="modal"
+                    >
+                      Yes
+                    </button>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal -->
+        <div
+          class="modal fade ticket-view-modal"
+          id="ticketView"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content ticket-view-modal">
+              <div
+                class="modal-header text-center"
+                style="
+                  background-color: #d2e9e9;
+                  position: relative;
+                  height: 8vh;
+                "
+              >
+                <div class="ticket-modal-logo">
+                  <img
+                    class="w-75"
+                    src="{% static '/images/vector/Vector.png' %}"
+                    alt="Profile Picture"
+                  />
+                </div>
+              </div>
+              <div class="modal-body my-2">
+                <div class="container-fluid text-center">
+                  <div>
+                    <h class="fs-6 fw-medium">Issue Details</h>
+                  </div>
+                  <div class="row mt-4">
+                    <div class="col-md-3 col-sm-6 field-wrapper">
+                      <span class="field-label d-flex">
+                        <p>Issue ID</p>
+                      </span>
+                      <span class="field-value">
+                        <p id="issueId"></p>
+                      </span>
+                    </div>
+                    <div class="col-md-3 col-sm-6 field-wrapper">
+                      <span class="field-label d-flex">
+                        <p>Issue Type</p>
+                      </span>
+                      <span class="field-value">
+                        <p id="issueType"></p>
+                      </span>
+                    </div>
+                    <div class="col-md-3 col-sm-6 field-wrapper">
+                      <span class="field-label d-flex">
+                        <p>Project</p>
+                      </span>
+                      <span class="field-value">
+                        <p id="project"></p>
+                      </span>
+                    </div>
+                    <div class="col-md-3 col-sm-6 field-wrapper">
+                      <span class="field-label d-flex">
+                        <p>Status</p>
+                      </span>
+                      <span class="field-value">
+                        <p id="issueStatus"></p>
+                      </span>
+                    </div>
+                    <div class="col-md-3 col-sm-6 field-wrapper">
+                      <span class="field-label d-flex">
+                        <p>User Name</p>
+                      </span>
+                      <span class="field-value">
+                        <p id="userName"></p>
+                      </span>
+                    </div>
+                    <div class="col-md-3 col-sm-6 field-wrapper">
+                      <span class="field-label d-flex">
+                        <p>User Mobile No.</p>
+                      </span>
+                      <span class="field-value">
+                        <p id="userMobileNo"></p>
+                      </span>
+                    </div>
+                    <div class="col-md-3 col-sm-6 field-wrapper">
+                      <span class="field-label d-flex">
+                        <p>Email ID</p>
+                      </span>
+                      <span class="field-value">
+                        <p id="emailId"></p>
+                      </span>
+                    </div>
+                    <div class="col-md-3 col-sm-6 field-wrapper">
+                      <span class="field-label d-flex">
+                        <p>Created by</p>
+                      </span>
+                      <span class="field-value">
+                        <p id="createdBy"></p>
+                      </span>
+                    </div>
+                    <div class="col-md-3 col-sm-6 field-wrapper">
+                      <span class="field-label d-flex">
+                        <p>Created On</p>
+                      </span>
+                      <span class="field-value">
+                        <p id="createdOn"></p>
+                      </span>
+                    </div>
+                    <div class="col-md-3 col-sm-6 field-wrapper">
+                      <span class="field-label d-flex">
+                        <p>Description</p>
+                      </span>
+                      <span class="field-value">
+                        <p id="description"></p>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer" style="display: block">
+                <div class="d-flex justify-content-center gap-4">
+                  <button
+                    type="button"
+                    class="btn third-button text-white issue-details-button"
+                    data-bs-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="button"
+                    class="btn second-button text-white issue-details-button"
+                    onclick="go_to_chat_room()"
+                    data-bs-dismiss="modal"
+                  >
+                    Enter
+                  </button>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+    <!-- Script JS -->
+    
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+<!-- get cookies -->
+<script src="{% static 'js/miscellaneous/helper_func/get_cookies.js' %}"></script>
+
+<!-- Fetch ticket issue from TMS -->
+<script>
+    let room_slug_glo; 
+    function get_enter_confirmation_dialog(room_slug) {
+      room_slug_glo = room_slug;
+    }
+
+    function get_clear_confirmation_dialog(room_slug) {
+      room_slug_glo = room_slug;
+    }
+
+    function go_to_chat_room() {
+        window.open(`http://${window.location.host}/customer-support/${room_slug_glo}`, "_blank");
+    }
+
+    function clearChat() {
+        let msg_req_clear_form = document.querySelector(`#msg-req-clear-form-${room_slug_glo}`);
+        msg_req_clear_form.submit()
+    }
+
+    function disp(msg_id = 1, ticket_issue_oid = 2) {
+        room_slug_glo = msg_id;
+
+        let user_signing_token_tms = "{{ user_signing_token_tms }}";
+      
+        let span_issue_id = document.getElementById('span_issue_id');
+        let span_issue = document.getElementById('span_issue');
+        let span_project = document.getElementById('span_project');
+        let span_status = document.getElementById('span_status');
+        let span_issuer_name = document.getElementById('span_issuer_name');
+        let span_issuer_mobile_number = document.getElementById('span_issuer_mobile_number');
+        let span_issuer_email = document.getElementById('span_issuer_email');
+        let span_created_by = document.getElementById('span_created_by');
+        let span_created_on = document.getElementById('span_created_on');
+        let span_description = document.getElementById('span_description');
+
+	var get_tms_issue_detail_url = `http://${window.location.host}/staff/api/tms-issue/${ticket_issue_oid}/${user_signing_token_tms}/`;
+        console.log("Fetch URL (GET):", get_tms_issue_detail_url);
+
+	var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+	
+	fetch(`${get_tms_issue_detail_url}`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            issueId.innerHTML = "";
+            issueId.innerHTML = `${result.data.issue_id}`;
+            issueType.innerHTML = "";
+            issueType.innerHTML = `${result.data.category_title_en}`;
+            project.innerHTML = "";
+            project.innerHTML = `${result.data.project_title_en}`;
+            issueStatus.innerHTML = "";
+            issueStatus.innerHTML = `${result.data.status}`;
+            userName.innerHTML = "";
+            userName.innerHTML = `${result.data.issuer_name_en}`;
+            userMobileNo.innerHTML = "";
+            userMobileNo.innerHTML = `${result.data.issuer_mobile_number}`;
+            emailId.innerHTML = "";
+            emailId.innerHTML = `${result.data.issuer_email}`;
+            createdBy.innerHTML = "";
+            createdBy.innerHTML = `${result.data.created_by_en}`;
+            createdOn.innerHTML = "";
+            createdOn.innerHTML = `${result.data.created_on}`;
+            description.innerHTML = "";
+            description.innerHTML = `${result.data.description}`;
+        })
+        .catch(error => console.log('error', error));       // HIDE LOADER WILL BE IMPLEMENTED HERE
+	
+    }
+
+</script>
+
+<!-- Clear message request -->
+<script>
+    function remove_msg_req(room_slug) {
+        console.log(`Clear button is clicked! ${room_slug}`);
+        let msg_req_clear_form = document.querySelector(`#msg-req-clear-form-${room_slug}`);
+        console.log('msg-form: ', msg_req_clear_form);
+        msg_req_clear_form.submit()
+    }
+</script>
+
+<!-- WebSocket Script -->
+<script>
+    // VARIABLES
+    let cso_email = `{{ cso_email }}`;
+    console.log(`CSO Email (backend channel-group will normalize the email-string):`, cso_email);
+    const url = `ws://${window.location.host}/ws/cso-workload/support-dashboard/${cso_email}/`;    // [PRODUCTION - working]construct the websocket url
+    // console.log(url);
+    const cso_request_numsDOM = document.querySelector('#support_req_nums');
+
+    // WEBSOCKET OBJECT
+    const socket = new WebSocket(url);
+    // console.log(socket);
+
+    // Open the websocket connection for the frontend
+    socket.onopen = function (e) {
+        console.log('Frontend Websocket: Connection Established!');
+    }
+
+    // socket receiver: Backend --> Frontend
+    socket.onmessage = function (e) {
+        // console.log(e.data);
+        // console.log(JSON.parse(e.data));    // gets the json-resp-data sent from the backend-consumer-websocket
+        const data = JSON.parse(e.data);
+
+        // New Cust-Support Request
+        if (data.new_supprt_reqst) {
+            console.log(`New customer support raised!`);
+            updated_reqs = data.new_supprt_reqst.reverse()
+            console.log(`New customer support request:`, updated_reqs);
+            cso_request_numsDOM.innerHTML = updated_reqs.length;
+            // Get all the table-body-rows & delete each rows
+            let tbodytr = document.querySelectorAll("tbody#tbody > tr");
+            tbodytr.forEach((Item) => {
+                Item.remove();
+            });
+            let tbody = document.querySelector("#tbody");
+            let newtr = '';
+            let counter = 0;
+            //let url = 'http://127.0.0.1:8080/customer-support';
+	    let url = `http://${window.location.host}/customer-support`;
+            updated_reqs.forEach((req) => {
+                // console.log(req);
+                // newtr += `${req.client_ip} ----- ${req.room_slug}`;
+                newtr += `<tr id="Row_msg_req_${req.room_slug}">
+                    <td>${counter += 1}</td>
+                    <td>${req.client_ip}</td>
+                    <td>${req.registered_user_email}</td>
+                    <td>${req.room_slug}</td>
+                    <td>
+                        <button
+                            type="button"
+                            class="btn first-button"
+                            data-bs-toggle="modal"
+                            onclick="get_enter_confirmation_dialog(room_slug='${req.room_slug}')"
+                            data-bs-target="#chatroomEnter"
+                          >
+                            Enter
+                          </button>
+                    </td>
+                    <td class="text-center">
+                        <button type="button" class="btn second-button" data-id="ISBN-001122"
+                            onclick="disp(msg_id='${req.room_slug}', ticket_issue_oid='${req.issue_by_oid}')"
+                            data-bs-toggle="modal" data-bs-target="#ticketView">
+                            Ticket
+                        </button>
+                    </td>
+                    <td class="text-center">
+                      <form method="POST" id="msg-req-clear-form-${req.room_slug}" hidden>
+                            {% csrf_token %}
+                            <input type="text" name="cso_email" value="${req.assigned_cso}">
+                            <input type="text" name="room_slug" value="${req.room_slug}">
+                          </form>
+                          <button type="button" class="btn third-button"
+                            onclick="get_clear_confirmation_dialog(room_slug='${req.room_slug}')"
+                            data-bs-toggle="modal" data-bs-target="#clearsupportrequest">
+                            Clear
+                        </button>
+                    </td>
+                </tr>`;
+            });
+            tbody.innerHTML = newtr;
+        }
+
+        // Old Cust-Support Request is resolved
+        if (data.old_supprt_req_roomSlug) {
+            let old_supprt_req_roomSlug = data.old_supprt_req_roomSlug;
+            // let old_supprt_req_isResolved = data.old_supprt_req_isResolved;
+            let total_current_reqs = data.total_current_reqs;
+            console.log(`An old message request is resolved!`);
+            console.log(`Total current reqs: `, total_current_reqs);
+            cso_request_numsDOM.innerHTML = total_current_reqs;
+            let msg_req_row_resolved = document.getElementById(`Row_msg_req_${data.old_supprt_req_roomSlug}`);
+            msg_req_row_resolved.remove();   // remove the msg-req-row which is currently marked as "Resolved" by the CSO
+        }
+
+        // Chat-convo is cancelled by the user; remove the msg-req from the CST list in real-time
+        if (data.chat_convo_cancelled) {
+            console.log(`chat-convo is cancelled!`);
+            let supprt_req_roomSlug = data.instance_room_slug;
+            let total_current_reqs_after_convo_cancelled = data.total_current_reqs_after_convo_cancelled;
+            cso_request_numsDOM.innerHTML = total_current_reqs_after_convo_cancelled;
+            let msg_req_row_cancelled = document.getElementById(`Row_msg_req_${supprt_req_roomSlug}`);
+            msg_req_row_cancelled.remove();
+        }
+    }
+
+    socket.onclose = function (e) {
+        console.log('Frontend Websocket: Connection Closed!');
+    }
+</script>
+
+
+  </body>
+</html>
+

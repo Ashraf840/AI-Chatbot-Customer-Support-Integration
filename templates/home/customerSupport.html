@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <meta name="author" content="CodeHim" />
+    <title>Help Desk Chatroom | iBAS++</title>
+
+    <link rel="icon" type="image/png" href="{% static 'images/logo/ibas_logo.png' %}">
+    <!-- Bootstrap 5.2.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+    <script
+      src="https://kit.fontawesome.com/272e010829.js"
+      crossorigin="anonymous"
+    ></script>
+    <!-- Skeleton Loading CSS -->
+    <link
+      rel="stylesheet"
+      href="{% static 'css/home/customerSupport/skeletonLoading.css' %}"
+    />
+    <!-- Miscellaneous CSS -->
+    <link
+      rel="stylesheet"
+      href="{% static 'css/home/customerSupport/miscellaneous.css' %}"
+    />
+    <!-- CSO User Detail CSS -->
+    <link
+      rel="stylesheet"
+      href="{% static 'css/home/customerSupport/csoUserDetail.css' %}"
+    />
+    <!-- Ticket Issue Detail CSS -->
+    <link
+      rel="stylesheet"
+      href="{% static 'css/home/customerSupport/ticketIssueDetail.css' %}"
+    />
+    <!-- Chatbox Container CSS -->
+    <link
+      rel="stylesheet"
+      href="{% static 'css/home/customerSupport/customerSupportComponents/chatbody.css' %}"
+    />
+
+    <!-- Style CSS -->
+    <link rel="stylesheet" href="{% static '/css/staffApp/style.css' %}" />
+    <link rel="stylesheet" href="{% static '/css/staffApp/demo.css' %}" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <main class="cd__main">
+      <!-- Start DEMO HTML (Use the following code into your project)-->
+      <nav
+        class="navbar navbar-expand-lg bg-body-tertiary"
+        style="background-color: #02555b !important; padding: 0 20px"
+      >
+        <div class="container-fluid">
+          <div class="navbar-brand">
+            <img
+              class="navbar-image"
+              src="{% static '/images/logo/ibas_logo.png' %}"
+              alt="Profile Picture"
+            />
+          </div>
+          <a class="navbar-brand nav-title" href="#">IBAS++</a>
+          <a class="navbar-brand nav-title" href="#" style="font-weight: 300"
+            >|  Help Desk Chatroom
+            </a
+          >
+          <a class="navbar-brand">
+            <button
+              class="btn sidebar-btn"
+              type="button"
+              title="Open Sidebar"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#offcanvasExample"
+              aria-controls="offcanvasExample"
+            >
+              <i class="far fa-caret-square-right"></i>
+            </button>
+          </a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            title="Open "
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 profile-menu">
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  id="navbarDropdown"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <div class="profile-pic">
+                    <img
+                      src="https://source.unsplash.com/250x250?girl"
+                      alt="Profile Picture"
+                    />
+                  </div>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><i class="fas fa-sliders-h fa-fw"></i> Profile</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><i class="fas fa-cog fa-fw"></i> Settings</a
+                    >
+                  </li>
+                  <li><hr class="dropdown-divider" /></li>
+                  <li>
+                    <a class="dropdown-item" href="{% url 'authenticationApplication:CsoAuth:CSOLogoutView' %}"
+                      ><i class="fas fa-sign-out-alt fa-fw"></i> Log Out</a
+                    >
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <!-- END EDMO HTML (Happy Coding!)-->
+      <div class="main-body">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="sidebar container-fluid" style="border-radius: 10px">
+                <div class="card side-bar-card shadow-sm" style="width: 58vh;">
+                  <div class="side-bar-card-image">
+                    <img
+                      class="card-image"
+                      src="https://source.unsplash.com/300x300?professional man"
+                      alt="Profile Picture"
+                    />
+                  </div>
+                  <div class="text-body">
+                    <p class="card-text fs-6">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+                    <p class="card-text">Help Desk Officer</p>
+                    <p class="card-text">ID</p>
+                  </div>
+                </div>
+                <div class="card px-4 side-bar-card shadow-sm" style="width: 58vh;">
+                  <div class="text-body" style="text-align: left">
+                    <p class="card-text fw-lighter"><b>Issue Summary</b></p>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="text-body" style="text-align: left">
+                        <p class="card-text fw-lighter">Issue Id</p>
+                        <span
+                            id="div_issue_id"
+                            class="ticket_detail_value_span"
+                            >-</span
+                          >
+                        
+                      </div>
+                      <div class="text-body" style="text-align: left">
+                        <p class="card-text fw-lighter">Project</p>
+                        <span
+                            id="div_project"
+                            class="ticket_detail_value_span"
+                            >-</span
+                          >
+                      </div>
+                      <div class="text-body" style="text-align: left">
+                        <p class="card-text fw-lighter">Mobile No</p>
+                        <span
+                            id="div_issuer_mobile_number"
+                            class="ticket_detail_value_span"
+                            >-</span
+                          >
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="text-body" style="text-align: left">
+                        <p class="card-text fw-lighter">Issue Type</p>
+                        <span
+                            id="div_issue"
+                            class="ticket_detail_value_span"
+                            >-</span
+                          >
+                      </div>
+                      <div class="text-body" style="text-align: left">
+                        <p class="card-text fw-lighter">User Name</p>
+                        <span
+                            id="div_issuer_name"
+                            class="ticket_detail_value_span"
+                            >-</span
+                          >
+                      </div>
+                      <div class="text-body" style="text-align: left">
+                        <p class="card-text fw-lighter">Status</p>
+                            <span
+                            id="div_status"
+                            class="ticket_detail_value_span"
+                            >-</span
+                          >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card side-bar-card shadow-sm" style="width: 58vh; height: unset !important; padding: unset !important;">
+                  
+                  <div class="row" style="margin: 2px -1px;">
+                    <div class="col-10 text-body" style="text-align: left;">
+                      <p style='font-size: 16px; color:rgb(16, 83, 35);' class="card-text fw-lighter">
+                        <b>
+                          <i 
+                          style='font-size:20px; padding-right: 6px;' 
+                          class="fa fa-info-circle" 
+                          ></i> 
+                          Issue Details</b></p>
+                    </div>
+                    <div class="col-2 text-body">
+                      <p style='font-size: 16px; color:rgb(16, 83, 35);' class="card-text fw-lighter"><b>
+                        <i 
+                        onclick="dispTicketDetail(ticket_issue_oid='{{ tms_issue_by_oid }}', user_signin_token='{{ user_signing_token_tms }}')"
+                        style='font-size:20px; padding-right: 6px;' 
+                        class="fa fa-chevron-right utility-card"
+                        data-bs-toggle="modal" 
+                        data-bs-target="#ticketView"
+                        ></i></b></p>
+                    </div>
+                  </div>
+                  {% if request.user.is_cso %}
+                  <div class="row" style="margin: -1px; border-top: 1px solid rgb(218, 218, 218);">
+                    <div class="col-10 text-body" style="text-align: left;">
+                      <p style='font-size: 16px; color:rgb(16, 83, 35); ' class="card-text fw-lighter"><b><i style='font-size:20px; color:rgb(16, 83, 35); padding-right: 6px;' class="fa fa-check-circle"></i> Resolve Issue</b></p>
+                    </div>
+                    <div class="col-2 text-body">
+                      <p style='font-size: 16px;' class="card-text fw-lighter"><b>
+                        <i 
+                        style='font-size:20px; color:rgb(16, 83, 35); font-size:20px; padding-right: 6px;' 
+                        class="fa fa-chevron-right utility-card"
+                        data-bs-toggle="modal"
+                        data-bs-target="#remarkModal"
+                        ></i></b></p>
+                    </div>
+                  </div>
+                  {% endif %}
+                  {% if request.user.is_user %}
+                  <div class="row" style="margin: -1px; border-top: 1px solid rgb(218, 218, 218);">
+                    <div class="col-10 text-body" style="text-align: left;">
+                      <p style='font-size: 16px;  color:red;' class="card-text fw-lighter"><b><i style='font-size:20px; color:red; padding-right: 6px;' class="fas fa-comment-slash"></i> Dismiss Chat</b></p>
+                    </div>
+                    <div class="col-2 text-body">
+                      <p style='font-size: 16px;  color:red;' class="card-text fw-lighter"><b><i 
+                        style='font-size:20px; padding-right: 6px;' 
+                        class="fa fa-chevron-right utility-card"
+                        data-bs-toggle="modal"
+                        data-bs-target="#chatroomLeave"
+                        ></i></b></p>
+                    </div>
+                  </div>
+                  {% endif %}
+
+                  {% if request.user.is_cso %}
+                  <div class="row" style="margin: -1px; border-top: 1px solid rgb(218, 218, 218);">
+                    <div class="col-10 text-body" style="text-align: left;">
+                      <p style='font-size: 16px;  color:red;' class="card-text fw-lighter"><b><i style='font-size:20px; color:red; padding-right: 6px;' class="fas fa-comment-slash"></i> Dismiss Issue</b></p>
+                    </div>
+                    <div class="col-2 text-body">
+                      <p style='font-size: 16px;  color:red;' class="card-text fw-lighter"><b>
+                        <i 
+                        style='font-size:20px; padding-right: 6px;' 
+                        class="fa fa-chevron-right utility-card"
+                        data-bs-toggle="modal"
+                        data-bs-target="#dismissIssueConfirmationModal"
+                        ></i></b></p>
+                    </div>
+                  </div>
+                  {% endif %}
+                  
+                  <!-- <div class="text-body" style="text-align: left">
+                    <p class="card-text fw-lighter"><b>Issue Details</b></p>
+                  </div>
+                  <div class="text-body" style="text-align: left; border-top: 1px solid red; padding: 15px 0px;">
+                    <p class="card-text fw-lighter"><b>Resolve Issue</b></p>
+                  </div>
+                  <div class="text-body" style="text-align: left; border-top: 1px solid red;">
+                    <p class="card-text fw-lighter"><b>Dismiss Chat</b></p>
+                  </div> -->
+                  
+                </div>
+              </div>
+              <div>
+                <div
+                  class="offcanvas offcanvas-start"
+                  tabindex="-1"
+                  id="offcanvasExample"
+                  aria-labelledby="offcanvasExampleLabel"
+                >
+                  <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasExampleLabel">
+                      Help Desk Officer Info
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="offcanvas"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="offcanvas-body">
+                    <div
+                      class="container-fluid"
+                      style="border-radius: 10px; margin: auto"
+                    >
+                      <div class="card side-bar-card shadow-sm">
+                        <div class="side-bar-card-image">
+                          <img
+                            class="card-image"
+                            src="https://source.unsplash.com/300x300?professional man"
+                            alt="Profile Picture"
+                          />
+                        </div>
+
+                        <div class="text-body">
+                          <p class="card-text fs-6">Mohammad Zamal Uddin</p>
+                          <p class="card-text">Help Desk Officer</p>
+                          <p class="card-text fw-lighter">ID 170010</p>
+                        </div>
+                      </div>
+                      <div class="card px-4 side-bar-card shadow-sm">
+                        <div class="text-body" style="text-align: left">
+                          <i class="fas fa-building sidebar-icon"></i>
+                          <p class="card-text fw-lighter">Organization</p>
+                          <p class="card-text">National Borad of Revenue</p>
+                        </div>
+                        <div class="text-body" style="text-align: left">
+                          <i class="fas fa-map-marker-alt sidebar-icon"></i>
+                          <p class="card-text fw-lighter">Address</p>
+                          <p class="card-text">
+                            <span>Plot# F1/A Agargaon</span>
+                            <span>Sher-e-Bangla Nagor, Dhaka-1207</span>
+                            <span>Telephone: 022222217700 Ex-0140</span>
+                            <span>Email: customsn@gmail.com</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+          class="modal fade"
+          id="chatroomLeave"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-light">
+              <div class="modal-body p-4">
+                <div class="card w-100 text-center mb-0">
+                  <div class="card-body mx-auto">
+                    <h5 class="card-title fs-6">Leave the Chatroom?</h5>
+                    <p class="card-text my-3">
+                      Do you want to leave the chatroom?
+                    </p>
+                  </div>
+                  <div class="d-flex justify-content-center gap-4">
+                    <button
+                      type="button"
+                      class="btn third-button w-25 text-white"
+                      data-bs-dismiss="modal"
+                    >
+                      No
+                    </button>
+                    <!-- <button type="button" 
+                    class="btn btn-danger" 
+                    id="cancel-chat-btn" 
+                    data-mdb-ripple-color="dark" 
+                    style="width: 8rem;">Cancel Chat</button> -->
+                    <button
+                      type="button"
+                      id="cancel-chat-btn" 
+                      class="btn second-button w-25 text-white"
+                      data-bs-dismiss="modal"
+                    >
+                      Yes
+                    </button>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+                <!-- Modal -->
+        <div
+        class="modal fade ticket-view-modal"
+        id="ticketView"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content ticket-view-modal">
+            <div
+              class="modal-header text-center"
+              style="
+                background-color: #d2e9e9;
+                position: relative;
+                height: 8vh;
+              "
+            >
+              <div class="ticket-modal-logo">
+                <img
+                  class="w-75"
+                  src="{% static '/images/vector/Vector.png' %}"
+                  alt="Profile Picture"
+                />
+              </div>
+            </div>
+            <div class="modal-body my-2">
+              <div class="container-fluid text-center">
+                <div>
+                  <h class="fs-6 fw-medium">Issue Details</h>
+                </div>
+                <div class="row mt-4">
+                  <div class="col-md-3 col-sm-6 field-wrapper">
+                    <span class="field-label d-flex">
+                      <p>Issue ID</p>
+                    </span>
+                    <span class="field-value">
+                      <p id="modal_span_ticket_issue_id"></p>
+                    </span>
+                  </div>
+                  <div class="col-md-3 col-sm-6 field-wrapper">
+                    <span class="field-label d-flex">
+                      <p>Issue Type</p>
+                    </span>
+                    <span class="field-value">
+                      <p id="modal_span_ticket_issue"></p>
+                    </span>
+                  </div>
+                  <div class="col-md-3 col-sm-6 field-wrapper">
+                    <span class="field-label d-flex">
+                      <p>Project</p>
+                    </span>
+                    <span class="field-value">
+                      <p id="modal_span_ticket_project"></p>
+                    </span>
+                  </div>
+                  <div class="col-md-3 col-sm-6 field-wrapper">
+                    <span class="field-label d-flex">
+                      <p>Status</p>
+                    </span>
+                    <span class="field-value">
+                      <p id="modal_span_ticket_status"></p>
+                    </span>
+                  </div>
+                  <div class="col-md-3 col-sm-6 field-wrapper">
+                    <span class="field-label d-flex">
+                      <p>User Name</p>
+                    </span>
+                    <span class="field-value">
+                      <p id="modal_span_ticket_issuer_name"></p>
+                    </span>
+                  </div>
+                  <div class="col-md-3 col-sm-6 field-wrapper">
+                    <span class="field-label d-flex">
+                      <p>User Mobile No.</p>
+                    </span>
+                    <span class="field-value">
+                      <p id="modal_span_ticket_issuer_mobile_number"></p>
+                    </span>
+                  </div>
+                  <div class="col-md-3 col-sm-6 field-wrapper">
+                    <span class="field-label d-flex">
+                      <p>Email ID</p>
+                    </span>
+                    <span class="field-value">
+                      <p id="modal_span_ticket_issuer_email"></p>
+                    </span>
+                  </div>
+                  <div class="col-md-3 col-sm-6 field-wrapper">
+                    <span class="field-label d-flex">
+                      <p>Created by</p>
+                    </span>
+                    <span class="field-value">
+                      <p id="modal_span_ticket_created_by"></p>
+                    </span>
+                  </div>
+                  <div class="col-md-3 col-sm-6 field-wrapper">
+                    <span class="field-label d-flex">
+                      <p>Created On</p>
+                    </span>
+                    <span class="field-value">
+                      <p id="modal_span_ticket_created_on"></p>
+                    </span>
+                  </div>
+                  <div class="col-md-3 col-sm-6 field-wrapper">
+                    <span class="field-label d-flex">
+                      <p>Description</p>
+                    </span>
+                    <span class="field-value">
+                      <p id="modal_span_ticket_description"></p>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer" style="display: block">
+              <div class="d-flex justify-content-center gap-4">
+                <button
+                  type="button"
+                  class="btn third-button text-white issue-details-button"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+              </div>
+            </div>
+            <div class="col-lg-8 col-sm-12">
+              <div class="container-fluid table-container shadow-sm">
+                
+                  {% include 'home/customerSupportComponents/chatBodynew.html' %}
+
+                  {% if request.user.is_cso %}
+                  {% include 'home/customerSupportComponents/modals/resolveIssueModal.html' %}
+                  {% include 'home/customerSupportComponents/modals/dismissIssueConfirmationModal.html' %}
+                  {% endif %}
+
+                  {% if request.user.is_user %}
+                  <!-- User Issue resolved Information Modal -->
+                  {% include 'home/customerSupportComponents/modals/userIssueResolvedInformationModal.html' %}
+                  <!-- Dismiss/Unresolved Issue Information Modal -->
+                  {% include 'home/customerSupportComponents/modals/dismissIssueInformationModal.html' %} 
+                  {% endif %}
+                
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </main>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+    <!-- Script JS -->
+    
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+<!-- get cookies -->
+<script src="{% static 'js/miscellaneous/helper_func/get_cookies.js' %}"></script>
+
+<!-- Fetch ticket issue from TMS -->
+<script>
+    let room_slug_glo; 
+    function get_enter_confirmation_dialog(room_slug) {
+      room_slug_glo = room_slug;
+    }
+
+    function get_clear_confirmation_dialog(room_slug) {
+      room_slug_glo = room_slug;
+    }
+
+    function go_to_chat_room() {
+        window.open(`http://${window.location.host}/customer-support/${room_slug_glo}`, "_blank");
+    }
+
+    function clearChat() {
+        let msg_req_clear_form = document.querySelector(`#msg-req-clear-form-${room_slug_glo}`);
+        msg_req_clear_form.submit()
+    }
+
+    function disp(msg_id = 1, ticket_issue_oid = 2) {
+      console.log("hellooo...........");
+        room_slug_glo = msg_id;
+
+        let user_signing_token_tms = "{{ user_signing_token_tms }}";
+      
+        let span_issue_id = document.getElementById('span_issue_id');
+        let span_issue = document.getElementById('span_issue');
+        let span_project = document.getElementById('span_project');
+        let span_status = document.getElementById('span_status');
+        let span_issuer_name = document.getElementById('span_issuer_name');
+        let span_issuer_mobile_number = document.getElementById('span_issuer_mobile_number');
+        let span_issuer_email = document.getElementById('span_issuer_email');
+        let span_created_by = document.getElementById('span_created_by');
+        let span_created_on = document.getElementById('span_created_on');
+        let span_description = document.getElementById('span_description');
+
+	var get_tms_issue_detail_url = `http://${window.location.host}/staff/api/tms-issue/${ticket_issue_oid}/${user_signing_token_tms}/`;
+        console.log("Fetch URL (GET):", get_tms_issue_detail_url);
+
+	var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+	
+	fetch(`${get_tms_issue_detail_url}`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            issueId.innerHTML = "";
+            issueId.innerHTML = `${result.data.issue_id}`;
+            issueType.innerHTML = "";
+            issueType.innerHTML = `${result.data.category_title_en}`;
+            project.innerHTML = "";
+            project.innerHTML = `${result.data.project_title_en}`;
+            issueStatus.innerHTML = "";
+            issueStatus.innerHTML = `${result.data.status}`;
+            userName.innerHTML = "";
+            userName.innerHTML = `${result.data.issuer_name_en}`;
+            userMobileNo.innerHTML = "";
+            userMobileNo.innerHTML = `${result.data.issuer_mobile_number}`;
+            emailId.innerHTML = "";
+            emailId.innerHTML = `${result.data.issuer_email}`;
+            createdBy.innerHTML = "";
+            createdBy.innerHTML = `${result.data.created_by_en}`;
+            createdOn.innerHTML = "";
+            createdOn.innerHTML = `${result.data.created_on}`;
+            description.innerHTML = "";
+            description.innerHTML = `${result.data.description}`;
+        })
+        .catch(error => console.log('error', error));       // HIDE LOADER WILL BE IMPLEMENTED HERE
+	
+    }
+
+</script>
+
+<!-- Clear message request -->
+<script>
+    function remove_msg_req(room_slug) {
+        console.log(`Clear button is clicked! ${room_slug}`);
+        let msg_req_clear_form = document.querySelector(`#msg-req-clear-form-${room_slug}`);
+        console.log('msg-form: ', msg_req_clear_form);
+        msg_req_clear_form.submit()
+    }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"
+          integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+          crossorigin="anonymous"></script>
+        <script src="{% static 'js/home/customerSupportChat/tmsIssueUpdate.js' %}"></script>
+        <script src="{% static 'js/home/customerSupportChat/speechToText.js' %}"></script>
+        <script src="{% static 'js/home/customerSupportChat/botTyping.js' %}"></script>
+        <script src="{% static 'js/miscellaneous/helper_func/get_cookies.js' %}"></script>
+<script src="{% static 'js/miscellaneous/helper_func/random_string_generator.js' %}"></script>
+
+<script>
+  let grid_tms_issue_skeleton = document.querySelector(
+    ".grid-tms-issue-skeleton"
+  );
+  let grid_tms_issue_data = document.querySelector(
+    ".grid-tms-issue-data"
+  );
+
+  function disp(ticket_issue_oid = 1, user_signin_token = 2) {
+    console.log(
+      `Ticket Issue Id (from 'disp()' function): ${ticket_issue_oid}`
+    );
+    // let user_signing_token_tms = "{{ user_signing_token_tms }}";
+    console.log(
+      `User signin token (from 'disp()' function): ${user_signin_token}`
+    );
+
+    let span_issue_id = document.getElementById("div_issue_id");
+    let span_issue = document.getElementById("div_issue");
+    let span_project = document.getElementById("div_project");
+    let span_issuer_mobile_number = document.getElementById(
+      "div_issuer_mobile_number"
+    );
+    let span_status = document.getElementById("div_status");
+    let span_issuer = document.getElementById("div_issuer_name");
+
+    // Fetch approach - 2
+    var get_tms_issue_detail_url = `http://${window.location.host}/staff/api/tms-issue/${ticket_issue_oid}/${user_signin_token}/`;
+    console.log("Fetch URL (GET):", get_tms_issue_detail_url);
+
+    var requestOptions = {
+      method: "GET",
+      redirect: "follow",
+    };
+
+    // fetch(`http://${window.location.host}/staff/api/tms-issue/${ticket_issue_oid}/${user_signing_token_tms}/`, requestOptions)
+    fetch(`${get_tms_issue_detail_url}`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        // HIDE LOADER WILL BE IMPLEMENTED HERE
+        // grid_tms_issue_skeleton.style.display = "none";
+        // grid_tms_issue_skeleton.remove();
+        // grid_tms_issue_data.style.visibi = "block";
+        // grid_tms_issue_data.removeAttribute("style");
+
+        console.log(result.data); 
+        span_issuer.innerHTML = "";
+        span_issuer.innerHTML = `${result.data.issuer_name_en}`;
+
+        span_issue_id.innerHTML = "";
+        span_issue_id.innerHTML = `${result.data.issue_id}`;
+        span_issue.innerHTML = "";
+        span_issue.innerHTML = `${result.data.category_title_en}`;
+        span_project.innerHTML = "";
+        span_project.innerHTML = `${result.data.project_title_en}`;
+        span_status.innerHTML = "";
+        span_status.innerHTML = `${result.data.status}`;
+        span_issuer_mobile_number.innerHTML = "";
+        span_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
+      })
+      .catch((error) => console.log("error", error)); // HIDE LOADER WILL BE IMPLEMENTED HERE
+
+  }
+
+  window.onload = function () {
+    // yourFunction(param1, param2);
+    console.log(`Window is fully laoded!`);
+    tms_issue_oid = "{{ tms_issue_by_oid }}";
+    console.log(`TSM Issue OID: ${tms_issue_oid}`);
+    let user_signing_token_tms = "{{ user_signing_token_tms }}";
+    // console.log(`User signin token: ${user_signing_token_tms}`);
+    disp(
+      (ticket_issue_oid = tms_issue_oid),
+      (user_signin_token = user_signing_token_tms)
+    );
+    // let ticketDetailModalBtn =
+    //   document.querySelector(".ticketDetailModal");
+    // ticketDetailModalBtn.style.display = "block";
+  };
+</script>
+
+<!-- Fetch Ticket Issue Detail on "View Detail" btn click -->
+<script>
+  // function dispTicketDetail(msg_id = 1, ticket_issue_oid = 2) {
+  function dispTicketDetail(
+    ticket_issue_oid = 1,
+    user_signin_token = 2
+  ) {
+    console.log(`Helloooooooooooooooo`);
+    console.log(`Ticket Issue Id: ${ticket_issue_oid}`);
+    console.log(`User signin token TMS: ${user_signin_token}`);
+
+    let modal_span_ticket_issue_id = document.getElementById(
+      "modal_span_ticket_issue_id"
+    );
+    let modal_span_ticket_issue = document.getElementById(
+      "modal_span_ticket_issue"
+    );
+    let modal_span_ticket_project = document.getElementById(
+      "modal_span_ticket_project"
+    );
+    let modal_span_ticket_status = document.getElementById(
+      "modal_span_ticket_status"
+    );
+    let modal_span_ticket_issuer_name = document.getElementById(
+      "modal_span_ticket_issuer_name"
+    );
+    let modal_span_ticket_issuer_mobile_number =
+      document.getElementById("modal_span_ticket_issuer_mobile_number");
+
+    let modal_span_ticket_issuer_email = document.getElementById(
+      "modal_span_ticket_issuer_email"
+    );
+    let modal_span_ticket_created_by = document.getElementById(
+      "modal_span_ticket_created_by"
+    );
+    let modal_span_ticket_created_on = document.getElementById(
+      "modal_span_ticket_created_on"
+    );
+    let modal_span_ticket_description = document.getElementById(
+      "modal_span_ticket_description"
+    );
+
+    var get_tms_issue_detail_url = `http://${window.location.host}/staff/api/tms-issue/${ticket_issue_oid}/${user_signin_token}/`;
+    console.log("Fetch URL (GET):", get_tms_issue_detail_url);
+
+    var requestOptions = {
+      method: "GET",
+      redirect: "follow",
+    };
+
+    // fetch(`http://${window.location.host}/staff/api/tms-issue/${ticket_issue_oid}/${user_signing_token_tms}/`, requestOptions)
+    fetch(`${get_tms_issue_detail_url}`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        // HIDE LOADER WILL BE IMPLEMENTED HERE
+        // grid_tms_issue_skeleton.style.display = "none";
+        // grid_tms_issue_skeleton.remove();
+        // grid_tms_issue_data.style.visibi = "block";
+        // grid_tms_issue_data.removeAttribute("style");
+
+        // console.log(result);
+        modal_span_ticket_issue_id.innerHTML = "";
+        modal_span_ticket_issue_id.innerHTML = `${result.data.issue_id}`;
+        modal_span_ticket_issue.innerHTML = "";
+        modal_span_ticket_issue.innerHTML = `${result.data.category_title_en}`;
+        modal_span_ticket_project.innerHTML = "";
+        modal_span_ticket_project.innerHTML = `${result.data.project_title_en}`;
+        modal_span_ticket_status.innerHTML = "";
+        modal_span_ticket_status.innerHTML = `${result.data.status}`;
+        modal_span_ticket_issuer_name.innerHTML = "";
+        modal_span_ticket_issuer_name.innerHTML = `${result.data.issuer_name_en}`;
+        modal_span_ticket_issuer_mobile_number.innerHTML = "";
+        modal_span_ticket_issuer_mobile_number.innerHTML = `${result.data.issuer_mobile_number}`;
+        modal_span_ticket_issuer_email.innerHTML = "";
+        modal_span_ticket_issuer_email.innerHTML = `${result.data.issuer_email}`;
+        modal_span_ticket_created_by.innerHTML = "";
+        modal_span_ticket_created_by.innerHTML = `${result.data.created_by_en}`;
+        modal_span_ticket_created_on.innerHTML = "";
+        modal_span_ticket_created_on.innerHTML = `${result.data.created_on}`;
+        modal_span_ticket_description.innerHTML = "";
+        modal_span_ticket_description.innerHTML = `${result.data.description}`;
+      })
+      .catch((error) => console.log("error", error)); // HIDE LOADER WILL BE IMPLEMENTED HERE
+
+  }
+</script>
+
+<!-- Miscellaneaous JS: Chat-body scroller -->
+<script>
+  const microphone = document.querySelector('#recordButton');
+  // Scroll down the chatbody div after window loads
+  var divElement = document.getElementById("chatbody-scroller");
+  // While the page is loaded, scroll down automatically at the bottom (previous messages)
+  divElement.scroll({
+    top: divElement.scrollHeight, //scroll to the bottom of the element
+    behavior: "smooth", //auto, smooth, initial, inherit
+  });
+</script>
+
+<script>
+  // VARIABLES
+  const roomSlug = `{{ room_slug }}`;
+  const ChatSupportURL = `ws://${window.location.host}/ws/cso-visitor/chat-support/${roomSlug}/`; // [PRODUCTION - working]construct the websocket url
+  console.log(ChatSupportURL);
+  const chat_send_btn = document.querySelector(
+    "#chat-message-send-btn"
+  );
+  const chat_msg_input_field = document.querySelector(
+    "#chat-message-input"
+  );
+  let cso_email = `{{request.user.is_cso}}`;
+  var reg_user = `{{request.user.is_user}}`;
+  console.log(`CSO (bool): ${cso_email}`);
+  console.log(`CSO email is not empty: ${cso_email !== ""}`);
+  console.log(`Registered User (bool): ${reg_user}`);
+
+  function getHumanFeedback(feedback, fc_uid=null) {
+    if (reg_user === "True") {
+let feedbackContainer = document.querySelector(`.feedbackContainer-${fc_uid}`);
+
+      if (feedbackContainer !== null) {
+        console.log(`Sent hf signal to socket to remove the HF option from the chatbox!`);
+
+        ChatSupportSocket.send(
+          JSON.stringify({
+            feedback: feedback,
+fc_uid: fc_uid,
+            roomslug: roomSlug,
+          })
+        );
+      }
+
+
+    }
+  }
+
+  function multiLineReplyMode (mlr) {
+    console.log(`mlr_clicked (multiLineReplyMode):`, mlr);
+    ChatSupportSocket.send(
+      JSON.stringify({
+        mlr: mlr,
+        roomslug: roomSlug,
+      })
+    );
+  }
+
+  function sendHfOnMlrDisable () {
+    console.log(`Sent socket signal to send HF to only customer end! (through "message" socket signal!)`);
+    let user_identity = "";
+    if (reg_user === "True") {
+      user_identity = "reg_user";
+    }
+    if (cso_email === "True") {
+      user_identity = "cso";
+    }
+    ChatSupportSocket.send(
+      JSON.stringify({
+        sendHfOnMlrDisable: "Send HF on MLR mode disble",
+        user_identity: user_identity,
+        roomslug: roomSlug,
+      })
+    );
+  }
+
+  function conversationalReplyMode(cr) {
+    console.log(`cr_clicked (conversationalReplyMode):`, cr);
+    ChatSupportSocket.send(
+      JSON.stringify({
+        cr: cr,
+        roomslug: roomSlug,
+      })
+    );
+  }
+
+  function sendHfOnCrDisable () {
+    console.log(`Sent socket signal to send HF to only customer end! (through "message" socket signal!)`);
+    let user_identity = "";
+    if (reg_user === "True") {
+      user_identity = "reg_user";
+    }
+    if (cso_email === "True") {
+      user_identity = "cso";
+    }
+    ChatSupportSocket.send(
+      JSON.stringify({
+        sendHfOnCrDisable: "Send HF on CR mode disble",
+        user_identity: user_identity,
+        roomslug: roomSlug,
+      })
+    );
+  }
+
+  function hdoQueryReplyMode (hifq) {
+    ChatSupportSocket.send(
+      JSON.stringify({
+        hifq: hifq,
+        roomslug: roomSlug,
+      })
+    );
+  }
+
+  function hf_icon_thumbs_up_mouseover() {
+    let hf_thumbs_up = document.getElementById("hf-thumbs-up");
+    hf_thumbs_up.classList.remove("fa-regular");
+    hf_thumbs_up.classList.add("fa-solid");
+  }
+
+  function hf_icon_thumbs_up_mouseout() {
+    let hf_thumbs_up = document.getElementById("hf-thumbs-up");
+    hf_thumbs_up.classList.remove("fa-solid");
+    hf_thumbs_up.classList.add("fa-regular");
+  }
+
+  function hf_icon_thumbs_down_mouseover() {
+    let hf_thumbs_down = document.getElementById("hf-thumbs-down");
+    hf_thumbs_down.classList.remove("fa-regular");
+    hf_thumbs_down.classList.add("fa-solid");
+  }
+
+  function hf_icon_thumbs_down_mouseout() {
+    let hf_thumbs_down = document.getElementById("hf-thumbs-down");
+    hf_thumbs_down.classList.remove("fa-solid");
+    hf_thumbs_down.classList.add("fa-regular");
+  }
+
+  const ChatSupportSocket = new WebSocket(ChatSupportURL);
+
+  ChatSupportSocket.onopen = function (e) {
+    console.log("Frontend Websocket: Connection Established!");
+    console.log(`CSO (bool): ${cso_email}`);
+
+    if (reg_user === "True") {
+      const cancel_chat_btn =
+        document.querySelector("#cancel-chat-btn");
+      cancel_chat_btn.onclick = function (e) {
+        console.log(`cancel chat button is clicked!`);
+        var user_email = `{{request.user.email}}`;
+        var cso_email_backend = `{{ cso_user_email }}`;
+        console.log(
+          `cancel-chat-btn button is clicked by the user; email: ${user_email}`
+        );
+        console.log(`CSO email backend: ${cso_email_backend}`);
+        ChatSupportSocket.send(
+          JSON.stringify({
+            cso_user_convo_cancelled: "User has cancelled the chat!",
+            cso_email: cso_email_backend,
+            reg_user_email: user_email,
+            roomslug: roomSlug,
+          })
+        );
+      };
+    }
+
+    if (cso_email === "True") {
+      const dismiss_issue_confirmation_btn = document.querySelector(
+        "#dismiss-issue-confirmation-btn"
+      );
+
+      if (dismiss_issue_confirmation_btn !== null) {
+        dismiss_issue_confirmation_btn.onclick = function (e) {
+          var common_registered_user_email = `{{ common_registered_user_email }}`;
+          var common_cso_email = `{{ common_cso_email }}`;
+          var remark_input_dismiss = document.querySelector(
+            "#remark-input-dismiss"
+          );
+          var remark_input_dismiss_value = remark_input_dismiss.value;
+
+          tmsIssueUpdate_unresolve(
+            (user_signing_token_tms = user_signin_token),
+            (remark_input_dismiss_value = remark_input_dismiss_value),
+            (ticket_issue_oid = ticket_issue_oid),
+            (common_cso_email = common_cso_email),
+            (common_registered_user_email =
+              common_registered_user_email),
+            (roomSlugParam = roomSlug)
+          );
+        };
+      }
+      if (conversational_reply_container.classList.contains("cr-display-none")) {
+        conversational_reply_container.classList.remove("cr-display-none");
+      }
+      if (multi_line_reply_container.classList.contains("mlr-display-none")) {
+        multi_line_reply_container.classList.remove("mlr-display-none");
+      }
+      if (hdo_input_field_query.classList.contains("hifq-display-none")) {
+        hdo_input_field_query.classList.remove("hifq-display-none");
+      }
+    }
+  };
+
+  ChatSupportSocket.onmessage = function (e) {
+    const data = JSON.parse(e.data);
+    const cso_dashboard_url = document.querySelector("#cso-dashboard-url");
+    const HF_TEXT = "এটা কি সহায়ক ছিল?";
+    var human_feedback_query = () => {
+let feedbackContainerRandomString = generateRandomString(10);
+      if (cso_email === "True" && reg_user === "False") {
+        return `
+          <div id="feedbackContainer" class="container-fluid text-center d-none">
+            <div class="row"><p class="fw-bold">${HF_TEXT}</p></div>
+            <div class="row">
+              <div class="col">
+                <hr class="hf-hr">
+              </div>
+              <div class="col-2 row">
+                <div class="col p-0"><i id="hf-thumbs-up" class="fa-regular fa-thumbs-up fa-xl" onmouseover="hf_icon_thumbs_up_mouseover()" onmouseout="hf_icon_thumbs_up_mouseout()" onclick="getHumanFeedback(feedback='yes')"></i></div>
+                <div class="col p-0"><i id="hf-thumbs-down" class="fa-regular fa-thumbs-down fa-flip-horizontal fa-xl" onmouseover="hf_icon_thumbs_down_mouseover()" onmouseout="hf_icon_thumbs_down_mouseout()" onclick="getHumanFeedback(feedback='no')"></i></div>
+              </div>
+              <div class="col">
+                <hr class="hf-hr">
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      if (reg_user === "True" && cso_email === "False") {
+        return `
+          <div id="feedbackContainer" class="container-fluid text-center feedbackContainer-${feedbackContainerRandomString}">
+            <div class="row"><p class="fw-bold">${HF_TEXT}</p></div>
+            <div class="row">
+              <div class="col">
+                <hr class="hf-hr">
+              </div>
+              <div class="col-2 row">
+                <div class="col p-0"><button id="hf-thumbs-up" type="button" class="btn text-white" style="background-color: #344767" onclick="getHumanFeedback(feedback='yes', fc_uid='${feedbackContainerRandomString}')">হ্যাঁ</button></div>
+                <div class="col p-0"><button id="hf-thumbs-down" type="button" class="btn text-white" style="background-color: #bb2d3b" onclick="getHumanFeedback(feedback='no', fc_uid='${feedbackContainerRandomString}')">না</button></div>
+              </div>
+              <div class="col">
+                <hr class="hf-hr">
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    };
+
+
+    console.log("Frontend Websocket: onmessage!");
+
+    if (data.message) {
+      console.log(`CSO (bool) [data.message]: ${cso_email}`);
+      console.log(`Customer (bool) [data.message]: ${reg_user}`);
+      console.log(`User identity:`, data.user_identity);
+
+      if (data.user_identity === "cso") {
+        console.log(`message from cso`);
+
+        if (multiline_reply_mode === true) {
+          console.log(`HDO has sent a msg while the MLR mode is enabled!`);
+          console.log(`Make the "sent_msg_by_hdo_in_mlr_mode" to true; since HDO has sent atleast a single msg while the MLR mode is enabled! But make the "sent_msg_by_hdo_in_mlr_mode" to false while the HDO disables the MLR mode!`);
+          if (!sent_msg_by_hdo_in_mlr_mode) {
+            sent_msg_by_hdo_in_mlr_mode = true;
+            console.log(`sent_msg_by_hdo_in_mlr_mode [data.message]:`, sent_msg_by_hdo_in_mlr_mode);
+          }
+        }
+        
+        if (conversational_reply_mode === true) {
+          console.log(`HDO has sent a msg while the CR mode is enabled!`);
+          console.log(`Make the "sent_msg_by_hdo_in_cr_mode" to true; since HDO has sent atleast a single msg while the CR mode is enabled! But make the "sent_msg_by_hdo_in_cr_mode" to false while the HDO disables the MLR mode!`);
+          if (!sent_msg_by_hdo_in_cr_mode) {
+            sent_msg_by_hdo_in_cr_mode = true;
+            console.log(`sent_msg_by_hdo_in_cr_mode [data.message]:`, sent_msg_by_hdo_in_cr_mode);
+          }
+        }
+      }
+      if (data.user_identity === "reg_user") {
+        console.log(`message from registered user`);
+      }
+
+      if (data.user_identity === "cso") {
+        if (singleline_reply_mode===true &&
+            multiline_reply_mode===false &&
+            conversational_reply_mode===false &&
+            query_mode===false &&
+            reply_mode===true) {
+          var chatHTML = `
+              <div class="d-flex flex-row justify-content-start mb-4">
+                  <img src="{{ cso_user_profile_pic.url }}"
+                      alt="avatar 1" style="width: 45px; height: 45px;" class="rounded-circle">
+                  <div>
+                    <p class="small ms-3 mb-1" style="padding: 13px; border-radius: 0px 50px 50px 50px; background-color: #c3ffec;">${
+                        data.message
+                      }</p>
+                      <p class="small ms-3 mb-3 rounded-3 text-muted">00:07</p>
+                  </div>
+              </div>
+              <div>${human_feedback_query()}</div>
+          `;
+        } else {
+          var chatHTML = `
+          
+              <div class="d-flex flex-row justify-content-start mb-4">
+                  <img src="{{ cso_user_profile_pic.url }}"
+                      alt="avatar 1" style="width: 45px; height: 45px;" class="rounded-circle">
+                  <div>
+                      <p class="small ms-3 mb-1" style="padding: 13px; border-radius: 0px 50px 50px 50px; background-color: #c3ffec;">${
+                        data.message
+                      }</p>
+                      <p class="small ms-3 mb-3 rounded-3 text-muted">00:08</p>
+                  </div>
+              </div>
+          `;
+        }
+      } else {
+        var chatHTML = `
+          
+            <div class="d-flex flex-row justify-content-end mb-4">
+                <div>
+                    <p style="border-radius: 50px 0px 50px 50px; background-color: #99ebff; padding: 13px;" class="small me-3 mb-1">${data.message}</p>
+                    <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">00:09</p>
+                </div>
+                <img src="{{ registered_user_profile_pic.url }}"
+                    alt="avatar 1" style="width: 45px; height: 45px;" class="rounded-circle">
+            </div>
+        `;
+      }
+      document.querySelector(".chat-messages-box").innerHTML +=
+        chatHTML;
+      divElement.scroll({
+        top: divElement.scrollHeight, //scroll to the bottom of the element
+        behavior: "smooth", //auto, smooth, initial, inherit
+      });
+    }
+
+    if (data.intruder_redirection) {
+      if (
+        data.intruder_redirection ===
+        "Redirect the intruder to homepage!"
+      ) {
+        console.log(`Redirect the intruder to homepage!`);
+        window.location.href = `{% url 'homeApp:LangingPage' %}`; // works like render of dj (maybe)
+      }
+    }
+
+    if (data.support_is_resolved) {
+      console.log(
+        `The support is resolved! Redirect the cso to it's dashboard & the user to the homepage (after 10s)!`
+      );
+      console.log(`CSO email (data.support_is_resolved):`, cso_email);
+      if (cso_email == "True") {
+        console.log(`CSO email:`, cso_email);
+        window.close();
+      }
+      if (reg_user == "True") {
+        console.log(`Registered user will be sent to the homepage!`);
+
+        // ----------------------------
+        let userIssueResolvedInformationModal = document.querySelector(
+          "#userIssueResolvedInformationModal"
+        );
+        let countDownSpan_userIssueResolvedInformationModal =
+          document.getElementsByClassName(
+            "countDownSpan_userIssueUnresolvedInformation"
+          );
+        let countDown_userIssueResolvedInformationModal = 10;
+        let userIssueResolvedInformationModalOKButton =
+          document.querySelector(
+            "#userIssueResolvedInformationModalOKButton"
+          );
+        $("#userIssueResolvedInformationModal").modal("show");
+
+        setInterval(() => {
+          countDown_userIssueResolvedInformationModal -= 1;
+          countDownSpan_userIssueResolvedInformationModal[0].innerHTML = `${countDown_userIssueResolvedInformationModal}s`;
+        }, 1000);
+
+        setTimeout(() => {
+          console.log(`Modal is closed after 10s`);
+          $("#userIssueResolvedInformationModal").modal("hide");
+          window.location.href = `{% url 'homeApp:LangingPage' %}`;
+        }, 10000);
+
+        userIssueResolvedInformationModalOKButton.addEventListener(
+          "click",
+          () => {
+            console.log(`Immediately redirect to homepage!`);
+            window.location.href = `{% url 'homeApp:LangingPage' %}`;
+          }
+        );
+        // ----------------------------
+      }
+    }
+
+    if (data.support_req_is_removed) {
+      if (cso_email === "True") {
+        if (!data.CSOVisitorConvoInfo_isCancelled) {
+          console.log(
+            `If the tab in the CSO end is opened, then that will be closed automatically!`
+          );
+          console.log(
+            `data.support_req_is_removed:`,
+            data.support_req_is_removed
+          );
+          console.log(
+            `data.conversation_is_cancelled:`,
+            data.CSOVisitorConvoInfo_isCancelled
+          );
+          window.close();
+        }
+        if (data.CSOVisitorConvoInfo_isCancelled) {
+          console.log(`The user has cancelled the chat-convo!`);
+          console.log(`Doesn't close the CSO's chatroom tab.`);
+          console.log(
+            `data.support_req_is_removed:`,
+            data.support_req_is_removed
+          );
+          console.log(
+            `data.conversation_is_cancelled:`,
+            data.CSOVisitorConvoInfo_isCancelled
+          );
+          document.querySelector("#chat-message-input").disabled = true;
+          let chat_message_send_btn = document.querySelector(
+            "#chat-message-send-btn"
+          );
+          chat_message_send_btn.disabled = true;
+          chat_message_send_btn.style.cursor = "not-allowed";
+        }
+      }
+      if (reg_user === "True") {
+        console.log(`Registered user will be sent to the homepage!`);
+        window.location.href = `{% url 'homeApp:LangingPage' %}`;
+      }
+    }
+
+    if (data.conversation_is_cancelled) {
+      if (cso_email === "True") {
+        var chat_convo_cancelled = `{{ chat_convo_cancelled }}`;
+        console.log(`chat-convo is cancelled: ${chat_convo_cancelled}`);
+        if (chat_convo_cancelled === "False") {
+          console.log(`The user has cancelled the conversation!`);
+          const cancel_chat_notif_div =
+            document.querySelector("#chat-cancel");
+          cancel_chat_notif_div.removeAttribute("hidden");
+          console.log(
+            `chat-cancel notification-div DOM`,
+            cancel_chat_notif_div
+          );
+          microphone.disabled = true;
+          microphone.removeAttribute("onclick");
+          microphone.style.cursor = "not-allowed";
+        }
+      }
+      if (reg_user === "True") {
+        console.log(`Registered user will be sent to the homepage!`);
+        window.location.href = `{% url 'homeApp:LangingPage' %}`;
+      }
+    }
+
+    if (data.conversation_is_dismissed) {
+      console.log(
+        `The support is dismissed! Redirect the cso to it's dashboard & the user to the homepage (after 10s)!`
+      );
+      if (cso_email == "True") {
+        console.log(`CSO email:`, cso_email);
+        window.close();
+      }
+      if (reg_user == "True") {
+        console.log(`Registered user will be sent to the homepage!`);
+        console.log(`Registered user email:`, reg_user);
+
+        // ----------------------------
+        let dismissIssueInformationModal = document.querySelector(
+          "#dismissIssueInformationModal"
+        );
+        let countDownSpan_dismissIssueInformationModal =
+          document.getElementsByClassName(
+            "countDownSpan_dismissIssueInformation"
+          );
+        let countDown_dismissIssueInformationModal = 10;
+        let dismissIssueInformationModalOKButton =
+          document.querySelector(
+            "#dismissIssueInformationModalOKButton"
+          );
+        $("#dismissIssueInformationModal").modal("show");
+
+        setInterval(() => {
+          countDown_dismissIssueInformationModal -= 1;
+          countDownSpan_dismissIssueInformationModal[0].innerHTML = `${countDown_dismissIssueInformationModal}s`;
+        }, 1000);
+
+        setTimeout(() => {
+          console.log(`Modal is closed after 10s`);
+          $("#dismissIssueInformationModal").modal("hide");
+          window.location.href = `{% url 'homeApp:LangingPage' %}`;
+        }, 10000);
+
+        dismissIssueInformationModalOKButton.addEventListener(
+          "click",
+          () => {
+            console.log(`Immediately redirect to homepage!`);
+            window.location.href = `{% url 'homeApp:LangingPage' %}`;
+          }
+        );
+        // ----------------------------
+      }
+    }
+
+    if (data.feedback) {
+      if (data.feedback === true) {
+let fc_uid = data.fc_uid;
+let feedbackContainer = document.querySelector(`.feedbackContainer-${fc_uid}`);
+
+if (feedbackContainer !== null) {
+          feedbackContainer.classList.add("hf-fade-out");
+feedbackContainer.onanimationend = (e) => {
+              if (e.target.classList.contains("hf-fade-out")) {
+                feedbackContainer.remove();
+              } 
+          };
+}
+      }
+    }
+
+    if (data.MultilineReplyMode) {
+      multiline_reply_mode = !multiline_reply_mode;
+    }
+
+    if (data.sendHfOnMlrDisable) {
+      if (reg_user==="True") {
+        var chatHTML = `<div>${human_feedback_query()}</div>`;
+
+{% comment %} 
+`
+          <div>
+            <div id="feedbackContainer" class="container-fluid text-center">
+              <div class="row"><p class="fw-bold">Was it helpful?</p></div>
+              <div class="row">
+                <div class="col">
+                  <hr class="hf-hr">
+                </div>
+                <div class="col-2 row">
+                  <div class="col p-0"><button id="hf-thumbs-up" type="button" class="btn text-white" style="background-color: #344767" onclick="getHumanFeedback(feedback='yes')">Yes</button></div>
+                  <div class="col p-0"><button id="hf-thumbs-down" type="button" class="btn text-white" style="background-color: #bb2d3b" onclick="getHumanFeedback(feedback='no')">No</button></div>
+                </div>
+                <div class="col">
+                  <hr class="hf-hr">
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+{% endcomment %}
+
+
+        document.querySelector(".chat-messages-box").innerHTML += chatHTML;
+        divElement.scroll({
+          top: divElement.scrollHeight,
+          behavior: "smooth",
+        });
+      }
+    }
+
+    if (data.ConversationalReplyMode) {
+      conversational_reply_mode = !conversational_reply_mode;
+      console.log(`conversational Reply Mode (cr):`, data.cr);
+    }
+
+    if (data.sendHfOnCrDisable) {
+      
+      if (reg_user==="True") {
+        var chatHTML = `<div>${human_feedback_query()}</div>`;
+
+
+{% comment %}
+`
+          <div>
+            <div id="feedbackContainer" class="container-fluid text-center">
+              <div class="row"><p class="fw-bold">Was it helpful?</p></div>
+              <div class="row">
+                <div class="col">
+                  <hr class="hf-hr">
+                </div>
+                <div class="col-2 row">
+                  <div class="col p-0"><button id="hf-thumbs-up" type="button" class="btn text-white" style="background-color: #344767" onclick="getHumanFeedback(feedback='yes')">Yes</button></div>
+                  <div class="col p-0"><button id="hf-thumbs-down" type="button" class="btn text-white" style="background-color: #bb2d3b" onclick="getHumanFeedback(feedback='no')">No</button></div>
+                </div>
+                <div class="col">
+                  <hr class="hf-hr">
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+{% endcomment %}
+
+
+
+        document.querySelector(".chat-messages-box").innerHTML += chatHTML;
+        divElement.scroll({
+          top: divElement.scrollHeight, //scroll to the bottom of the element
+          behavior: "smooth", //auto, smooth, initial, inherit
+        });
+      }
+    }
+
+    if (data.QueryReplyMode) {
+      query_mode=!query_mode;
+      reply_mode=!reply_mode;
+      console.log(`data.hifq (data.QueryReplyMode - backend signal):`, data.hifq);
+    }
+  };
+
+  ChatSupportSocket.onclose = function (e) {
+    console.log("Frontend Websocket: Connection Closed!");
+  };
+
+  chat_send_btn.onclick = function (e) {
+    const input_field_message = chat_msg_input_field.value;
+    
+    let user_identity = "";
+    if (reg_user === "True") {
+      user_identity = "reg_user";
+    }
+    if (cso_email === "True") {
+      user_identity = "cso";
+    }
+
+    if (input_field_message) {
+      ChatSupportSocket.send(
+        JSON.stringify({
+          message: input_field_message,
+          user_identity: user_identity,
+          roomslug: roomSlug,
+        })
+      );
+      chat_msg_input_field.value = "";
+    }
+  };
+
+  function eventPreventDefault(event) {
+    event.preventDefault();
+  }
+
+
+  //function invokeNullHumanFeedback(event) {
+    //getHumanFeedback(feedback='null');
+    //return eventPreventDefault(event);
+  //}
+
+  chat_msg_input_field.addEventListener("keypress", function (e) {
+    let feedbackContainer = document.getElementById("feedbackContainer");
+    //if (feedbackContainer !== null) {
+      //getHumanFeedback(feedback='null');
+    //}
+
+    if (e.key === "Enter") {
+      //invokeNullHumanFeedback(e);
+
+      chat_send_btn.click();
+    }
+
+  });
+
+  if (cso_email !== "") {
+    const is_resolved = document.querySelector("#is-resolved");
+
+    if (is_resolved !== null) {
+      is_resolved.onclick = function (e) {
+        var hdo_email_resolve_opt = `{{request.user.email}}`;
+        var registered_user_email = `{{ registered_user_email }}`;
+        var remark_input_resolve = document.querySelector(
+          "#remark-input-resolve"
+        );
+        var remark_input_resolve_value = remark_input_resolve.value;
+        console.log(`is_resolved button is clicked!`);
+        console.log(
+          `is_resolved button is clicked by the CSO; email: ${hdo_email_resolve_opt}`
+        );
+        console.log(`registered user email: ${registered_user_email}`);
+        console.log(
+          `Remark Input value: ${remark_input_resolve_value}`
+        );
+        console.log(`User signin token: ${user_signin_token}`);
+        console.log(`Ticket issue oid: ${ticket_issue_oid}`);
+        console.log(
+          `Static ticket issue iod: cfe5ac26-cd9e-4dd5-9908-307b520582cc`
+        );
+
+        // Resolve issue into TMS, Then send the socket signal
+        tmsIssueUpdate_resolve(
+          (user_signin_token = user_signin_token),
+          (remark_input_resolve_value = remark_input_resolve_value),
+          (ticket_issue_oid = ticket_issue_oid),
+          (hdo_email_resolve_opt = hdo_email_resolve_opt),
+          (registered_user_email = registered_user_email),
+          (roomSlugParam = roomSlug)
+        );
+      };
+    }
+  }
+</script>
+
+<!-- Chatbody JS -->
+<script src="{% static 'js/home/customerSupportChat/customerSupportComponents/chatBody.js' %}"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+crossorigin="anonymous"></script>
+
+
+  </body>
+</html>
+

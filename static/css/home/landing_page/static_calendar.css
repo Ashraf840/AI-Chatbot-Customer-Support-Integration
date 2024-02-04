@@ -1,0 +1,97 @@
+/* .calendar-wrapper {
+    background-color: #884e4e;
+    width: 35rem;
+    height: 30rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity .1s; 
+} */
+
+/* .calendar-wrapper { */
+/* .calendar-wrapper-startD, .calendar-wrapper-endD { */
+.calendar-wrapper-startD_DA, .calendar-wrapper-endD_DA {
+    float: left;
+    margin-top: 5px;
+    background: #e3e7ee;
+    color: black;
+    /* box-shadow: 2px 3px 9px 0px #9a82842e; */
+    margin-left: 2.5em;
+    padding: 10px;
+    border-radius: 1.5em;
+    max-width: 100%;
+    min-width: 75%;
+    font-size: 13px;
+    word-wrap: break-word;
+    border-radius: 5px 20px 20px 20px;
+    opacity: 0;
+}
+
+.fade-in-startD_DA, .fade-in-endD_DA {
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+}
+
+/* .calendar-removed {
+    opacity: 0;
+} */
+
+.calendar-container-startD_DA, .calendar-container-endD_DA {
+    /* background-color: #ffb3b3; */
+    padding: 1rem;
+    border-radius: 1rem;
+    /* max-width: 80%; */
+    width: 100%;
+    /* text-align: center; */
+    display: flex;
+    justify-content: center;
+}
+
+#prevMonth-startD_DA, #prevMonth-endD_DA {
+    margin-right: 1rem;
+}
+
+#currentMonth-startD_DA, #currentMonth-endD_DA {
+    width: 10rem;
+    text-align: center;
+}
+
+#nextMonth-startD_DA, #nextMonth-endD_DA {
+    margin-left: 1rem;
+}
+
+#prevMonth-startD_DA, #nextMonth-startD_DA,
+#prevMonth-endD_DA, #nextMonth-endD_DA {
+    cursor: pointer;
+}
+
+.calendar-header-startD_DA, .calendar-header-endD_DA {
+    display: flex;
+    margin: 0 auto;
+    /* justify-content: center; */
+    /* justify-content: space-between; */
+    align-items: center;
+}
+
+#calendarBody-startD_DA, #calendarBody-endD_DA {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.day-startD_DA, .day-endD_DA {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.day-startD_DA:hover,
+.day-endD_DA:hover {
+    background-color: #e0e0e0;
+    border-radius: .4rem;
+}
+
+.day-selected-startD_DA, .day-selected-endD_DA {
+    background-color: #e0e0e0;
+    border-radius: .4rem;
+}
+
