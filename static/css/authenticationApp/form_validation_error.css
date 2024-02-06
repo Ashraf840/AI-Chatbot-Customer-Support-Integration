@@ -79,3 +79,11 @@ p#flash_msg_para {
 .outer:hover .inner:after {
     bottom: 0;
 }
+
+.password-error {
+    border-color: red;
+}
+
+.repeat_password-error {
+    border-color: red;
+}

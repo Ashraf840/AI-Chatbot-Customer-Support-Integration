@@ -18,6 +18,14 @@
 	<!-- Form Validation Error -->
     <link rel="stylesheet" href="{% static 'css/authenticationApp/form_validation_error.css' %}">
 
+	<link rel="stylesheet" href="{% static 'css/home/landing_page/tada_style.css' %}">
+	<link rel="stylesheet" href="{% static 'css/home/landing_page/static_calendar.css' %}">
+	
+	<!-- Chatbot CSS -->
+	<link rel="stylesheet" href="{% static 'css/home/chatbot/style.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'landing_page_chatbot_statics/static/css/style.css' %}" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
 </head>
 
 <body>
@@ -47,16 +55,6 @@
 								<div class="w-100">
 									<h3 class="mb-2 text-dark">Sign In</h3>
 								</div>
-								<div class="w-100">
-									<!-- <p class="social-media d-flex justify-content-end">
-										<a href="#"
-											class="social-icon d-flex align-items-center justify-content-center"><span
-												class="fa fa-facebook"></span></a>
-										<a href="#"
-											class="social-icon d-flex align-items-center justify-content-center"><span
-												class="fa fa-twitter"></span></a>
-									</p> -->
-								</div>
 							</div>
 
 							<!-- Error Flash Msg -->
@@ -83,28 +81,19 @@
 								{% csrf_token %}
 								<div class="form-group mb-3">
 									<label class="label" for="email">Email</label>
-									<!-- <input type="text" class="form-control" id="email" placeholder="email" required> -->
 									{{ form.email }}
 								</div>
 								<div class="form-group mb-3">
 									<label class="label" for="password">Password</label>
-									<!-- <input type="password" class="form-control" id="password"  placeholder="Password" required> -->
 									{{ form.password }}
 								</div>
 								<div class="form-group">
 									<button style="background: hsl(184, 96%, 18%); border: 1px solid hsl(184, 96%, 18%);" type="submit" class="form-control btn btn-primary submit px-3">Sign
 										In</button>
 								</div>
-								<div class="form-group d-md-flex">
-									<!-- <div class="w-50 text-left">
-										<label class="checkbox-wrap checkbox-primary mb-0">Remember Me
-											<input type="checkbox" checked>
-											<span class="checkmark"></span>
-										</label>
-									</div> -->
-									<!-- <div class="w-50 text-md-right">
-										<a href="#">Forgot Password</a>
-									</div> -->
+								<div class="form-group">
+									<a style="background: hsl(184, 96%, 18%); border: 1px solid hsl(184, 96%, 18%);"
+									class="btn form-control btn btn-primary px-3" href="{% url 'authenticationApplication:UserAuth:UserRegistrationPageView' %}">Register</a>
 								</div>
 							</form>
 						</div>
@@ -114,11 +103,88 @@
 		</div>
 	</section>
 
+	<div class="widget">
+        <div style="border: 5px solid #302c78;text-align: center;background-color: #302c78;border-radius: 10px 10px 0px 0px;">
+        <p style="font-family: 'Roboto Mono', monospace;color:white"> <b>IBAS ChatBot++</b></p>
+            <!-- Dropdown menu-->
+            <ul id="dropdown1" class="dropdown-content">
+                <li><a href="#" id="clear">Clear</a></li>
+                <li><a href="#" id="restart">Restart</a></li>
+                <li><a href="#" id="close">Close</a></li>
+            </ul>
+        </div>
+
+        <!--Chatbot contents goes here -->
+        <div class="chats" id="chats">
+            <div class="chatbox-navbar">
+                <div class="user-details">
+                    <!-- Chatbox content area -->
+                </div>
+              </div>
+            <div class="clearfix"></div>
+        </div>
+
+        <!--keypad for user to type the message -->
+        <div class="keypad">
+            <textarea
+            id="userInput"
+            placeholder="Say something..."
+            class="usrInput"
+            ></textarea>
+            
+            <div id="recordButton" aria-disabled="true">
+                <i id="microphone" class="fa fa-microphone" aria-hidden="true"></i>
+            </div>
+        </div>
+        </div>
+    </div>
+	
+	
 	<script src="{% static 'js/authenticationApp/cso_auth/jquery.min.js' %}"></script>
 	<script src="{% static 'js/authenticationApp/cso_auth/popper.js' %}"></script>
 	<script src="{% static 'js/authenticationApp/cso_auth/bootstrap.min.js' %}"></script>
 	<script src="{% static 'js/authenticationApp/cso_auth/main.js' %}"></script>
 	<script src="{% static 'js/authenticationApp/form_validation_error.js' %}"></script>
+
+	<script src="{% static 'js/home/landing_page/ta-da/ta-da.js' %}"></script>
+	<script src="{% static 'js/home/landing_page/ta-da/components/general-functions.js' %}"></script>
+	<script src="{% static 'js/home/landing_page/ta-da/components/daily-allowance.js' %}"></script>
+	<script src="{% static 'js/home/landing_page/ta-da/components/travel-allowance.js' %}"></script>
+	<script src="{% static 'js/home/landing_page/ta-da/components/travel-daily-allowance.js' %}"></script>
+	
+	<!-- Chatbot JS -->
+	<link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'landing_page_chatbot_statics/static/css/materialize.min.css' %}"
+    />
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/script.js' %}"></script>
+
+	<div href="#" class="profile_div" id="profile_div">
+		<img class="imgProfile" src="{% static 'landing_page_chatbot_statics/static/img/botAvatar.png' %}" />
+	</div>
+
+	<script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/lib/keycloak.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/auth.js' %}"></script>
+
+	<script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/speechToText.js' %}"></script>
+	<script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/lib/materialize.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/lib/uuid.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/lib/showdown.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/index.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/generalChat.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/constants.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/cardsCarousel.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/botTyping.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/charts.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/collapsible.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/dropDown.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/location.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/pdfAttachment.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/quickReplies.js' %}"></script>
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/suggestionButtons.js' %}"></script>
+
+
 
 </body>
 

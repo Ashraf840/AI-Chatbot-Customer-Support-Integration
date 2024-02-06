@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.views.generic import View
-from ...forms import UserLoginForm
+from ...forms import UserLoginForm, UserRegistrationForm
 from django.contrib.auth import authenticate, login
 from django.urls.base import reverse
 from django.contrib import messages
+from authenticationApp.models import User, User_Profile
 
 
 # Concept Ref: https://openclassrooms.com/en/courses/7107341-intermediate-django/7263527-create-a-login-page-with-class-based-views
@@ -57,3 +58,56 @@ class UserLoginPageView(View):
 
 
 # TODO: [Done] Create CSO logout functionality inside "authenticationApp\urls\staff_auth\cso_auth_urls.py"
+
+
+class UserRegistrationPageView(View):
+    template_name = 'authenticationApp/user_registration.html'
+    context={
+        'title': 'User Registration', 
+    }
+    form_class = UserRegistrationForm
+    
+    def get(self, request):
+        self.context['form'] = self.form_class()
+        return render(request, self.template_name, context=self.context)
+
+    def post(self, request):
+        self.context['form'] = self.form_class(request.POST)
+        form = self.context['form']
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            username = form.cleaned_data['username']
+            nid = form.cleaned_data['nid']
+            mobile = form.cleaned_data['mobile']
+            district = form.cleaned_data['district']
+            password = form.cleaned_data['password']
+            if len(User.objects.filter(email=email)) > 0:
+                messages.info(request, '%s' % "Email already taken", extra_tags="EmailExist")
+                return render(request, self.template_name, context=self.context)
+            if len(User.objects.filter(username=username)) > 0:
+                messages.info(request, '%s' % "Username already taken", extra_tags="UsernameExist")
+                return render(request, self.template_name, context=self.context)
+            if len(User_Profile.objects.filter(user_NID_no=nid)) > 0:
+                messages.info(request, '%s' % "NID already registered", extra_tags="NIDExist")
+                return render(request, self.template_name, context=self.context)
+            user = User(
+                email=email,
+                username=username,
+                phone=mobile,
+            )
+            user.is_user = True
+            user.set_password(password)
+            user.save()
+            user_profile = User_Profile.objects.get(user_email=user.email)
+            user_profile.district = district
+            user_profile.user_NID_no = nid
+            user_profile.save()
+            return redirect('authenticationApplication:UserAuth:UserLoginPageView')
+        else:
+            for fe in form.errors["__all__"].as_data():
+                print(fe.code)
+                if fe.code == "PasswordMismatched":
+                    messages.info(request, '%s' % "Password did not matched", extra_tags="PasswordMismatched")
+
+            return render(request, self.template_name, context=self.context)
+    

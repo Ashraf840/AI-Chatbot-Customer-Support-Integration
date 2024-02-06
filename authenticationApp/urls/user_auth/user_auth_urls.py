@@ -9,4 +9,5 @@ app_name = "user_auth_urls"
 urlpatterns = [
     path("login/", uav.UserLoginPageView.as_view(), name="UserLoginPageView"),
     path('logout/', LogoutView.as_view(next_page='authenticationApplication:UserAuth:UserLoginPageView'), name='UserLogoutView'),
+    path("registration/", uav.UserRegistrationPageView.as_view(), name="UserRegistrationPageView"),
 ]
