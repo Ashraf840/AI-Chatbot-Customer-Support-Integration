@@ -21,6 +21,8 @@
 	<link rel="stylesheet" href="{% static 'css/home/landing_page/tada_style.css' %}">
 	<link rel="stylesheet" href="{% static 'css/home/landing_page/static_calendar.css' %}">
 	
+	<link rel="stylesheet" type="text/css" href="{% static 'landing_page_chatbot_statics/static/css/materialize.min.css' %}"/>
+
 	<!-- Chatbot CSS -->
 	<link rel="stylesheet" href="{% static 'css/home/chatbot/style.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'landing_page_chatbot_statics/static/css/style.css' %}" />
@@ -103,6 +105,7 @@
 		</div>
 	</section>
 
+	<!-- new chat window -->
 	<div class="widget">
         <div style="border: 5px solid #302c78;text-align: center;background-color: #302c78;border-radius: 10px 10px 0px 0px;">
         <p style="font-family: 'Roboto Mono', monospace;color:white"> <b>IBAS ChatBot++</b></p>
@@ -126,15 +129,31 @@
 
         <!--keypad for user to type the message -->
         <div class="keypad">
-            <textarea
+			<!-- <textarea
             id="userInput"
             placeholder="Say something..."
             class="usrInput"
-            ></textarea>
+            ></textarea> -->
+            <!-- <textarea
+            id="user-input"
+            placeholder="Say something..."
+            class="usrInput"
+            ></textarea> -->
+			<!-- <input type="text" id="userInput" placeholder="Say something..." class="userInput" name="userInput"> -->
+
+			<input type="text" id="user-input" class="usrInput" placeholder="Say something...">
+
+			<!-- <textarea 
+			id="chatbot-user-input"
+            placeholder="Say something..."
+            class="usrInput"
+			></textarea> -->
+
             
-            <div id="recordButton" aria-disabled="true">
+            <!-- <div id="recordButton" aria-disabled="true">
                 <i id="microphone" class="fa fa-microphone" aria-hidden="true"></i>
-            </div>
+            </div> -->
+
         </div>
         </div>
     </div>
@@ -146,31 +165,26 @@
 	<script src="{% static 'js/authenticationApp/cso_auth/main.js' %}"></script>
 	<script src="{% static 'js/authenticationApp/form_validation_error.js' %}"></script>
 
-	<script src="{% static 'js/home/landing_page/ta-da/ta-da.js' %}"></script>
-	<script src="{% static 'js/home/landing_page/ta-da/components/general-functions.js' %}"></script>
-	<script src="{% static 'js/home/landing_page/ta-da/components/daily-allowance.js' %}"></script>
-	<script src="{% static 'js/home/landing_page/ta-da/components/travel-allowance.js' %}"></script>
-	<script src="{% static 'js/home/landing_page/ta-da/components/travel-daily-allowance.js' %}"></script>
+	<script src="{% static 'js/authenticationApp/user_auth/ta-da/ta-da.js' %}"></script>
+	<script src="{% static 'js/authenticationApp/user_auth/ta-da/components/general-functions.js' %}"></script>
+	<script src="{% static 'js/authenticationApp/user_auth/ta-da/components/daily-allowance.js' %}"></script>
+	<script src="{% static 'js/authenticationApp/user_auth/ta-da/components/travel-allowance.js' %}"></script>
+	<script src="{% static 'js/authenticationApp/user_auth/ta-da/components/travel-daily-allowance.js' %}"></script>
 	
 	<!-- Chatbot JS -->
-	<link
-      rel="stylesheet"
-      type="text/css"
-      href="{% static 'landing_page_chatbot_statics/static/css/materialize.min.css' %}"
-    />
-    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/script.js' %}"></script>
+	
 
 	<div href="#" class="profile_div" id="profile_div">
 		<img class="imgProfile" src="{% static 'landing_page_chatbot_statics/static/img/botAvatar.png' %}" />
 	</div>
 
+    <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/script.js' %}"></script>
 	<script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/lib/keycloak.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/auth.js' %}"></script>
-
-	<script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/speechToText.js' %}"></script>
 	<script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/lib/materialize.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/lib/uuid.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/lib/showdown.min.js' %}"></script>
+
     <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/index.js' %}"></script>
     <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/generalChat.js' %}"></script>
     <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/constants.js' %}"></script>
@@ -183,6 +197,7 @@
     <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/pdfAttachment.js' %}"></script>
     <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/quickReplies.js' %}"></script>
     <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/suggestionButtons.js' %}"></script>
+	<script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/speechToText.js' %}"></script>
 
 
 

@@ -122,11 +122,11 @@ AUTH_USER_MODEL = "authenticationApp.User"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ibas_db',
+        'NAME': 'ibas_db_trail_tada_module',
         'USER': 'ibas_admin',
         'PASSWORD': 'L10w$ShRU021',
         'HOST': 'localhost',
-        'PORT': '5431',
+        'PORT': '5432',
     }
 }
 

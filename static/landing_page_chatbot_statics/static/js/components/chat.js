@@ -530,7 +530,7 @@ $(document).ready(() => {
     var validatedNIDConfirmation = false;
     const InitMessage = "আপনাকে কিভাবে সাহায্য করতে পারি?";
     console.log(`sender id (chat.js):`, sender_id);
-    console.log(`ChatbotUserSocketID_socket (inside "chat.js" file):`, ChatbotUserSocketID_socket);
+    // console.log(`ChatbotUserSocketID_socket (inside "chat.js" file):`, ChatbotUserSocketID_socket);
     displayText(InitMessage);
     setTimeout(() => {
         const fetchNID = async () => {
@@ -568,6 +568,7 @@ $(document).ready(() => {
         const keyCode = e.keyCode || e.which; 
         var text = $("#userInput").val(); 
 	    var text_trimmed = $("#userInput").val().trim();
+        console.log(`before clicking enter button value:`, text);
         if (keyCode === 13 && text_trimmed!== "") 
         {
 

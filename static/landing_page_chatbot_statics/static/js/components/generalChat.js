@@ -15,8 +15,9 @@ function scrollToBottomOfResults() {
  * @param {String} message user message
  */
 function setUserResponse(message) {
-    const user_response = `<img class="userAvatar" src='https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o='><p class="userMsg">${message} </p><div class="clearfix"></div>`;
-    $(user_response).appendTo(".chats").show("slow");
+    console.log(`setUserResponse - message:`, message);
+    const user_response_gen = `<img class="userAvatar" src='https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o='><p class="userMsg">${message} </p><div class="clearfix"></div>`;
+    $(user_response_gen).appendTo(".chats").show("slow");
 
     $(".usrInput").val("");
     scrollToBottomOfResults();
@@ -264,7 +265,6 @@ function speechRecognize(text){
  * @param {String} message user message
  */
 function send(message) {
-    console.log(`Send msg to rasa chatbot. Message:`, message);
     $.ajax({
         url: rasa_server_url,
         type: "POST",
@@ -283,7 +283,7 @@ function send(message) {
                 // customActionTrigger();
                 return;
             }
-            TaDaOptionChecker(botResponse[0].text)
+            TaDaOptionChecker(botResponse[0].text);
             setBotResponse(botResponse);
         },
         error(xhr, textStatus) {
@@ -524,7 +524,7 @@ $(document).ready(() => {
 
 ////////////Trial//////////
 $(document).ready(() => { 
-    console.log(`Script 'heneraChat.js' file is loaded!`);
+
     var userNID = ""; 
     var user_name = "";
     console.log(sender_id);
@@ -533,24 +533,24 @@ $(document).ready(() => {
     console.log(`sender id (chat.js):`, sender_id);
     // console.log(`ChatbotUserSocketID_socket (inside "chat.js" file):`, ChatbotUserSocketID_socket);
     displayText(InitMessage);
-    setTimeout(() => {
-        const fetchNID = async () => {
-            try {
-                //const response = await fetch(`http://127.0.0.1:8080/home/api/user-chatbot/socket/${sender_id}/`);
-                const response = await fetch(`http://${window.location.host}/home/api/user-chatbot/socket/${sender_id}/`);
+    // setTimeout(() => {
+    //     const fetchNID = async () => {
+    //         try {
+    //             //const response = await fetch(`http://127.0.0.1:8080/home/api/user-chatbot/socket/${sender_id}/`);
+    //             const response = await fetch(`http://${window.location.host}/home/api/user-chatbot/socket/${sender_id}/`);
                 
-                const data = await response.json(); 
-                userNID = data.user_NID_no; 
-                user_name = data.first_name + ' ' + data.last_name;
-                console.log(`Username:`, user_name);
-                console.log(`After successfully fetching user NID ('chat.js' file):`, userNID);
-                $(".usrInput").removeAttr("disabled"); 
-            } catch (error) { 
-                console.log(error); 
-            } 
-        };
-        fetchNID()
-    }, 1000); 
+    //             const data = await response.json(); 
+    //             userNID = data.user_NID_no; 
+    //             user_name = data.first_name + ' ' + data.last_name;
+    //             console.log(`Username:`, user_name);
+    //             console.log(`After successfully fetching user NID ('chat.js' file):`, userNID);
+    //             $(".usrInput").removeAttr("disabled"); 
+    //         } catch (error) { 
+    //             console.log(error); 
+    //         } 
+    //     };
+    //     fetchNID()
+    // }, 1000); 
 
 
     // $(".usrInput").attr("disabled", true); 
@@ -565,38 +565,57 @@ $(document).ready(() => {
             return false; 
         } 
     }; 
+
+    const user_input = document.querySelector(
+        "#user-input"
+    );
+
+    user_input.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+            chatbotInputSend();
+        }
+    });
+
+    function chatbotInputSend() {
+        const input_field_message = user_input.value;
+        console.log(`input sent function is called!`);
+        console.log("Msg:", input_field_message);
+        setUserResponse(input_field_message);
+        send(input_field_message);
+        TaDaOptionChecker(inputValue=input_field_message);
+        user_input.value = "";
+    }
     
-    $(".usrInput").on("keypress", (e) => { 
-        // console.log("Key is pressed in bot userInput!");
-        const keyCode = e.keyCode || e.which; 
-        var text = $("#userInput").val();
-	    var text_trimmed = $("#userInput").val().trim();
-        if (keyCode === 13 && text_trimmed!== "") 
-        {
-            console.log(`Enter key is pressed inside chatbot userInput!`);
-            console.log(`text:`, text);
-            console.log(`text_trimmed:`, text_trimmed);
-            if (typeof chatChart !== "undefined") {
-                chatChart.destroy();
-            }
+    // $(".usrInput").on("keypress", (e) => { 
+    //     const keyCode = e.keyCode || e.which; 
+    //     var text = $("#userInput").val(); 
+	//     var text_trimmed = $("#userInput").val().trim();
+    //     console.log(`before clicking enter button value - text:`, text);
+    //     console.log(`before clicking enter button value - text_trimmed:`, text_trimmed);
+    //     if (keyCode === 13 && text_trimmed!== "") 
+    //     {
+
+    //         // if (typeof chatChart !== "undefined") {
+    //         //     chatChart.destroy();
+    //         // }
         
-            $(".chart-container").remove();
-            if (typeof modalChart !== "undefined") {
-                modalChart.destroy();
-            }
+    //         // $(".chart-container").remove();
+    //         // if (typeof modalChart !== "undefined") {
+    //         //     modalChart.destroy();
+    //         // }
         
-            $(".suggestions").remove();
-            $("#paginated_cards").remove();
-            $(".quickReplies").remove();
-            $(".usrInput").blur();
-            $(".dropDownMsg").remove();
-            setUserResponse(text);
-            // send(text);
-            
-            return false;
-        } 
-        return true; 
-    }); 
+    //         $(".suggestions").remove();
+    //         $("#paginated_cards").remove();
+    //         $(".quickReplies").remove();
+    //         $(".usrInput").blur();
+    //         $(".dropDownMsg").remove();
+    //         // setUserResponse(text);
+    //         // send(text);
+    //         e.preventDefault();
+    //         return false;
+    //     } 
+    //     return true; 
+    // }); 
 }); 
 
 ///////////Trial End//////////////
