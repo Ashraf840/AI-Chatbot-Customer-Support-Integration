@@ -111,6 +111,15 @@ def user_signal(sender, instance, created, **kwargs):
         #         user_email=instance.email,
         #     )
 
-
+    if not created:
+         if instance.is_cso:
+            user = User.objects.get(email=instance.email)
+            # print("user (CSO) initial pass:", bool(user.initial_password))
+            if not bool(user.initial_password):
+                rand_pass = 'dcba4321'
+                hashed_pass = make_password(rand_pass)
+                user.initial_password = rand_pass
+                user.password = hashed_pass
+                user.save()
 
 

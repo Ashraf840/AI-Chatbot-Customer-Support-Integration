@@ -28,7 +28,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(verbose_name='First Name', max_length=50, blank=True)
     last_name = models.CharField(verbose_name='Last Name', max_length=50, blank=True)
     gender = models.CharField(verbose_name='Gender', max_length=6, choices=GENDERCHOICES, blank=True)
-    phone = models.CharField(verbose_name='Primary Contact', max_length=20, blank=True)
+    phone = models.CharField(verbose_name='Primary Contact', max_length=20, blank=True, unique=True)
     profile_pic = models.ImageField(upload_to='profilePicture', default='profilePicture/default_avatar.png', blank=True)
     initial_password = models.CharField(max_length=150, blank=True, null=True)
     is_first_login = models.BooleanField(default=True)

@@ -5,6 +5,74 @@ from django.http import Http404
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import HttpResponse, JsonResponse
+from home.models import UserChatbotSocket
+import random
+
+
+class UserAuthAPI(APIView):
+    def post(self, request):
+        senderId = request.data["senderId"]
+        socket_id = UserChatbotSocket.objects.filter(chatbot_socket_id=senderId)
+        is_authenticated = False
+        if len(socket_id) > 0:
+            is_authenticated = True
+            print("User is authenticated!")
+        else:
+            print("User is not authenticated!")
+        print("senderId:", senderId)
+        data = {'is_authenticated': is_authenticated}
+        return Response(data)
+
+
+class UserLoginRegAutomationAPI(APIView):
+    def post(self, request):
+        print("UserLoginRegAutomationAPI - request.data:", request.data)
+        nid = request.data.get('nid_num', None)
+        phone = request.data.get('phone', None)
+        district = request.data.get('district_name', None)
+        user_query = request.data.get('user_query', None)
+        user_login = request.data.get('user_login', None)
+        user_registration = request.data.get('user_registration', None)
+        # print("UserLoginRegAutomationAPI - user_login:", user_login)
+
+        if user_login:
+            # Check if there is any user containing the phone number
+            user = User.objects.filter(phone=phone)
+            if len(user) > 0:
+                print("User account exists! Add user-email automatically from here to another method of this class.")
+                print("user email:", user.email)
+                return Response({'result': 'User account exists!'})     # Ask for password from the user
+            else:
+                print("User account doesn't exist!")
+                return Response({'result': 'User account doesn\'t exist!'})
+        
+        if user_registration:
+            print("Make user registration & automatically login the user to the system!")
+            email = request.data.get("email", None)
+            password = request.data.get("password", None)
+            # Generate random username
+            chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+            length = 12
+            username = ''.join(random.choice(chars) for i in range(length))
+            # Create user account
+            user = User(
+                email=email,
+                username=username,
+                phone=phone,
+            )
+            user.is_user = True
+            user.set_password(password)
+            user.save()
+            # Create user profile
+            user_profile = User_Profile.objects.get(user_email=user.email)
+            user_profile.district = district
+            user_profile.user_NID_no = nid
+            user_profile.save()
+            return Response({
+                'result': 'User account is created & logged in!',
+                'email': user.email,
+                'password': password
+            })
 
 
 class UserDetailAPI(APIView):

@@ -36,6 +36,41 @@ function getBotResponse(text) {
     return botResponse;
 }
 
+function hdoConnectionPrompt(suggestionButtons) {
+    let BotResponse_hdoConnection = `
+        <div class="hdoConnectionPrompt_wrapper">
+            <div class="clearfix"></div>
+            <button type="button" id="hdoConnectionPromptNo" class="hdo_connection_prompt_btn btn_no" value="no">No</button>
+            <button type="button" id="hdoConnectionPromptYes" class="hdo_connection_prompt_btn btn_yes" value="yes">Yes</button>
+        </div>
+    `;
+    $(BotResponse_hdoConnection).appendTo(".chats").fadeIn(1000);
+    let hdoConnectionPromptWrapper = document.querySelector('.hdoConnectionPrompt_wrapper');
+    let hdoConnectionPromptBtnYes = document.querySelector("#hdoConnectionPromptYes");
+    let hdoConnectionPromptBtnNo = document.querySelector("#hdoConnectionPromptNo");
+    hdoConnectionPromptClick(hdoConnectionPromptWrapper, hdoConnectionPromptBtnYes, hdoConnectionPromptBtnNo, suggestionButtons);
+}
+
+function hdoConnectionPromptClick(hdoConnectionPromptWrapper, hdoConnectionPromptBtnYes, hdoConnectionPromptBtnNo, suggestionButtons) {
+    hdoConnectionPromptBtnYes.addEventListener('click', function() {
+        hdoConnectionPromptWrapper.remove();
+        console.log(`Ask for login credentials followed by showing the suggestion buttons!`);
+        addSuggestion(suggestionButtons);
+    });
+
+    hdoConnectionPromptBtnNo.addEventListener('click', function() {
+        hdoConnectionPromptWrapper.remove();
+        console.log(`Thank you!`);
+        let BotResponse_hdoConnection = `
+            <div class="hdoConnectionThankYouMessage_wrapper">
+                <p class="botMsg">Thank you.</p>
+                <div class="clearfix"></div>
+            </div>
+        `;
+        $(BotResponse_hdoConnection).appendTo(".chats").fadeIn(1000);
+    });
+}
+
 /**
  * renders bot response on to the chat screen
  * @param {Array} response json array containing different types of bot response
@@ -76,7 +111,6 @@ function setBotResponse(response) {
                         }
                         // check for preformatted text
                         if (html.includes("<pre") || html.includes("<code>")) {
-
                             botResponse = getBotResponse(html);
                         }
                         // check for list text
@@ -87,6 +121,26 @@ function setBotResponse(response) {
                         else {
                             // if no markdown formatting found, render the text as it is.
                             if (!botResponse) {
+                                if (response[i].text === "daily_allowance"
+                                    || response[i].text === "travel_allowance"
+                                    || response[i].text === "travel_and_daily_allowance"
+                                ) {
+                                    console.log(`Don't show the TADA related text!`);
+                                    return;
+                                }
+                                if (response[i].text === "দয়া করে প্রথমে লগ ইন করুন।"
+                                    || response[i].text === "Please login first."
+                                ) {
+                                    // console.log(`Activate user login module!`);
+                                    userLogin();
+                                    return;
+                                }
+                                if (response[i].text === "ব্যবহারকারী লগ ইন অবস্থায়ে অছেন।"
+                                    || response[i].text === "User is logged in."
+                                ) {
+                                    console.log(`Activate issue creation & chatroom redirection module!`);
+                                    return;
+                                }
                                 botResponse = `<img class="botAvatar" src="https://st3.depositphotos.com/30456762/37578/v/600/depositphotos_375780486-stock-illustration-chat-bot-robot-avatar-in.jpg"/><p class="botMsg">${response[i].text}</p><div class="clearfix"></div>`;
                             }
                         }
@@ -107,7 +161,8 @@ function setBotResponse(response) {
                 // check if the response contains "buttons"
                 if (Object.hasOwnProperty.call(response[i], "buttons")) {
                     if (response[i].buttons.length > 0) {
-                        addSuggestion(response[i].buttons);
+                        hdoConnectionPrompt(response[i].buttons);
+                        // addSuggestion(response[i].buttons);  // after clicking "yes" or "no" button of HdoConnectionPrompt() func, if clicked "yes", then show the suggestionButtons.
                     }
                 }
 
@@ -566,15 +621,15 @@ $(document).ready(() => {
         } 
     }; 
 
-    const user_input = document.querySelector(
-        "#user-input"
-    );
+    let user_input = document.querySelector("#user-input");
 
-    user_input.addEventListener("keypress", function (e) {
+    let userInputEnterHandler = function(e) {
         if (e.key === "Enter") {
-            chatbotInputSend();
+          chatbotInputSend(); 
         }
-    });
+    };
+
+    user_input.addEventListener("keypress", userInputEnterHandler);
 
     function chatbotInputSend() {
         const input_field_message = user_input.value;
@@ -582,7 +637,7 @@ $(document).ready(() => {
         console.log("Msg:", input_field_message);
         setUserResponse(input_field_message);
         send(input_field_message);
-        TaDaOptionChecker(inputValue=input_field_message);
+        // TaDaOptionChecker(inputValue=input_field_message);
         user_input.value = "";
     }
     
@@ -616,7 +671,13 @@ $(document).ready(() => {
     //     } 
     //     return true; 
     // }); 
-}); 
+});
+
+// function removeUserInputEventListener(bot_user_input) {
+//     console.log(`Not sending any message to rasa server`);
+//     console.log(`Bot user input - after removing the keypress eventListener:`, bot_user_input);
+//     bot_user_input.removeEventListener('keypress', userInputEnterHandler);
+// }
 
 ///////////Trial End//////////////
 

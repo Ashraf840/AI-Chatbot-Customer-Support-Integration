@@ -1,0 +1,58 @@
+.hdo_connection_prompt_btn {
+    border-radius: .5rem;
+    border: 0px;
+    color: white;
+    padding: 6px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn_no {
+    background-color: #8d221e;
+    margin-left: 2.3rem;
+    margin-right: 1rem;
+}
+
+.btn_yes {
+    background-color: #04AA6D;
+}
+
+.hdoConnectionThankYouMessage_wrapper
+,.userNid_wrapper
+,.userMobile_wrapper
+,.userDistrict_wrapper
+,.userQuery_wrapper
+,.userEmailReg_wrapper
+,.userPassReg_wrapper
+,.userConfirmPassReg_wrapper
+,.userPassMismatchedReg_wrapper
+{
+    margin-left: 2.3rem;
+}
+
+.userPassMismatchedReg_wrapper span.red-highlight {
+    color: #8d221e;
+    font-weight: 700;
+}
+
+.nidNum_input
+,.phone_input
+,.districtName_input
+,.userQuery_input
+,.userEmailReg_input
+,.userPassReg_input
+,.userConfirmPassReg_input
+{
+    padding: .8rem 1rem;
+    border: .5px solid #cccccc;
+    border-radius: 1rem;
+}
+
+.userPassMismatchedReg_input::placeholder
+,.userConfirmPassMismatchedReg_input::placeholder {
+    padding: .8rem 1rem;
+    color: #8d221e;
+}
