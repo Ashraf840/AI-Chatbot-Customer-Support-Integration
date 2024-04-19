@@ -3,7 +3,7 @@
  * @param {Array} suggestions buttons json array
  */
 
-function menuChipsHoverEffectFunc (menuChipId, mouseEnter=false, mouseOut=false) {
+function menuChipsHoverEffectFunc(menuChipId, mouseEnter = false, mouseOut = false) {
     let mcID = `menuChips-${menuChipId}`;
     if (mouseEnter) {
         $(`#${mcID}`).css("background-color", "#872341");
@@ -20,6 +20,7 @@ function menuChipsHoverEffectFunc (menuChipId, mouseEnter=false, mouseOut=false)
 
 
 function addSuggestion(suggestions) {
+    console.log("suggestions:", suggestions);
     setTimeout(() => {
         const suggLength = suggestions.length;
         $(
@@ -73,7 +74,7 @@ function sendEntityValue(message) {
         url: rasa_server_url,
         type: "POST",
         contentType: "application/json",
-        data: JSON.stringify({ message : message , sender: sender_id }),
+        data: JSON.stringify({ message: message, sender: sender_id }),
         success(botResponse, status) {
             response_status = status
             // predicted = 0;
@@ -103,9 +104,9 @@ function sendEntityValue(message) {
 //    messages= `নির্বাচিত বিভাগ হল: ${text}`;
 //    sendEntityValue(messages);
 
-    // actionsTrigger();
+// actionsTrigger();
 //    setUserResponse(text);
-    // send(payload);
+// send(payload);
 
 //    $(".suggestions").remove();
 //});
@@ -120,13 +121,13 @@ function langDetect(text, callback) {
         data: JSON.stringify({ text: text }),
         headers: {
             'Access-Control-Allow-Origin': '*',
-           // "X-CSRFToken": csrftoken,
+            // "X-CSRFToken": csrftoken,
             // Add any other required headers here
         },
         success(language, status) {
             console.log("bot response: ", language.detected_language);
             console.log("response_status", status);
-     //       hideBotTyping();
+            //       hideBotTyping();
             const lang = language.detected_language;
             console.log("lang", lang);
             callback(lang);
@@ -156,7 +157,7 @@ $(document).on("click", ".menu .menuChips", function () {
     //     }
     // sendEntityValue(message);
 
-   
+
     // // Use the detected language here or call actionsTrigger() accordingly
     // });
 

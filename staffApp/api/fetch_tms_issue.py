@@ -20,7 +20,6 @@ class TMSIssueDetailAPI(APIView):
             # pass
         if request.data.keys() & {'ticket_issue_oid', 'user_signing_token_tms'}:
             data = fetch_tms_issue(ticket_issue_oid, user_signing_token_tms)
-
             return Response(data)
         # return JsonResponse({
         #     'ticket_issue_oid': f'{ticket_issue_oid}',

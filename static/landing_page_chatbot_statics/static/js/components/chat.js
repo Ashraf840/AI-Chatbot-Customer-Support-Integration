@@ -43,15 +43,15 @@ function getBotResponse(text) {
  */
 function setBotResponse(response) {
     setTimeout(() => {
-        hideBotTyping(); 
-        if (response_status=="success" && response.length < 1 ){
+        hideBotTyping();
+        if (response_status == "success" && response.length < 1) {
             const fallbackMsg = "দুঃখিত কোনো ধরনের সমস্যা হয়েছে, পুনরায় চেষ্টা করুন";
             const BotResponse = `<img class="botAvatar" src="https://st3.depositphotos.com/30456762/37578/v/600/depositphotos_375780486-stock-illustration-chat-bot-robot-avatar-in.jpg"/><p class="botMsg">${fallbackMsg}</p><div class="clearfix"></div>`;
 
             $(BotResponse).appendTo(".chats").hide().fadeIn(1000);
             scrollToBottomOfResults();
         }
-        else if(response_status=="success"){
+        else if (response_status == "success") {
             // if we get response from Rasa
             for (let i = 0; i < response.length; i += 1) {
                 // check if the response contains "text"
@@ -227,34 +227,34 @@ function setBotResponse(response) {
 }
 
 
-function setNIDverificationSuccessful(){
+function setNIDverificationSuccessful() {
     hideBotTyping();
     const is_verified_message = "NID Verified succesfully";
     const BotResponse = `<img class="botAvatar" src="https://st3.depositphotos.com/30456762/37578/v/600/depositphotos_375780486-stock-illustration-chat-bot-robot-avatar-in.jpg"/><p class="botMsg">${is_verified_message}</p><div class="clearfix"></div>`;
 
-    $(BotResponse).appendTo(".chats").hide().fadeIn(2000); 
+    $(BotResponse).appendTo(".chats").hide().fadeIn(2000);
     scrollToBottomOfResults();
 }
 
 
-function speechNotRecognized(){
+function speechNotRecognized() {
     hideBotTyping();
     const is_verified_message = "Speech could not be recognized. Please try again!";
 
     // const BotResponse = `<img class="botAvatar" src="./static/img/sara_avatar.png"/><p class="botMsg">${fallbackMsg}</p><div class="clearfix"></div>`;
     const BotResponse = `<img class="botAvatar" src="https://st3.depositphotos.com/30456762/37578/v/600/depositphotos_375780486-stock-illustration-chat-bot-robot-avatar-in.jpg"/><p class="botMsg">${is_verified_message}</p><div class="clearfix"></div>`;
 
-    $(BotResponse).appendTo(".chats").hide().fadeIn(2000); 
+    $(BotResponse).appendTo(".chats").hide().fadeIn(2000);
 }
 
-function speechRecognize(text){
-    if(text == "Speech could not be recognized"){
+function speechRecognize(text) {
+    if (text == "Speech could not be recognized") {
         speechNotRecognized();
     }
     else {
         $(".usrInput").hide().val(text).fadeIn(500);
-	const userInputField = document.querySelector('.usrInput');
-	userInputField.focus();
+        const userInputField = document.querySelector('.usrInput');
+        userInputField.focus();
     }
     scrollToBottomOfResults();
 }
@@ -342,7 +342,7 @@ function actionTrigger() {
  * `Note: this method will only work in Rasa 2.x`
  */
 // eslint-disable-next-line no-unused-vars
-var response_status= 0;
+var response_status = 0;
 function customActionTrigger() {
     $.ajax({
         url: "http://localhost:5055/webhook/",
@@ -404,7 +404,7 @@ $("#restart").click(() => {
 /**
  * if user hits enter or send button
  * */
-function displayText(inputText){
+function displayText(inputText) {
     const InitMessage = inputText;
     // const BotResponse = `<img class="botAvatar" src="./static/img/sara_avatar.png"/><p class="botMsg">${InitMessage}</p><div class="clearfix"></div>`;
     const BotResponse = `<img class="botAvatar" src="https://st3.depositphotos.com/30456762/37578/v/600/depositphotos_375780486-stock-illustration-chat-bot-robot-avatar-in.jpg"/><p class="botMsg">${InitMessage}</p><div class="clearfix"></div>`;
@@ -485,7 +485,7 @@ $(document).ready(() => {
                     $(user_navbar).appendTo(".user-details").hide().fadeIn(1000);
                     $(".chatbox-navbar").toggle();
                     setUserResponse(text); 
-		    setNIDverificationSuccessful();
+            setNIDverificationSuccessful();
                     e.preventDefault();
                     return false;
                 }
@@ -518,13 +518,13 @@ $(document).ready(() => {
     }); 
 }); 
 */
- 
+
 ///////////////////////////////////////////////
 
 ////////////Trial//////////
-$(document).ready(() => { 
+$(document).ready(() => {
 
-    var userNID = ""; 
+    var userNID = "";
     var user_name = "";
     console.log(sender_id);
     var validatedNIDConfirmation = false;
@@ -537,50 +537,49 @@ $(document).ready(() => {
             try {
                 //const response = await fetch(`http://127.0.0.1:8080/home/api/user-chatbot/socket/${sender_id}/`);
                 const response = await fetch(`http://${window.location.host}/home/api/user-chatbot/socket/${sender_id}/`);
-                
-                const data = await response.json(); 
-                userNID = data.user_NID_no; 
+
+                const data = await response.json();
+                userNID = data.user_NID_no;
                 user_name = data.first_name + ' ' + data.last_name;
                 console.log(`Username:`, user_name);
                 console.log(`After successfully fetching user NID ('chat.js' file):`, userNID);
-                $(".usrInput").removeAttr("disabled"); 
-            } catch (error) { 
-                console.log(error); 
-            } 
+                $(".usrInput").removeAttr("disabled");
+            } catch (error) {
+                console.log(error);
+            }
         };
         fetchNID()
-    }, 1000); 
+    }, 1000);
 
 
-    $(".usrInput").attr("disabled", true); 
+    $(".usrInput").attr("disabled", true);
 
-    const validateNID = (text) => { 
-        if (text == userNID) { 
-            return true; 
-        } else { 
+    const validateNID = (text) => {
+        if (text == userNID) {
+            return true;
+        } else {
             const InitMessage = "Please enter correct NID: ";
             $("textarea#userInput").val('');
             // displayText(InitMessage);
-            return false; 
-        } 
-    }; 
-    $(".usrInput").on("keypress", (e) => { 
-        const keyCode = e.keyCode || e.which; 
-        var text = $("#userInput").val(); 
-	    var text_trimmed = $("#userInput").val().trim();
+            return false;
+        }
+    };
+    $(".usrInput").on("keypress", (e) => {
+        const keyCode = e.keyCode || e.which;
+        var text = $("#userInput").val();
+        var text_trimmed = $("#userInput").val().trim();
         console.log(`before clicking enter button value:`, text);
-        if (keyCode === 13 && text_trimmed!== "") 
-        {
+        if (keyCode === 13 && text_trimmed !== "") {
 
             if (typeof chatChart !== "undefined") {
                 chatChart.destroy();
             }
-        
+
             $(".chart-container").remove();
             if (typeof modalChart !== "undefined") {
                 modalChart.destroy();
             }
-        
+
             $(".suggestions").remove();
             $("#paginated_cards").remove();
             $(".quickReplies").remove();
@@ -590,10 +589,10 @@ $(document).ready(() => {
             send(text);
             e.preventDefault();
             return false;
-        } 
-        return true; 
-    }); 
-}); 
+        }
+        return true;
+    });
+});
 
 ///////////Trial End//////////////
 

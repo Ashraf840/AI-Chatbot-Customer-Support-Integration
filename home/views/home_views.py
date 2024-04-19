@@ -13,6 +13,7 @@ from asgiref.sync import async_to_sync
 from authenticationApp.models import User_Profile, User_signin_token_tms
 from authenticationApp.utils.userDetail import UserDetail
 from home.utils.escapeSequence_checker import searcEscapeSequence
+from staffApp.api.helper_func.tms_issue_fetch_func import fetch_tms_issue
 
 
 today = date.today()
@@ -214,11 +215,21 @@ class CustomerSupportRoom(View):
             sql_query = f"SELECT type_name, (data::json)->>'text' FROM public.events WHERE sender_id='{csr_record.chatbot_socket_id}' AND type_name in ('user', 'bot');"
             cursor.execute(sql_query)
             results = cursor.fetchall()
-            reuslts = [(row[0], row[1][:-1]) if searcEscapeSequence(row[1]) else (row[0], row[1]) for row in results]
-            self.context['chatbot_history'] = results
+            results = [[row[0], row[1][:-1]] if searcEscapeSequence(row[1]) else [row[0], row[1]] for row in results]
             conn.commit()
             cursor.close()
             conn.close()
+
+            for chat in results:
+                if "category" in chat[1]:
+                    # print("*********user_signing_token_tms:", self.context['user_signing_token_tms'])
+                    # print("*********tms_issue_by_oid:", self.context['tms_issue_by_oid'])
+                    issue_detail = fetch_tms_issue(self.context['tms_issue_by_oid'] ,self.context['user_signing_token_tms'])
+                    selected_category = issue_detail.get('data').get('category_title_en')
+                    chat[1] = f"Selected Category: {selected_category}"
+                    print("String contains 'category':", chat[1])
+                print("chat:", chat)
+            self.context['chatbot_history'] = results
         except:
             self.context['chatbot_history'] = []
 
