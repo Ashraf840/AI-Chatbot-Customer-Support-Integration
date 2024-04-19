@@ -18,8 +18,8 @@ class TMSIssueUnresolveAPI(APIView):
             roomSlugParam=request.data["roomSlugParam"],
         )
         #print("TMSIssueUnresolveAPI:", data)
+        return Response(data)
         return HttpResponse("OK: 'TMSIssueUnresolveAPI' api is executed")
-        # return Response(data)
 
         return JsonResponse({
             'ticket_issue_oid': f'{request.data["ticket_issue_oid"]}',

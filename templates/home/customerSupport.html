@@ -992,15 +992,12 @@ fc_uid: fc_uid,
     console.log(`CSO (bool): ${cso_email}`);
 
     if (reg_user === "True") {
-      const cancel_chat_btn =
-        document.querySelector("#cancel-chat-btn");
+      const cancel_chat_btn = document.querySelector("#cancel-chat-btn");
       cancel_chat_btn.onclick = function (e) {
         console.log(`cancel chat button is clicked!`);
         var user_email = `{{request.user.email}}`;
         var cso_email_backend = `{{ cso_user_email }}`;
-        console.log(
-          `cancel-chat-btn button is clicked by the user; email: ${user_email}`
-        );
+        console.log(`cancel-chat-btn button is clicked by the user; email: ${user_email}`);
         console.log(`CSO email backend: ${cso_email_backend}`);
         ChatSupportSocket.send(
           JSON.stringify({
@@ -1032,8 +1029,7 @@ fc_uid: fc_uid,
             (remark_input_dismiss_value = remark_input_dismiss_value),
             (ticket_issue_oid = ticket_issue_oid),
             (common_cso_email = common_cso_email),
-            (common_registered_user_email =
-              common_registered_user_email),
+            (common_registered_user_email = common_registered_user_email),
             (roomSlugParam = roomSlug)
           );
         };
@@ -1360,17 +1356,17 @@ let feedbackContainerRandomString = generateRandomString(10);
 
     if (data.feedback) {
       if (data.feedback === true) {
-let fc_uid = data.fc_uid;
-let feedbackContainer = document.querySelector(`.feedbackContainer-${fc_uid}`);
+        let fc_uid = data.fc_uid;
+        let feedbackContainer = document.querySelector(`.feedbackContainer-${fc_uid}`);
 
-if (feedbackContainer !== null) {
+        if (feedbackContainer !== null) {
           feedbackContainer.classList.add("hf-fade-out");
-feedbackContainer.onanimationend = (e) => {
+          feedbackContainer.onanimationend = (e) => {
               if (e.target.classList.contains("hf-fade-out")) {
                 feedbackContainer.remove();
               } 
           };
-}
+        }
       }
     }
 

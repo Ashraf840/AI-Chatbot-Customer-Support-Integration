@@ -234,16 +234,17 @@
                         </div>
 
                         {% endif %}
-                        <div id="recordButton" class="ms-3 me-3" aria-disabled="true" style="background-color: #d2e9e9; padding: 10px 10px; border-radius: 70px;">
+                        <div class="ms-3 me-3" aria-disabled="true" style="background-color: #d2e9e9; padding: 10px 10px; border-radius: 70px;">
                             <a id="chat-message-send-btn" 
                             style="cursor: pointer;"><i class="fas fa-paper-plane fa-2x" style="color: #344767;"></i></a>
                         </div>
                         
                         <!-- <a class="mx-3" id="chat-msg-mic-btn" 
                         style="cursor: pointer;"><i class="fa-solid fa-microphone fa-2x"  style="color: #344767;"></i></i></a> -->
-                        <div id="recordButton" class="ms-1 me-3" aria-disabled="true" style="background-color: #d2e9e9; padding: 10px 15px; border-radius: 70px;">
-                            <i id="microphone" class="fa fa-microphone fa-2x" style="color: #344767;"></i>
+                        <div id="recordButton" class="ms-1 me-3" aria-disabled="true" style="background-color: #d2e9e9; padding: 10px 15px; border-radius: 70px;" disabled>
+                            <i id="microphone" class="fa-solid fa-microphone-slash fa-2x" style="color: #344767;"></i>
                             {% comment %} <i id="microphone" class="fa fa-microphone fa-2x" style="color: #A52A2A;"></i> {% endcomment %}
+                            <span id="recordButton_tooltip">Mic disabled</span>
                         </div>
                         {% endif %}
                     </div>

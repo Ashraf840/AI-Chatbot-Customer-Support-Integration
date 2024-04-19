@@ -4,7 +4,8 @@ def fetch_tms_issue(ticket_issue_oid, user_signing_token_tms):
     print("test: fetch_tms_issue")
     print("ticket_issue_oid:", ticket_issue_oid)
     print("user_signing_token_tms:", user_signing_token_tms)
-    url = "http://172.16.6.134/api/v1/issue-detail-by-oid"
+    # url = "http://172.16.6.134/api/v1/issue-detail-by-oid"
+    url = "https://tms-test.celloscope.net/api/v1/issue-detail-by-oid"
     
     #ticket_issue_oid = "f427e89b-ff22-4f71-b7fa-ad0d0538517e"  # Static OID, require to delete the line
     payload = json.dumps({

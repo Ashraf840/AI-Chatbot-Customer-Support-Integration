@@ -42,3 +42,27 @@ svg#cr {
 .hifq-display-none {
     display: none;
 }
+
+#recordButton {
+    position: relative;
+}
+
+#recordButton #recordButton_tooltip {
+    visibility: hidden;
+    width: 8rem;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* Position the tooltip */
+    position: absolute;
+    top: -2.3rem;
+    left: -1.6rem;
+    z-index: 1;
+}
+
+#recordButton:hover #recordButton_tooltip {
+    visibility: visible;
+}

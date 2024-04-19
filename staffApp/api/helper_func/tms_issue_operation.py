@@ -27,43 +27,49 @@ class TMSIssueOperation:
         self.modify_cust_support_req(room_slug_param=roomSlugParam, resolve=True)
         self.create_remark_resolution(modified_cso_visitor_convo_info, self.remark_input_resolve_value)
 
-        url = "http://172.16.6.134/api/v1/issue-resolve-by-call-center-agent"
+        # url = "http://172.16.6.134/api/v1/issue-resolve-by-call-center-agent"
 
-        payload = json.dumps({
-            "remarks": f"{self.remark_input_resolve_value}",
-            "issueOid": f"{self.ticket_issue_oid}"
-        })
-        headers = {
-        'Accept': 'application/json, text/plain, */*',
-        'Authorization': f'Bearer {self.user_signing_token_tms}',
-        'Content-Type': 'application/json',
-        'Referer': f'http://172.16.6.134/issue/{self.ticket_issue_oid}',
-        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
-        'sec-ch-ua': '"Google Chrome";v="111", "Not(A:Brand";v="8", "Chromium";v="111"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"Linux"'
-        }
+        # payload = json.dumps({
+        #     "remarks": f"{self.remark_input_resolve_value}",
+        #     "issueOid": f"{self.ticket_issue_oid}"
+        # })
+        # headers = {
+        # 'Accept': 'application/json, text/plain, */*',
+        # 'Authorization': f'Bearer {self.user_signing_token_tms}',
+        # 'Content-Type': 'application/json',
+        # 'Referer': f'http://172.16.6.134/issue/{self.ticket_issue_oid}',
+        # 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
+        # 'sec-ch-ua': '"Google Chrome";v="111", "Not(A:Brand";v="8", "Chromium";v="111"',
+        # 'sec-ch-ua-mobile': '?0',
+        # 'sec-ch-ua-platform': '"Linux"'
+        # }
 
-        response = requests.request("POST", url, headers=headers, data=payload)
-        # response_text = response.text()
-        response_json = response.json()
+        # response = requests.request("POST", url, headers=headers, data=payload)
+        # # response_text = response.text()
+        # response_json = response.json()
         
-        print("response_json:", response_json)        
+        # print("response_json:", response_json)        
 
-        if response_json["status"] and response_json["code"] == 200:
-            print("Activate socketting!")
-            async_to_sync(self.channel_layer.group_send)(
-                f'chat_{roomSlugParam}',
-                {
-                    'type': 'support_resolved', 
-                    'cso_email': cso_email,
-                    'reg_user_email': registered_user_email,
-                    'ticket_issue_oid': self.ticket_issue_oid,
-                    'user_signing_token_tms': self.user_signing_token_tms,
-                    'remark_input_resolve_value': self.remark_input_resolve_value,
-                    'roomSlugParam': roomSlugParam,
-                }
-            )
+        # if response_json["status"] and response_json["code"] == 200:
+        #     print("Activate socketting!")
+        async_to_sync(self.channel_layer.group_send)(
+            f'chat_{roomSlugParam}',
+            {
+                'type': 'support_resolved', 
+                'cso_email': cso_email,
+                'reg_user_email': registered_user_email,
+                'ticket_issue_oid': self.ticket_issue_oid,
+                'user_signing_token_tms': self.user_signing_token_tms,
+                'remark_input_resolve_value': self.remark_input_resolve_value,
+                'roomSlugParam': roomSlugParam,
+            }
+        )
+
+        response = {
+            "status": True,
+            "code": 200,
+            "message": "Status has been updated"
+        }
 
         return response.json()
 
@@ -75,40 +81,47 @@ class TMSIssueOperation:
         self.modify_cust_support_req(room_slug_param=roomSlugParam, dismiss=True)
         self.create_remark_resolution(modified_cso_visitor_convo_info, self.remark_input_dismiss_value)
 
-        url = "http://172.16.6.134/api/v1/update-issue-status-by-oid"
+        # url = "http://172.16.6.134/api/v1/update-issue-status-by-oid"
 
-        payload = json.dumps({
-            "remarks": f"{self.remark_input_dismiss_value}",
-            "oid": f"{self.ticket_issue_oid}"
-        })
-        headers = {
-            'Accept': 'application/json, text/plain, */*',
-            'Authorization': f'Bearer {self.user_signing_token_tms}',
-            'Content-Type': 'application/json',
-            'Referer': f'http://172.16.6.134/issue/{self.ticket_issue_oid}',
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
-            'sec-ch-ua': '"Google Chrome";v="111", "Not(A:Brand";v="8", "Chromium";v="111"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Linux"'
+        # payload = json.dumps({
+        #     "remarks": f"{self.remark_input_dismiss_value}",
+        #     "oid": f"{self.ticket_issue_oid}"
+        # })
+        # headers = {
+        #     'Accept': 'application/json, text/plain, */*',
+        #     'Authorization': f'Bearer {self.user_signing_token_tms}',
+        #     'Content-Type': 'application/json',
+        #     'Referer': f'http://172.16.6.134/issue/{self.ticket_issue_oid}',
+        #     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
+        #     'sec-ch-ua': '"Google Chrome";v="111", "Not(A:Brand";v="8", "Chromium";v="111"',
+        #     'sec-ch-ua-mobile': '?0',
+        #     'sec-ch-ua-platform': '"Linux"'
+        # }
+
+        # response = requests.request("POST", url, headers=headers, data=payload)
+        # # response_text = response.text()
+
+        # response_json = response.json()
+
+        # if response_json["status"] and response_json["code"] == 200:
+        async_to_sync(self.channel_layer.group_send)(
+            f'chat_{roomSlugParam}',
+            {
+                'type': 'chat_convo_dismissed',
+                'common_cso_email': common_cso_email,
+                'common_registered_user_email': common_registered_user_email,
+                'ticket_issue_oid': self.ticket_issue_oid,
+                'user_signing_token_tms': self.user_signing_token_tms,
+                'remark_input_dismiss_value': self.remark_input_dismiss_value,
+                'roomSlugParam': roomSlugParam,
+            }
+        )
+
+        response = {
+            "status": True,
+            "code": 200,
+            "message": "Status has been updated"
         }
-
-        response = requests.request("POST", url, headers=headers, data=payload)
-        # response_text = response.text()
-        response_json = response.json()
-
-        if response_json["status"] and response_json["code"] == 200:
-            async_to_sync(self.channel_layer.group_send)(
-                f'chat_{roomSlugParam}',
-                {
-                    'type': 'chat_convo_dismissed',
-                    'common_cso_email': common_cso_email,
-                    'common_registered_user_email': common_registered_user_email,
-                    'ticket_issue_oid': self.ticket_issue_oid,
-                    'user_signing_token_tms': self.user_signing_token_tms,
-                    'remark_input_dismiss_value': self.remark_input_dismiss_value,
-                    'roomSlugParam': roomSlugParam,
-                }
-            )
 
         return response.json()
 
