@@ -27,17 +27,21 @@
                                         {% endif %}
                                 {% endif %}
 
-                                    <!-- Notify the CSO that the user has cancelled the chat-convo -->
+                                    <!-- Notify the CSO that the user has cancelled this chat-convo -->
                                 {% if request.user.is_cso %}
                                     <!-- If chat-convo.is_cancelled is False, render this div -->
                                     {% if not chat_convo_cancelled %}
                                     <div id="chat-cancel" hidden>
-                                        <h5 class="mb-0">User has cancelled the chat conversation.</h5>
+                                        <h5 class="mb-0">User has cancelled this conversation.</h5>
+                                        <button type="button" class="btn btn-danger" id="close-window-after-chat-cancellation">
+                                            <span><i class="fa-solid fa-xmark me-1"></i></span>
+                                            Close chat
+                                        </button>
                                     </div>
                                     {% endif %}
                                     {% if chat_convo_cancelled %}
                                     <div id="chat-cancel">
-                                        <h5 class="mb-0">User has cancelled the chat conversation.</h5>
+                                        <h5 class="mb-0">User has cancelled this conversation.</h5>
                                     </div>
                                     {% endif %}
                                 {% endif %}

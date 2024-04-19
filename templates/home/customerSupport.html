@@ -397,11 +397,6 @@
                     >
                       No
                     </button>
-                    <!-- <button type="button" 
-                    class="btn btn-danger" 
-                    id="cancel-chat-btn" 
-                    data-mdb-ripple-color="dark" 
-                    style="width: 8rem;">Cancel Chat</button> -->
                     <button
                       type="button"
                       id="cancel-chat-btn" 
@@ -1287,9 +1282,15 @@ let feedbackContainerRandomString = generateRandomString(10);
         console.log(`chat-convo is cancelled: ${chat_convo_cancelled}`);
         if (chat_convo_cancelled === "False") {
           console.log(`The user has cancelled the conversation!`);
-          const cancel_chat_notif_div =
-            document.querySelector("#chat-cancel");
+          const cancel_chat_notif_div = document.querySelector("#chat-cancel");
           cancel_chat_notif_div.removeAttribute("hidden");
+          cancel_chat_notif_div.classList.add('d-flex','gap-3','justify-content-center','align-items-center');
+          if (cancel_chat_notif_div) {
+            let close_window_after_chat_cancellation = document.querySelector("#close-window-after-chat-cancellation");
+            close_window_after_chat_cancellation.onclick = function () {
+                window.close();
+            }
+          }
           console.log(
             `chat-cancel notification-div DOM`,
             cancel_chat_notif_div
