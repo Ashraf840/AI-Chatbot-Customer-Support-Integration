@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from .managers import UserManager   # Manages "Super & Regular Users"
 from django.contrib.auth.validators import UnicodeUsernameValidator
+import random, string
 
 
 username_validator = UnicodeUsernameValidator()
@@ -12,8 +13,12 @@ GENDERCHOICES = [
     ('Other', 'Other'),
 ]
 
+def random_string_generator(size=8, chars=string.ascii_lowercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
+
 class User(AbstractBaseUser, PermissionsMixin):
     # User Info
+    ibas_user_id = models.CharField(verbose_name='iBAS++ User Id', max_length=150, blank=True, null=True, help_text='ibas_uid_[Id Num]')
     email = models.EmailField(verbose_name='Email', max_length=60, unique=True)
     username = models.CharField(
         "username",
@@ -64,6 +69,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         # TODO: define a field "is_first_login(bool)" to track first-time-login of users.
         # TODO: Hide the two "password" fields while creating new user from dj-admin-panel
         # TODO: make sure to check the password is set only at the user-creation.
+        try:
+            if self.ibas_user_id is None:
+                self.ibas_user_id = "ibas_uid_" + random_string_generator()
+        except:
+            True
         super(User, self).save(*args, **kwargs)
 
 

@@ -226,7 +226,7 @@ class CustomerSupportRoom(View):
                     # print("*********tms_issue_by_oid:", self.context['tms_issue_by_oid'])
                     issue_detail = fetch_tms_issue(self.context['tms_issue_by_oid'] ,self.context['user_signing_token_tms'])
                     selected_category = issue_detail.get('data').get('category_title_en')
-                    chat[1] = f"Selected Category: {selected_category}"
+                    chat[1] = f"Category: {selected_category}"
                     print("String contains 'category':", chat[1])
                 print("chat:", chat)
             self.context['chatbot_history'] = results

@@ -79,7 +79,7 @@
               alt="Profile Picture"
             />
           </div>
-          <a class="navbar-brand nav-title" href="#">IBAS++</a>
+          <a class="navbar-brand nav-title" href="#">iBAS++</a>
           <a class="navbar-brand nav-title" href="#" style="font-weight: 300"
             >|  Help Desk Chatroom
             </a
@@ -165,8 +165,14 @@
                   </div>
                   <div class="text-body">
                     <p class="card-text fs-6">{{ request.user.first_name }} {{ request.user.last_name }}</p>
-                    <p class="card-text">Help Desk Officer</p>
-                    <p class="card-text">ID</p>
+                    {% if request.user.is_user %}
+                      <p class="card-text">iBAS++ User</p>
+                      <p class="card-text">ID</p>
+                    {% endif %}
+                    {% if request.user.is_cso %}
+                      <p class="card-text">Help Desk Officer</p>
+                      <p class="card-text">ID</p>
+                    {% endif %}
                   </div>
                 </div>
                 <div class="card px-4 side-bar-card shadow-sm" style="width: 58vh;">
