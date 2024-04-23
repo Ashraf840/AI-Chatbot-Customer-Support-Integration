@@ -568,7 +568,7 @@ $(document).ready(() => {
         const keyCode = e.keyCode || e.which;
         var text = $("#userInput").val();
         var text_trimmed = $("#userInput").val().trim();
-        console.log(`before clicking enter button value:`, text);
+        // console.log(`before clicking enter button value:`, text);
         if (keyCode === 13 && text_trimmed !== "") {
 
             if (typeof chatChart !== "undefined") {
