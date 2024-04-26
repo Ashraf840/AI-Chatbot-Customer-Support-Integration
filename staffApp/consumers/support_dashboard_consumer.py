@@ -64,7 +64,7 @@ def make_user_online(
         user_division: str
     ):
     """
-    This void function is used to make the user online while checking if his/her organization, location, district, division is null ot not.
+    This void function is used to make the user online while checking if his/her organization, location, district, division is null or not.
     """
     print('*'*10, "make_user_online() func is called")
     # PASSED THE VALUES FROM THE PARENT FUNCTION
@@ -92,7 +92,7 @@ def make_user_online(
             user_district,
             user_division,
         )
-        
+    # print("User is online?:", user.is_active)
     # Check if the user's active; otherwise change it to True
     if not user.is_active:
         user.is_active = True
@@ -134,10 +134,10 @@ def active_user_online(
     """
     This func is responsible for creating new record in the "CSOOnline" model if no record found of the CSO based on certain condition.
     """
-    # print('*'*10, "active_user_online() func is called")
-    # print("cso email:", cso_email)
-    # print("room slug:", room_slug)
-    # print("channel name:", channel_name)
+    print('*'*10, "active_user_online() func is called")
+    print("cso email:", cso_email)
+    print("room slug:", room_slug)
+    print("channel name:", channel_name)
 
     # print("user_organization", user_organization)
     # print("user_location:", user_location)

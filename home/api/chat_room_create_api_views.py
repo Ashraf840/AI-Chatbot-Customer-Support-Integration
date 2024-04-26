@@ -79,6 +79,7 @@ class ChatRoomCreateAPISocket(APIView):
                                     'issuerOid': issuerOid,
                                 }
                             )
+                            return Response("CSO is avaiable!")
                     if len(active_cso) > 1:
                         channel_layer = get_channel_layer()
                         email_normalized="".join(ch for ch in user_email if ch.isalnum())
