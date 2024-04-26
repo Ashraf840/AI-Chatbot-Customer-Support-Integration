@@ -65,13 +65,13 @@ class CSOOnline(models.Model):
                 'cso_email', 'room_slug', 'is_active', 'joined_at', 'last_update',
                 'user_organization', 'location', 'district', 'division'
             ))
-            instances = CSOOnline.cso_filtration(
-                user_organization=user_organization,
-                location=location,
-                district=district,
-                division=division,
-                instances=instances
-            )
+            # instances = CSOOnline.cso_filtration(
+            #     user_organization=user_organization,
+            #     location=location,
+            #     district=district,
+            #     division=division,
+            #     instances=instances
+            # )
             return instances
 
     @staticmethod
@@ -106,10 +106,15 @@ class CSOOnline(models.Model):
 
             return active_cso
         else:
-            filtered_cso_list = [i[1] for i in instances.items()]
-            for i in filtered_cso_list:
-                if i['is_active']:
+            # filtered_cso_list = [i[1] for i in instances.items()]
+            
+            for i in instances:
+                if i.get('is_active'):
                     active_cso.append(i)
+
+            # for i in filtered_cso_list:
+            #     if i['is_active']:
+            #         active_cso.append(i)
             
             if len(active_cso) == 0:
                 return CSOOnline.get_active_cso(gen_support_confirmation=True)

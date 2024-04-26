@@ -63,6 +63,7 @@ class ChatRoomCreateAPISocket(APIView):
 
                     if len(active_cso) == 0:
                         return Response("No CSO is currently available!")
+                    
                     if len(active_cso) == 1:
                         total_msg = CustomerSupportRequest.get_reqs_with_assigned_cso(cso_email=active_cso[0]["cso_email"])
                         if len(total_msg) >= 5:
@@ -80,6 +81,7 @@ class ChatRoomCreateAPISocket(APIView):
                                 }
                             )
                             return Response("CSO is avaiable!")
+                    
                     if len(active_cso) > 1:
                         channel_layer = get_channel_layer()
                         email_normalized="".join(ch for ch in user_email if ch.isalnum())
