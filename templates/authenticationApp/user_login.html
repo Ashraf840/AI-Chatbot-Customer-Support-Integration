@@ -41,7 +41,7 @@
 			</div>
 			<div class="row text-center">
 				<div class="col d-block">
-					<p class="login_header">INTEGRATED BUDGET & ACCOUNTING SYSTEM</p>
+					<p class="login_header">Welcome to iBAS++ Chat Support System</p>
 				</div>
 			</div>
 			<div class="row justify-content-center">
@@ -49,16 +49,11 @@
 					<div class="wrap d-md-flex">
 						<div class="text-wrap p-lg-5 text-center d-flex align-items-center order-md-last">
 							<div class="text w-100">
-								<p class="login_to_ibass">Login to iBAS++</p>
+								<p class="login_to_ibass">iBAS++ Chat</p>
 								<p class="user_login">User Login</p>
 							</div>
 						</div>
 						<div class="login-wrap p-lg-5">
-							<div class="d-flex">
-								<div class="w-100">
-									<h3 class="mb-2 text-dark">Sign In</h3>
-								</div>
-							</div>
 
 							<!-- Error Flash Msg -->
 							{% if messages %}
@@ -83,7 +78,7 @@
 							<form action="#" method="POST" class="signin-form">
 								{% csrf_token %}
 								<div class="form-group mb-3">
-									<label class="label" for="email">Email</label>
+									<label class="label" for="email">PHONE OR EMAIL</label>
 									{{ form.email }}
 								</div>
 								<div class="form-group mb-3">
@@ -91,12 +86,12 @@
 									{{ form.password }}
 								</div>
 								<div class="form-group">
-									<button style="background: hsl(184, 96%, 18%); border: 1px solid hsl(184, 96%, 18%);" type="submit" class="form-control btn btn-primary submit px-3">Sign
-										In</button>
+									<button style="background: hsl(184, 96%, 18%); border: 1px solid hsl(184, 96%, 18%);" type="submit" class="form-control btn btn-primary submit px-3">Login</button>
 								</div>
 								<div class="form-group">
-									<a style="background: hsl(184, 96%, 18%); border: 1px solid hsl(184, 96%, 18%);"
-									class="btn form-control btn btn-primary px-3" href="{% url 'authenticationApplication:UserAuth:UserRegistrationPageView' %}">Register</a>
+									<p>Don't have an account?
+										<a style="text-decoration: underline; color: lightblue;" href="{% url 'authenticationApplication:UserAuth:UserRegistrationPageView' %}">Create an account</a>
+									</p>
 								</div>
 							</form>
 						</div>
@@ -108,8 +103,8 @@
 
 	<!-- new chat window -->
 	<div class="widget">
-        <div style="border: 5px solid #302c78;text-align: center;background-color: #302c78;border-radius: 10px 10px 0px 0px;">
-        <p style="font-family: 'Roboto Mono', monospace;color:white"> <b>IBAS ChatBot++</b></p>
+        <div style="border: 5px solid #02555b;text-align: center;background-color: #02555b;border-radius: 10px 10px 0px 0px;">
+        <p style="font-family: 'Roboto Mono', monospace;color:white"> <b>iBAS++ Chatbot</b></p>
             <!-- Dropdown menu-->
             <ul id="dropdown1" class="dropdown-content">
                 <li><a href="#" id="clear">Clear</a></li>

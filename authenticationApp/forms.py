@@ -20,23 +20,100 @@ class UserLoginForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(UserLoginForm, self).__init__(*args, **kwargs)
         self.fields['email'].widget.attrs['class'] = 'form-control'
-        self.fields['email'].widget.attrs['placeholder'] = 'Email Address'
+        self.fields['email'].widget.attrs['placeholder'] = 'Phone or Email address'
         self.fields['password'].widget.attrs['class'] = 'form-control'
         self.fields['password'].widget.attrs['placeholder'] = 'Password'
 
+
+DISTRICT_CHOICES = [
+    ('Dhaka', 'Dhaka'),
+    ('Faridpur', 'Faridpur'),
+    ('Gazipur', 'Gazipur'),
+    ('Gopalganj', 'Gopalganj'),
+    ('Jamalpur', 'Jamalpur'),
+    ('Kishoreganj', 'Kishoreganj'),
+    ('Madaripur', 'Madaripur'),
+    ('Manikganj', 'Manikganj'),
+    ('Munshiganj', 'Munshiganj'),
+
+    ('Mymensingh', 'Mymensingh'),
+    ('Narayanganj', 'Narayanganj'),
+    ('Narsingdi', 'Narsingdi'),
+    ('Netrokona', 'Netrokona'),
+    ('Rajbari', 'Rajbari'),
+    ('Shariatpur', 'Shariatpur'),
+    ('Sherpur', 'Sherpur'),
+    ('Tangail', 'Tangail'),
+    ('Bogra', 'Bogra'),
+
+    ('Joypurhat', 'Joypurhat'),
+    ('Naogaon', 'Naogaon'),
+    ('Natore', 'Natore'),
+    ('Nawabganj', 'Nawabganj'),
+    ('Pabna', 'Pabna'),
+    ('Rajshahi', 'Rajshahi'),
+    ('Sirajgonj', 'Sirajgonj'),
+    ('Dinajpur', 'Dinajpur'),
+    ('Gaibandha', 'Gaibandha'),
+
+    ('Kurigram', 'Kurigram'),
+    ('Lalmonirhat', 'Lalmonirhat'),
+    ('Nilphamari', 'Nilphamari'),
+    ('Panchagarh', 'Panchagarh'),
+    ('Rangpur', 'Rangpur'),
+    ('Thakurgaon', 'Thakurgaon'),
+    ('Barguna', 'Barguna'),
+    ('Barisal', 'Barisal'),
+    ('Bhola', 'Bhola'),
+
+    ('Jhalokati', 'Jhalokati'),
+    ('Patuakhali', 'Patuakhali'),
+    ('Pirojpur', 'Pirojpur'),
+    ('Bandarban', 'Bandarban'),
+    ('Brahmanbaria', 'Brahmanbaria'),
+    ('Chandpur', 'Chandpur'),
+    ('Chittagong', 'Chittagong'),
+
+    ('Comilla', 'Comilla'),
+    ('CoxsBazar', 'CoxsBazar'),
+    ('Feni', 'Feni'),
+    ('Khagrachari', 'Khagrachari'),
+    ('Lakshmipur', 'Lakshmipur'),
+    ('Noakhali', 'Noakhali'),
+    ('Rangamati', 'Rangamati'),
+    ('Habiganj', 'Habiganj'),
+    ('Maulvibazar', 'Maulvibazar'),
+
+    ('Sunamganj', 'Sunamganj'),
+    ('Sylhet', 'Sylhet'),
+    ('Bagerhat', 'Bagerhat'),
+    ('Chuadanga', 'Chuadanga'),
+    ('Jessore', 'Jessore'),
+    ('Jhenaidah', 'Jhenaidah'),
+    ('Khulna', 'Khulna'),
+    ('Kushtia', 'Kushtia'),
+    ('Magura', 'Magura'),
+
+    ('Meherpur', 'Meherpur'),
+    ('Narail', 'Narail'),
+    ('Satkhira', 'Satkhira'),
+]
+
+
 class UserRegistrationForm(forms.Form):
     email = forms.CharField(max_length=30)
-    username = forms.CharField(max_length=255)
+    # username = forms.CharField(max_length=255)
     nid = forms.CharField(max_length=255)
     mobile = forms.CharField(max_length=255)
-    district = forms.CharField(max_length=255)
+    # district = forms.CharField(max_length=255)
+    district = forms.ChoiceField(choices=DISTRICT_CHOICES)
     password = forms.CharField(widget=forms.PasswordInput)
     repeat_password = forms.CharField(widget=forms.PasswordInput)
 
     def clean(self):
         cleaned_data = super(UserRegistrationForm, self).clean()
         email = cleaned_data.get('email')
-        username = cleaned_data.get('username')
+        # username = cleaned_data.get('username')
         nid = cleaned_data.get('nid')
         mobile = cleaned_data.get('mobile')
         district = cleaned_data.get('district')
@@ -44,7 +121,8 @@ class UserRegistrationForm(forms.Form):
         repeat_password = cleaned_data.get('repeat_password')
         if password != repeat_password:
             raise forms.ValidationError("Password does not matched!", code="PasswordMismatched")
-        if not email and not username and not password and not repeat_password\
+        # if not email and not username and not password and not repeat_password\
+        if not email and not password and not repeat_password\
             and not mobile and not district:
             raise forms.ValidationError('You have to write something!')
         return self.cleaned_data
@@ -52,19 +130,19 @@ class UserRegistrationForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['email'].widget.attrs['class'] = 'form-control email'
-        self.fields['email'].widget.attrs['placeholder'] = 'email'
-        self.fields['username'].widget.attrs['class'] = 'form-control username'
-        self.fields['username'].widget.attrs['placeholder'] = 'username'
+        self.fields['email'].widget.attrs['placeholder'] = 'Email address(e.g., a_challan@ibas.gov.bd)'
+        # self.fields['username'].widget.attrs['class'] = 'form-control username'
+        # self.fields['username'].widget.attrs['placeholder'] = 'username'
         self.fields['nid'].widget.attrs['class'] = 'form-control nid'
-        self.fields['nid'].widget.attrs['placeholder'] = 'nid'
+        self.fields['nid'].widget.attrs['placeholder'] = 'NID number(e.g., 6006584508)'
         self.fields['mobile'].widget.attrs['class'] = 'form-control mobile'
-        self.fields['mobile'].widget.attrs['placeholder'] = 'mobile'
+        self.fields['mobile'].widget.attrs['placeholder'] = 'Mobile number(e.g., 01550079943)'
         self.fields['district'].widget.attrs['class'] = 'form-control district'
-        self.fields['district'].widget.attrs['placeholder'] = 'district'
+        # self.fields['district'].widget.attrs['placeholder'] = 'district'
         self.fields['password'].widget.attrs['class'] = 'form-control password'
-        self.fields['password'].widget.attrs['placeholder'] = 'password'
+        self.fields['password'].widget.attrs['placeholder'] = 'Enter your password'
         self.fields['repeat_password'].widget.attrs['class'] = 'form-control repeat_password'
-        self.fields['repeat_password'].widget.attrs['placeholder'] = 'repeat_password'
+        self.fields['repeat_password'].widget.attrs['placeholder'] = 'Retype password'
 
 class UserPasswordResetForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput)
