@@ -33,18 +33,28 @@ class UserLoginRegAutomationAPI(APIView):
         user_query = request.data.get('user_query', None)
         user_login = request.data.get('user_login', None)
         user_registration = request.data.get('user_registration', None)
+        existing_user_password = request.data.get('existing_user_password', None)
         # print("UserLoginRegAutomationAPI - user_login:", user_login)
 
         if user_login:
+            # If password is provided from the login workflow from the chatbot-login.js file, then use this block
+            if existing_user_password:
+                print("User password is provided. Cross check with the automatically provided email from the frontend. if password is matched, then send the user-email & password to the frontend again. Thus it will populate a login-form with the value & automatically submit that in the user-login view! Include **kwargs so that further the system can generate the prompt to connect to HDO, if pressed YES, then hit the chat romm create api from there.")
+            
             # Check if there is any user containing the phone number
             user = User.objects.filter(phone=phone)
+            # import pdb; pdb.set_trace()
             if len(user) > 0:
                 print("User account exists! Add user-email automatically from here to another method of this class.")
-                print("user email:", user.email)
-                return Response({'result': 'User account exists!'})     # Ask for password from the user
+                # print("user email:", user[0].email)
+                return Response({
+                    'result': 'User account exists',
+                    # 'email': user[0].email,
+                    'phone': phone,
+                }, status=status.HTTP_200_OK)     # Ask for password from the user, sent the user email to the frontend also
             else:
                 print("User account doesn't exist!")
-                return Response({'result': 'User account doesn\'t exist!'})
+                return Response({'result': 'User account doesn\'t exist'})
         
         if user_registration:
             print("Make user registration & automatically login the user to the system!")

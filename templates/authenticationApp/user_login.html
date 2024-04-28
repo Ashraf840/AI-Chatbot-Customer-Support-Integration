@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="{% static 'css/authenticationApp/form_validation_error.css' %}">
 
 	<link rel="stylesheet" href="{% static 'css/home/landing_page/tada_style.css' %}">
+	<link rel="stylesheet" href="{% static 'css/home/landing_page/login_page_chatbot_style.css' %}">
 	<link rel="stylesheet" href="{% static 'css/home/landing_page/static_calendar.css' %}">
 	
 	<link rel="stylesheet" type="text/css" href="{% static 'landing_page_chatbot_statics/static/css/materialize.min.css' %}"/>
@@ -78,7 +79,7 @@
 							<form action="#" method="POST" class="signin-form">
 								{% csrf_token %}
 								<div class="form-group mb-3">
-									<label class="label" for="email">PHONE OR EMAIL</label>
+									<label class="label" for="email">Email</label>
 									{{ form.email }}
 								</div>
 								<div class="form-group mb-3">
@@ -195,6 +196,8 @@
     <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/suggestionButtons.js' %}"></script>
 	<script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/speechToText.js' %}"></script>
 
+	<!-- get cookies -->
+	<script src="{% static 'js/miscellaneous/helper_func/get_cookies.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/authenticationApp/user_auth/user-login/login.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/authenticationApp/user_auth/user-registration/registration.js' %}"></script>
 

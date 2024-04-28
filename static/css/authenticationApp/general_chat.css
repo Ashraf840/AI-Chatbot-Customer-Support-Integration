@@ -1,4 +1,6 @@
-.hdo_connection_prompt_btn {
+.hdo_connection_prompt_btn,
+.user_registration_prompt_btn,
+.user_login_prompt_btn {
     border-radius: .5rem;
     border: 0px;
     color: white;
@@ -20,17 +22,21 @@
     background-color: #04AA6D;
 }
 
-.hdoConnectionThankYouMessage_wrapper
-,.userNid_wrapper
-,.userMobile_wrapper
-,.userDistrict_wrapper
-,.userQuery_wrapper
-,.userEmailReg_wrapper
-,.userPassReg_wrapper
-,.userConfirmPassReg_wrapper
-,.userPassMismatchedReg_wrapper
-{
-    margin-left: 2.3rem;
+.hdoConnectionThankYouMessage_wrapper,
+.userLoginPromptInfo_wrapper,
+.userRegThankYouMessage_wrapper,
+.userNid_wrapper,
+.userMobile_wrapper,
+.userDistrict_wrapper,
+.userQuery_wrapper,
+.userEmailReg_wrapper,
+.userPassReg_wrapper,
+.userConfirmPassReg_wrapper,
+.userPassMismatchedReg_wrapper,
+.userRegPrompt_wrapper,
+.userEmailLogin_wrapper,
+.userPassLogin_wrapper {
+    margin-left: .3rem;
 }
 
 .userPassMismatchedReg_wrapper span.red-highlight {
@@ -38,21 +44,44 @@
     font-weight: 700;
 }
 
-.nidNum_input
-,.phone_input
-,.districtName_input
-,.userQuery_input
-,.userEmailReg_input
-,.userPassReg_input
-,.userConfirmPassReg_input
-{
-    padding: .8rem 1rem;
+.nidNum_input,
+.phone_input,
+.districtName_input,
+.userQuery_input,
+.userEmailReg_input,
+.userPassReg_input,
+.userConfirmPassReg_input,
+.email_input,
+.userPassLogin_input {
+    /* padding: .8rem 1rem;
     border: .5px solid #cccccc;
     border-radius: 1rem;
+    margin-left: 2rem; */
+    padding: 0.8rem 1rem !important;
+    border: .5px solid #cccccc !important;
+    border-radius: 1rem !important;
+    margin-left: 2.4rem !important;
+    width: 65% !important;
+    height: 1rem !important;
 }
 
-.userPassMismatchedReg_input::placeholder
-,.userConfirmPassMismatchedReg_input::placeholder {
+.userPassMismatchedReg_input::placeholder,
+.userConfirmPassMismatchedReg_input::placeholder {
     padding: .8rem 1rem;
     color: #8d221e;
+}
+
+/* Show/hide tooltip on empty input send from the chatbox input field */
+.tooltip {
+    display: none;
+    position: absolute;
+    background-color: #ffcccc;
+    color: #333;
+    padding: 5px;
+    border-radius: 4px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.tooltip.show {
+    display: block;
 }

@@ -20,7 +20,7 @@ class UserLoginForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(UserLoginForm, self).__init__(*args, **kwargs)
         self.fields['email'].widget.attrs['class'] = 'form-control'
-        self.fields['email'].widget.attrs['placeholder'] = 'Phone or Email address'
+        self.fields['email'].widget.attrs['placeholder'] = 'Email address'
         self.fields['password'].widget.attrs['class'] = 'form-control'
         self.fields['password'].widget.attrs['placeholder'] = 'Password'
 
