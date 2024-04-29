@@ -555,7 +555,7 @@ $(document).ready(() => {
     // }, 1000);
 
 
-    $(".usrInput").attr("disabled", true);
+    // $(".usrInput").attr("disabled", true);
 
     const validateNID = (text) => {
         if (text == userNID) {
