@@ -1,5 +1,5 @@
-function userLogin() {
-    let data = {};
+function userLogin(issue_desc) {
+    let data = { issue_desc: issue_desc };
     console.log(`User login module will be executed`);
     document.querySelector("#user-input").disabled = true;  // Disable user Input while running the user-login module
     // userNIDPrompt(data);    // NOT USING IN THE LOGIN WORKFLOW
@@ -70,8 +70,7 @@ function loginMobileNumInputKeypress(phone_input, data) {
             data['phone'] = phone_input.value;
             $(UserResponse).appendTo(".chats").fadeIn(600);
             // userDistrictPrompt(data);    // NOT USING IN THE LOGIN WORKFLOW
-
-            UserLoginfromChatbotAPI(data)
+            UserLoginfromChatbotAPI(data);
             scrollToBottomOfResults();
         }
     });
@@ -153,13 +152,12 @@ function loginMobileNumInputKeypress(phone_input, data) {
 //     });
 // }
 
-function userLoginPrompt(data) {
+function userLoginPrompt(phone, issue_desc) {
     // console.log("Ask user if s/he wants to login in order to communicate with the HDO!")
-
     let BotResponse_userLoginPrompt = `
         <div class="userLoginPrompt_wrapper">
             <img class="botAvatar" src='https://st3.depositphotos.com/30456762/37578/v/600/depositphotos_375780486-stock-illustration-chat-bot-robot-avatar-in.jpg'>
-            <p class="botMsg">We have found an account with the phone number ${data}. Do you want to login?</p>
+            <p class="botMsg">We have found an account with the phone number ${phone}. Do you want to login?</p>
             <div class="clearfix"></div>
             <button type="button" id="userLoginPromptBtnNo" class="user_login_prompt_btn btn_no" value="no">No</button>
             <button type="button" id="userLoginPromptBtnYes" class="user_login_prompt_btn btn_yes" value="yes">Yes</button>
@@ -169,14 +167,14 @@ function userLoginPrompt(data) {
     let userLoginPrompt_wrapper = document.querySelector('.userLoginPrompt_wrapper');
     let userLoginPromptBtnYes = document.querySelector("#userLoginPromptBtnYes");
     let userLoginPromptBtnNo = document.querySelector("#userLoginPromptBtnNo");
-    userLoginPromptClick(userLoginPrompt_wrapper, userLoginPromptBtnYes, userLoginPromptBtnNo);
+    userLoginPromptClick(userLoginPrompt_wrapper, userLoginPromptBtnYes, userLoginPromptBtnNo, issue_desc);
 }
 
-function userLoginPromptClick(userLoginPrompt_wrapper, userLoginPromptBtnYes, userLoginPromptBtnNo) {
+function userLoginPromptClick(userLoginPrompt_wrapper, userLoginPromptBtnYes, userLoginPromptBtnNo, issue_desc) {
     userLoginPromptBtnYes.addEventListener('click', function () {
         userLoginPrompt_wrapper.remove();
         // console.log(`Ask for email & then password!`);
-        userEmailLoginPrompt();
+        userEmailLoginPrompt(issue_desc);
         scrollToBottomOfResults();
     });
 
@@ -194,9 +192,10 @@ function userLoginPromptClick(userLoginPrompt_wrapper, userLoginPromptBtnYes, us
     });
 }
 
-function userEmailLoginPrompt() {
+function userEmailLoginPrompt(issue_desc) {
     // // Since exisitng user is found now let's authenticate the user in the forntend form submission
-    let data = {};
+    // let data = {};
+    let data = { issue_desc: issue_desc };
     let BotResponse = `
         <div class="userEmailLogin_wrapper">
             <img class="botAvatar" src='https://st3.depositphotos.com/30456762/37578/v/600/depositphotos_375780486-stock-illustration-chat-bot-robot-avatar-in.jpg'>
@@ -249,6 +248,8 @@ function userLoginPasswordPrompt(data) {
 function submitLoginForm(data) {
     console.log(`user login data - email:`, data?.email);
     console.log(`user login data - password:`, data?.password);
+    console.log("issue_desc - login() method", data?.issue_desc);
+
     let form = document.createElement('form');
     form.action = `#`;
     form.method = 'POST';
@@ -265,6 +266,12 @@ function submitLoginForm(data) {
     input_password.name = 'password';
     input_password.value = data?.password;
     form.appendChild(input_password);
+
+    let input_issue_desc = document.createElement('input');
+    input_issue_desc.type = 'text';
+    input_issue_desc.name = 'issue_desc';
+    input_issue_desc.value = data?.issue_desc;
+    form.appendChild(input_issue_desc);
 
     const csrftoken = getCookie('csrftoken');
     let csrfInput = document.createElement('input');
@@ -288,6 +295,7 @@ function userPassLoginInputKeypress(userPassLogin_input, data) {
             `;
             data['password'] = userPassLogin_input.value;
             $(UserResponse).appendTo(".chats").fadeIn(600);
+            console.log(`user login data:`, data);
             submitLoginForm(data);
         }
     })
@@ -317,7 +325,7 @@ function UserLoginfromChatbotAPI(data) {
             if (userLoginReport?.result === "User account exists") {
                 console.log(`User is registered!`);
                 console.log(`Activate user login module`);  // Will hit this same API.
-                userLoginPrompt(userLoginReport?.phone);
+                userLoginPrompt(userLoginReport?.phone, data?.issue_desc);
                 scrollToBottomOfResults();
             }
             if (userLoginReport?.result === "User account doesn't exist!") {

@@ -64,6 +64,9 @@
                     <div class="row"><p>Location: <b>{{ user_location }}</b></p></div>
                     <div class="row"><p>District: <b>{{ user_district }}</b></p></div>
                     <div class="row"><p>Division: <b>{{ user_division }}</b></p></div>
+                    {% if issue_desc_data  %}
+                    <div class="row"><p>Issue Desc: <b>{{ issue_desc_data }}</b></p></div>
+                    {% endif %}
                 </div>
             </div>
         </header>

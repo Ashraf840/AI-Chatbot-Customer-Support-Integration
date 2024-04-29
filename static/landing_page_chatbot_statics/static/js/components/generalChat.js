@@ -133,7 +133,8 @@ function setBotResponse(response) {
                                     || response[i].text === "Please login first."
                                 ) {
                                     // console.log(`Activate user login module!`);
-                                    userLogin();
+                                    console.log(`response[i+1].text`, response[i + 1].text);
+                                    userLogin(response[i + 1].text);
                                     return;
                                 }
                                 if (response[i].text === "ব্যবহারকারী লগ ইন অবস্থায়ে অছেন।"

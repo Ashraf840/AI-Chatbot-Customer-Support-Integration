@@ -53,6 +53,19 @@ class LangingPage(LoginRequiredMixin, View):
             usr_detail = UserDetail(user_email=request.user.email)
             usr_profile = usr_detail.user_profile_detail(request.user.email)
 
+            print("issue desc - LangingPage View", request.session.get('issue_desc_data'))
+
+            # If 'issue_desc_data' key exists in the self.context object then delete it, since it's meant to be shown only for once if the user gets logged in from the chatbot section of user login page
+            if 'issue_desc_data' in self.context:
+                del self.context['issue_desc_data']
+
+            # If 'issue_desc_data' key exists in the request.session object & the value is not None 
+            if 'issue_desc_data' in request.session:
+                if request.session.get('issue_desc_data'):
+                    self.context['issue_desc_data'] = request.session.get('issue_desc_data')
+                del request.session['issue_desc_data']
+            
+
             user_organization, user_location, user_district, user_division = usr_profile.user_organization, usr_profile.location, usr_profile.district, usr_profile.division
             self.context['user_organization'] = user_organization
             self.context['user_location'] = user_location
