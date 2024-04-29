@@ -532,24 +532,27 @@ $(document).ready(() => {
     console.log(`sender id (chat.js):`, sender_id);
     // console.log(`ChatbotUserSocketID_socket (inside "chat.js" file):`, ChatbotUserSocketID_socket);
     displayText(InitMessage);
-    setTimeout(() => {
-        const fetchNID = async () => {
-            try {
-                //const response = await fetch(`http://127.0.0.1:8080/home/api/user-chatbot/socket/${sender_id}/`);
-                const response = await fetch(`http://${window.location.host}/home/api/user-chatbot/socket/${sender_id}/`);
 
-                const data = await response.json();
-                userNID = data.user_NID_no;
-                user_name = data.first_name + ' ' + data.last_name;
-                console.log(`Username:`, user_name);
-                console.log(`After successfully fetching user NID ('chat.js' file):`, userNID);
-                $(".usrInput").removeAttr("disabled");
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        fetchNID()
-    }, 1000);
+    // setTimeout(() => {
+    //     const fetchNID = async () => {
+    //         try {
+    //             //const response = await fetch(`http://127.0.0.1:8080/home/api/user-chatbot/socket/${sender_id}/`);
+
+    //             console.log("issue_desc_data (chat.js):", issue_desc_data);
+    //             let response = await fetch(`http://${window.location.host}/home/api/user-chatbot/socket/${sender_id}/`);
+
+    //             const data = await response.json();
+    //             userNID = data.user_NID_no;
+    //             user_name = data.first_name + ' ' + data.last_name;
+    //             console.log(`Username:`, user_name);
+    //             console.log(`After successfully fetching user NID ('chat.js' file):`, userNID);
+    //             $(".usrInput").removeAttr("disabled");
+    //         } catch (error) {
+    //             console.log(error);
+    //         }
+    //     };
+    //     fetchNID();
+    // }, 1000);
 
 
     $(".usrInput").attr("disabled", true);

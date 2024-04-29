@@ -249,6 +249,8 @@ function submitLoginForm(data) {
     console.log(`user login data - email:`, data?.email);
     console.log(`user login data - password:`, data?.password);
     console.log("issue_desc - login() method", data?.issue_desc);
+    console.log(`sender id (login.js):`, sender_id);
+    document.querySelector("#user-input").disabled = false;
 
     let form = document.createElement('form');
     form.action = `#`;
@@ -272,6 +274,12 @@ function submitLoginForm(data) {
     input_issue_desc.name = 'issue_desc';
     input_issue_desc.value = data?.issue_desc;
     form.appendChild(input_issue_desc);
+
+    let input_chatbot_sender_id = document.createElement('input');
+    input_chatbot_sender_id.type = 'text';
+    input_chatbot_sender_id.name = 'chatbot_sender_id';
+    input_chatbot_sender_id.value = sender_id;
+    form.appendChild(input_chatbot_sender_id);
 
     const csrftoken = getCookie('csrftoken');
     let csrfInput = document.createElement('input');
@@ -328,7 +336,7 @@ function UserLoginfromChatbotAPI(data) {
                 userLoginPrompt(userLoginReport?.phone, data?.issue_desc);
                 scrollToBottomOfResults();
             }
-            if (userLoginReport?.result === "User account doesn't exist!") {
+            if (userLoginReport?.result === "User account doesn't exist") {
                 console.log(`User is unregistered!`);
                 console.log(`Activate user registration module`);
                 userRegistration_chatbot(data);

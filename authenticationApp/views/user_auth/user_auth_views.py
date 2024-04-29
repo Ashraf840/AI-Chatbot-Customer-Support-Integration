@@ -21,6 +21,7 @@ class UserLoginPageView(View):
         
     def post(self, request):
         # print("issue_desc - login() method", request.POST.get('issue_desc'))
+        # print("chatbot_sender_id - login() method", request.POST.get('chatbot_sender_id'))
         # print("UserLoginPageView:", request.POST)
         self.context['form'] = self.form_class(request.POST)
         form = self.context['form']
@@ -42,16 +43,9 @@ class UserLoginPageView(View):
                 # TODO: Check if the user has the perm of "is_user", if user is "is_cso", then redirect to the CSO login page including an error-msg, otherwise throw an error-msg only.
                 if user.is_user:
                     login(request, user)
-                    # print("issue_desc - login() method", request.POST.get('issue_desc'))
-                    # issue_desc_data = {'issue_desc': f"{request.POST.get('issue_desc')}"}
-                    # request.session['issue_desc_data'] = issue_desc_data
                     request.session['issue_desc_data'] = request.POST.get('issue_desc')
+                    request.session['chatbot_sender_id'] = request.POST.get('chatbot_sender_id')
                     return redirect('homeApplication:LangingPage')
-                    return render(request, 'home/Chatbot-Widget-IBAS/landingPage.html')
-                    # return redirect('homeApplication:LangingPage', **issue_desc_data)
-                    # if request.POST.get('issue_desc') is None:
-                    # else:
-                    #     return redirect('homeApplication:LangingPage', **issue_desc_data)
                 elif user.is_cso:
                     msg = 'Login using the HDO login system!'
                     messages.info(request, '%s' % msg)

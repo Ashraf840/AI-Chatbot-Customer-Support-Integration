@@ -53,7 +53,7 @@ class UserLoginRegAutomationAPI(APIView):
                     'phone': phone,
                 }, status=status.HTTP_200_OK)     # Ask for password from the user, sent the user email to the frontend also
             else:
-                print("User account doesn't exist!")
+                print("User account doesn't exist")
                 return Response({'result': 'User account doesn\'t exist'})
         
         if user_registration:

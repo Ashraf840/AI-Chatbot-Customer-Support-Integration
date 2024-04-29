@@ -65,7 +65,10 @@
                     <div class="row"><p>District: <b>{{ user_district }}</b></p></div>
                     <div class="row"><p>Division: <b>{{ user_division }}</b></p></div>
                     {% if issue_desc_data  %}
-                    <div class="row"><p>Issue Desc: <b>{{ issue_desc_data }}</b></p></div>
+                    <div class="row"><p>Issue Desc - Temp: <b>{{ issue_desc_data }}</b></p></div>
+                    {% endif %}
+                    {% if chatbot_sender_id  %}
+                    <div class="row"><p>chatbot_sender_id - Temp: <b>{{ chatbot_sender_id }}</b></p></div>
                     {% endif %}
                 </div>
             </div>
@@ -1006,63 +1009,79 @@
         // console.log(`Chatbot socket ID:`, socket_ID);
         console.log(`Chatbot sender ID:`, sender_id);
 
+        function sendChatroomCreatePrompt(issue_desc_data, chatbot_sender_id) {
+            console.log("issue_desc_data:", issue_desc_data);
+            // Hit the chatroom create API to invoke the chatroom create prompt automatically
+            console.log("necessary params - user_email:", user_email);
+            let user_organization = `{{ user_organization }}`;
+            console.log("necessary params - user_organization:", user_organization);
+            let user_location = `{{ user_location }}`;
+            console.log("necessary params - user_location:", user_location);
+            let user_district = `{{ user_district }}`;
+            console.log("necessary params - user_district:", user_district);
+            let user_division = `{{ user_division }}`;
+            console.log("necessary params - user_division:", user_division);
+            
+            console.log("necessary params - chatbot_socket_id:", chatbot_sender_id);        // Getting from the 'chat.js' file's variable 'sender_id'; ##### THIS SHOULD BE SEND FROM THE USER LOGIN PAGE ALSO
+            let issuerOid = `03209c1c-aef4-46a2-9a9e-418575467be1`;      // Define the static issue_oid, since I'm not creating issue to the TMS; Fetched from the 'ActionCreateIssue' class of 'actions.py' file from the RASA chatbot system.
+            console.log("necessary params - issuerOid:", issuerOid);
+            let prompt_user = true;
+            console.log("necessary params - prompt_user:", prompt_user);
+            let csrftoken = getCookie('csrftoken');
+            console.log("necessary params - X-CSRFToken:", csrftoken);
+
+            let url = "http://127.0.0.1:8080/home/api/user-chatroom/socket/"
+            const payload = JSON.stringify({
+                "user_email": user_email,
+                "chatbot_socket_id": chatbot_sender_id,
+                "issuerOid": issuerOid,
+                "user_organization": user_organization,
+                "location": user_location,
+                "district": user_district,
+                "division": user_division,
+                "prompt_user": "True"
+            });
+            
+            const headers = {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            };
+            
+            fetch(url, {
+                method: 'POST',
+                headers: headers,
+                body: payload
+            })
+        }
+
         // Open the websocket connection for the frontend
         ChatbotUserSocketID_socket.onopen = function (e) {
             console.log('Frontend Websocket: Connection Established!');
-            document.querySelector('#chatbotSocketId').value = sender_id;
-            ChatbotUserSocketID_socket.send(JSON.stringify({
-                'ChatbotUserSocketStorage': 'ChatbotUserSocketStorage',
-                'user_email': user_email,
-                // 'chatbot_socket_id': socket_ID,
-                'chatbot_socket_id': sender_id,
-                'registered_user_session_uuid': registered_user_session_uuid
-            }));
+            
 
             // Get the 'issue_desc_data' if the user gets logged in from the chatbot of user login page
             let issue_desc_data = `{{ issue_desc_data }}`;
             // Check if the 'issue_desc_data' value is not empty, only then hit the chatroom-create-api automatically to invoke the prompt to user.
             if (issue_desc_data) {
-                console.log("issue_desc_data:", issue_desc_data);
-                // Hit the chatroom create API to invoke the chatroom create prompt automatically
-                console.log("necessary params - user_email:", user_email);
-                let user_organization = `{{ user_organization }}`;
-                console.log("necessary params - user_organization:", user_organization);
-                let user_location = `{{ user_location }}`;
-                console.log("necessary params - user_location:", user_location);
-                let user_district = `{{ user_district }}`;
-                console.log("necessary params - user_district:", user_district);
-                let user_division = `{{ user_division }}`;
-                console.log("necessary params - user_division:", user_division);
-                console.log("necessary params - chatbot_socket_id:", sender_id);        // Getting from the 'chat.js' file's variable 'sender_id'; ##### THIS SHOULD BE SEND FROM THE USER LOGIN PAGE ALSO
-                let issuerOid = `03209c1c-aef4-46a2-9a9e-418575467be1`;      // Define the static issue_oid, since I'm not creating issue to the TMS; Fetched from the 'ActionCreateIssue' class of 'actions.py' file from the RASA chatbot system.
-                console.log("necessary params - issuerOid:", issuerOid);
-                let prompt_user = true;
-                console.log("necessary params - prompt_user:", prompt_user);
-                let csrftoken = getCookie('csrftoken');
-                console.log("necessary params - X-CSRFToken:", csrftoken);
-
-                let url = "http://127.0.0.1:8080/home/api/user-chatroom/socket/"
-                const payload = JSON.stringify({
-                    "user_email": user_email,
-                    "chatbot_socket_id": sender_id,
-                    "issuerOid": issuerOid,
-                    "user_organization": user_organization,
-                    "location": user_location,
-                    "district": user_district,
-                    "division": user_division,
-                    "prompt_user": "True"
-                });
-                
-                const headers = {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken
-                };
-                
-                fetch(url, {
-                    method: 'POST',
-                    headers: headers,
-                    body: payload
-                })
+                let chatbot_sender_id = `{{ chatbot_sender_id }}`;
+                document.querySelector('#chatbotSocketId').value = chatbot_sender_id;
+                ChatbotUserSocketID_socket.send(JSON.stringify({
+                    'ChatbotUserSocketStorage': 'ChatbotUserSocketStorage',
+                    'user_email': user_email,
+                    // 'chatbot_socket_id': socket_ID,
+                    'chatbot_socket_id': chatbot_sender_id,
+                    'registered_user_session_uuid': registered_user_session_uuid
+                }));
+                setTimeout(sendChatroomCreatePrompt(issue_desc_data, chatbot_sender_id), 1000);
+            } else {
+                document.querySelector('#chatbotSocketId').value = sender_id;
+                ChatbotUserSocketID_socket.send(JSON.stringify({
+                    'ChatbotUserSocketStorage': 'ChatbotUserSocketStorage',
+                    'user_email': user_email,
+                    // 'chatbot_socket_id': socket_ID,
+                    'chatbot_socket_id': sender_id,
+                    'registered_user_session_uuid': registered_user_session_uuid
+                }));
             }
         }
         // socket receiver: Backend --> Frontend

@@ -54,6 +54,7 @@ class LangingPage(LoginRequiredMixin, View):
             usr_profile = usr_detail.user_profile_detail(request.user.email)
 
             print("issue desc - LangingPage View", request.session.get('issue_desc_data'))
+            print("chatbot_sender_id desc - LangingPage View", request.session.get('chatbot_sender_id'))
 
             # If 'issue_desc_data' key exists in the self.context object then delete it, since it's meant to be shown only for once if the user gets logged in from the chatbot section of user login page
             if 'issue_desc_data' in self.context:
@@ -64,6 +65,15 @@ class LangingPage(LoginRequiredMixin, View):
                 if request.session.get('issue_desc_data'):
                     self.context['issue_desc_data'] = request.session.get('issue_desc_data')
                 del request.session['issue_desc_data']
+
+            # This rule is similar to the 'issue_desc_data' from the request.session, will only extract once in the landing page if the use raises an issue in an unauthenticated state from the user login page
+            if 'chatbot_sender_id' in self.context:
+                del self.context['chatbot_sender_id']
+            
+            if 'chatbot_sender_id' in request.session:
+                if request.session.get('chatbot_sender_id'):
+                    self.context['chatbot_sender_id'] = request.session.get('chatbot_sender_id')
+                del request.session['chatbot_sender_id']
             
 
             user_organization, user_location, user_district, user_division = usr_profile.user_organization, usr_profile.location, usr_profile.district, usr_profile.division
