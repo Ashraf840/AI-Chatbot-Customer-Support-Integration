@@ -870,6 +870,8 @@
     <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/pdfAttachment.js' %}"></script>
     <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/quickReplies.js' %}"></script>
     <script type="text/javascript" src="{% static 'landing_page_chatbot_statics/static/js/components/suggestionButtons.js' %}"></script>
+    <!-- get cookies -->
+	<script src="{% static 'js/miscellaneous/helper_func/get_cookies.js' %}"></script>
 
     <!-- bot ui end -->
 
@@ -1007,7 +1009,7 @@
         // Open the websocket connection for the frontend
         ChatbotUserSocketID_socket.onopen = function (e) {
             console.log('Frontend Websocket: Connection Established!');
-	    document.querySelector('#chatbotSocketId').value = sender_id;
+            document.querySelector('#chatbotSocketId').value = sender_id;
             ChatbotUserSocketID_socket.send(JSON.stringify({
                 'ChatbotUserSocketStorage': 'ChatbotUserSocketStorage',
                 'user_email': user_email,
@@ -1015,6 +1017,53 @@
                 'chatbot_socket_id': sender_id,
                 'registered_user_session_uuid': registered_user_session_uuid
             }));
+
+            // Get the 'issue_desc_data' if the user gets logged in from the chatbot of user login page
+            let issue_desc_data = `{{ issue_desc_data }}`;
+            // Check if the 'issue_desc_data' value is not empty, only then hit the chatroom-create-api automatically to invoke the prompt to user.
+            if (issue_desc_data) {
+                console.log("issue_desc_data:", issue_desc_data);
+                // Hit the chatroom create API to invoke the chatroom create prompt automatically
+                console.log("necessary params - user_email:", user_email);
+                let user_organization = `{{ user_organization }}`;
+                console.log("necessary params - user_organization:", user_organization);
+                let user_location = `{{ user_location }}`;
+                console.log("necessary params - user_location:", user_location);
+                let user_district = `{{ user_district }}`;
+                console.log("necessary params - user_district:", user_district);
+                let user_division = `{{ user_division }}`;
+                console.log("necessary params - user_division:", user_division);
+                console.log("necessary params - chatbot_socket_id:", sender_id);        // Getting from the 'chat.js' file's variable 'sender_id'; ##### THIS SHOULD BE SEND FROM THE USER LOGIN PAGE ALSO
+                let issuerOid = `03209c1c-aef4-46a2-9a9e-418575467be1`;      // Define the static issue_oid, since I'm not creating issue to the TMS; Fetched from the 'ActionCreateIssue' class of 'actions.py' file from the RASA chatbot system.
+                console.log("necessary params - issuerOid:", issuerOid);
+                let prompt_user = true;
+                console.log("necessary params - prompt_user:", prompt_user);
+                let csrftoken = getCookie('csrftoken');
+                console.log("necessary params - X-CSRFToken:", csrftoken);
+
+                let url = "http://127.0.0.1:8080/home/api/user-chatroom/socket/"
+                const payload = JSON.stringify({
+                    "user_email": user_email,
+                    "chatbot_socket_id": sender_id,
+                    "issuerOid": issuerOid,
+                    "user_organization": user_organization,
+                    "location": user_location,
+                    "district": user_district,
+                    "division": user_division,
+                    "prompt_user": "True"
+                });
+                
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                };
+                
+                fetch(url, {
+                    method: 'POST',
+                    headers: headers,
+                    body: payload
+                })
+            }
         }
         // socket receiver: Backend --> Frontend
         ChatbotUserSocketID_socket.onmessage = function (e) {
@@ -1039,6 +1088,7 @@
                 let district = data.district
                 let division = data.division
                 
+                // *** REQUIRED TO MAKE IT A FUNCTION SINCE THERE ARE AUTOMATIC PROMPT INVOCATION IF THE USER CREATES AN ISSUE USER LOGIN PAGE CHATBOT; THUS IN THAT WAY, THE PROMP CODE WILL NOT BE ABLE TO GET THE NECESSARY DATA WHICH USED TO BE SENT FROM THE BACKEND DJANGO CHANNELS.
                 if($('#promptUserToConnectToHdoModal').length){
                     let promptUserToConnectToHdoModalOKButton =
                         document.querySelector(
