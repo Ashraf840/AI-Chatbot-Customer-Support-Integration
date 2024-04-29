@@ -80,24 +80,29 @@ class UserRegistrationPageView(View):
         self.context['form'] = self.form_class(request.POST)
         form = self.context['form']
         if form.is_valid():
-            email = form.cleaned_data['email']
-            username = form.cleaned_data['username']
-            nid = form.cleaned_data['nid']
-            mobile = form.cleaned_data['mobile']
-            district = form.cleaned_data['district']
-            password = form.cleaned_data['password']
+            email = form.cleaned_data['email']  #
+            # username = form.cleaned_data['username']
+            nid = form.cleaned_data['nid']  #
+            mobile = form.cleaned_data['mobile']    #
+            district = form.cleaned_data['district']    #
+            password = form.cleaned_data['password']    #
             if len(User.objects.filter(email=email)) > 0:
                 messages.info(request, '%s' % "Email already taken", extra_tags="EmailExist")
                 return render(request, self.template_name, context=self.context)
-            if len(User.objects.filter(username=username)) > 0:
-                messages.info(request, '%s' % "Username already taken", extra_tags="UsernameExist")
-                return render(request, self.template_name, context=self.context)
+            # if len(User.objects.filter(username=username)) > 0:
+            #     messages.info(request, '%s' % "Username already taken", extra_tags="UsernameExist")
+            #     return render(request, self.template_name, context=self.context)
             if len(User_Profile.objects.filter(user_NID_no=nid)) > 0:
                 messages.info(request, '%s' % "NID already registered", extra_tags="NIDExist")
                 return render(request, self.template_name, context=self.context)
+            
+            # Generate a synthetic username
+            system_generated_username = email.split("@")[0]
+            system_generated_username_normalized = "".join(ch for ch in system_generated_username if ch.isalnum()) 
+            
             user = User(
                 email=email,
-                username=username,
+                username=system_generated_username_normalized,
                 phone=mobile,
             )
             user.is_user = True
